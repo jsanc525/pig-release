@@ -32,7 +32,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.ql.session.SessionState;
-import org.apache.hadoop.hive.serde.Constants;
+import org.apache.hadoop.hive.serde.serdeConstants;
 import org.apache.hadoop.hive.serde2.SerDeException;
 import org.apache.hadoop.hive.serde2.columnar.BytesRefArrayWritable;
 import org.apache.hadoop.hive.serde2.columnar.ColumnarSerDe;
@@ -424,9 +424,9 @@ public class HiveColumnarLoader extends FileInputLoadFunc implements
 	// these properties are never changed by the columns to read filter,
 	// because the columnar serde needs to now the
 	// complete format of each record.
-	props.setProperty(Constants.LIST_COLUMNS,
+	props.setProperty(serdeConstants.LIST_COLUMNS,
 		HiveRCSchemaUtil.listToString(cols));
-	props.setProperty(Constants.LIST_COLUMN_TYPES,
+	props.setProperty(serdeConstants.LIST_COLUMN_TYPES,
 		HiveRCSchemaUtil.listToString(types));
 
     }
