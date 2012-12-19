@@ -10,3 +10,21 @@ Condor-0.11 branched from Apache @ https://svn.apache.org/repos/asf/pig/branches
 
 
  BUG FIXES
+
+ BACKPORT from bimota-0.10.1
+
+  fs resolver fix for 3party downloads
+
+  BUG-1456 Added Pig DAG information to job configuration.
+
+  BUG-1568 - Pig-0.10.1 TestJobSumission and TestHBaseStorage don't work with HBase 0.94.2 and ZK 3.4.5
+
+  BUG-1881 - pig contrib piggybank build compilation failure.
+
+  PIG-3071 update hcatalog jar and path to hbase storage handler jar in pig script
+
+  Fix for unit test failures in Bimota part 1
+
+  Revert "PIG-3071 update hcatalog jar and path to hbase storage handler jar in pig script
+
+  PIG-3071 update hcatalog jar and path to hbase storage handler jar in pig script
