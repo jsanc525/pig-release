@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.Random;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HBaseTestingUtility;
 import org.apache.hadoop.hbase.HConstants;
 import org.apache.hadoop.hbase.MiniHBaseCluster;
@@ -541,9 +542,15 @@ public class TestJobSubmission {
             return;
         // use the estimation
         Configuration conf = cluster.getConfiguration();
-        HBaseTestingUtility util = new HBaseTestingUtility(conf);
+        HBaseTestingUtility util = new HBaseTestingUtility(HBaseConfiguration.create(conf));
         int clientPort = util.startMiniZKCluster().getClientPort();
         util.startMiniHBaseCluster(1, 1);
+        // This line is a work-around for HBase bug - HBASE-7423.
+        // The configuration used by hbase when trying a delete is the 
+        // filesystem config instead of the one passed to the 
+        // HBaseTestingUtility. As a result, the operationhangs forever 
+        // without this change.
+        cluster.getFileSystem().setConf(util.getConfiguration());
 
         String query = "a = load '/passwd';" +
                        "b = group a by $0;" +
