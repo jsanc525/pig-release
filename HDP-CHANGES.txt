@@ -28,3 +28,9 @@ Condor-0.11 branched from Apache @ https://svn.apache.org/repos/asf/pig/branches
   Revert "PIG-3071 update hcatalog jar and path to hbase storage handler jar in pig script
 
   PIG-3071 update hcatalog jar and path to hbase storage handler jar in pig script
+
+  BUG-1975. Setting tests that are failing to ignore because of Daniel's comments on the bug. Needs to be re-visited after bimota
+
+  BUG-2647: Fix the TestJobSubmission test case for Bimota
+
+  Fixes for regular expression issues in negative tests (UdfException, IOError, LineageErrors)
