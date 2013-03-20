@@ -178,15 +178,15 @@
     <property name="src.shims.test.dir" value="${basedir}/shims/test/hadoop${hadoopversion}" />
 
     <property name="hadoop.jar" value="hadoop-core-${hadoop-core.version}.jar" />
-	<property name="asfrepo" value="https://repository.apache.org"/>
-	<property name="asfsnapshotrepo" value="${asfrepo}/content/repositories/snapshots"/>
-	<property name="mvnrepo" value="http://repo2.maven.org/maven2"/>
-	<property name="asfstagingrepo" value="${asfrepo}/service/local/staging/deploy/maven2"/>
+    <property name="asfrepo" value="https://repository.apache.org"/>
+    <property name="asfsnapshotrepo" value="${asfrepo}/content/repositories/snapshots"/>
+    <property name="mvnrepo" value="http://repo2.maven.org/maven2"/>
+    <property name="asfstagingrepo" value="${asfrepo}/service/local/staging/deploy/maven2"/>
     <property name="ivy.jar" location="${ivy.dir}/ivy-${ivy.version}.jar"/>
-	<property name="ant_task.jar" location="${ivy.dir}/maven-ant-tasks-${ant-task.version}.jar"/>
-	<property name="ant_task_repo_url"
+    <property name="ant_task.jar" location="${ivy.dir}/maven-ant-tasks-${ant-task.version}.jar"/>
+    <property name="ant_task_repo_url"
 	value="${mvnrepo}/org/apache/maven/maven-ant-tasks/${ant-task.version}/maven-ant-tasks-${ant-task.version}.jar"/>
-	<property name="ivy_repo_url" value="${mvnrepo}/org/apache/ivy/ivy/${ivy.version}/ivy-${ivy.version}.jar"/>
+    <property name="ivy_repo_url" value="${mvnrepo}/org/apache/ivy/ivy/${ivy.version}/ivy-${ivy.version}.jar"/>
     <property name="ivysettings.xml" location="${ivy.dir}/ivysettings.xml" />
     <property name="ivy.org" value="org.apache.pig"/>
     <property name="build.dir" location="build" />
