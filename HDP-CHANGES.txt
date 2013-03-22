@@ -1,0 +1,12 @@
+Condor-0.11 branched from Apache @ https://svn.apache.org/repos/asf/pig/branches/branch-0.11@1459158 13f79535-47bb-0310-9956-ffa450edef68
+
+ INCOMPATIBLE CHANGES
+
+
+ NEW FEATURES
+
+
+ IMPROVEMENTS
+
+
+ BUG FIXES
