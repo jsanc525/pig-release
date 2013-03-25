@@ -42,12 +42,29 @@ public class TestOver {
 
     @Test
     public void testSchema() throws Exception {
+        // No type
         Over func = new Over();
-
         Schema in = Schema.generateNestedSchema(DataType.BAG, DataType.INTEGER);
         Schema out = func.outputSchema(in);
-
         assertEquals("{{NULL}}", out.toString());
+
+        // chararray
+        func = new Over("chararray");
+        in = Schema.generateNestedSchema(DataType.BAG, DataType.INTEGER);
+        out = func.outputSchema(in);
+        assertEquals("{{chararray}}", out.toString());
+
+        // int
+        func = new Over("Int");
+        in = Schema.generateNestedSchema(DataType.BAG, DataType.INTEGER);
+        out = func.outputSchema(in);
+        assertEquals("{{int}}", out.toString());
+
+        // double
+        func = new Over("DOUBLE");
+        in = Schema.generateNestedSchema(DataType.BAG, DataType.INTEGER);
+        out = func.outputSchema(in);
+        assertEquals("{{double}}", out.toString());
     }
 
     @Test

@@ -167,11 +167,18 @@ public class Over extends EvalFunc<DataBag> {
     private boolean initialized;
     private EvalFunc<? extends Object> func;
     private Object[] udfArgs;
+    private byte returnType;
 
     public Over() {
         initialized = false;
         udfArgs = null;
         func = null;
+        returnType = DataType.UNKNOWN;
+    }
+
+    public Over(String returnType) {
+        this();
+        this.returnType = DataType.findTypeByName(returnType);
     }
 
     @Override
@@ -221,7 +228,11 @@ public class Over extends EvalFunc<DataBag> {
     @Override
     public Schema outputSchema(Schema inputSch) {
         try {
-            return Schema.generateNestedSchema(DataType.BAG, DataType.NULL);
+            if (returnType == DataType.UNKNOWN) {
+                return Schema.generateNestedSchema(DataType.BAG, DataType.NULL);
+            } else {
+                return Schema.generateNestedSchema(DataType.BAG, returnType);
+            }
         } catch (FrontendException fe) {
             throw new RuntimeException("Unable to create nested schema", fe);
         }
