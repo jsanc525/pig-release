@@ -1460,7 +1460,7 @@ public class TestOver {
         int count = 0;
         for (Tuple to : outbag) {
             assertEquals(1, to.size());
-            assertEquals(count/10.0, to.get(0));
+            assertEquals(count/9.0, to.get(0));
             count++;
         }
     }
@@ -1513,15 +1513,15 @@ public class TestOver {
         t = iter.next();
         assertEquals(0.0, t.get(0));
         t = iter.next();
-        assertEquals(0.2857142857142857, t.get(0));
+        assertEquals(0.3333333333333333, t.get(0));
         t = iter.next();
-        assertEquals(0.42857142857142855, t.get(0));
+        assertEquals(0.5, t.get(0));
         t = iter.next();
-        assertEquals(0.42857142857142855, t.get(0));
+        assertEquals(0.5, t.get(0));
         t = iter.next();
-        assertEquals(0.42857142857142855, t.get(0));
+        assertEquals(0.5, t.get(0));
         t = iter.next();
-        assertEquals(0.8571428571428571, t.get(0));
+        assertEquals(1.0, t.get(0));
     }
 
     @Test

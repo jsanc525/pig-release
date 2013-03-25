@@ -743,7 +743,8 @@ public class Over extends EvalFunc<DataBag> {
         }
 
         protected Double calculateRank(OverBag.OverBagIterator iter) {
-            return ((double)lastRankUsed - 1.0) / (double)iter.tuples.size();
+            return ((double)lastRankUsed - 1.0 ) /
+                ((double)iter.tuples.size() - 1.0);
         }
     }
 
