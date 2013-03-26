@@ -1010,6 +1010,7 @@
 
         <copy todir="${rpm.dist.dir}/share/pig/lib">
             <fileset dir="${ivy.lib.dir}" includes="jython*.jar"/>
+            <fileset dir="${ivy.lib.dir}" includes="jruby*.jar"/>
         </copy>
 
         <copy file="${output.jarfile.backcompat.withouthadoop}" tofile="${rpm.dist.dir}/share/pig/${final.name}-withouthadoop.jar" />
@@ -1081,6 +1082,7 @@
 
         <copy todir="${tar.dist.dir}/lib">
             <fileset dir="${ivy.lib.dir}" includes="jython*.jar"/>
+            <fileset dir="${ivy.lib.dir}" includes="jruby*.jar"/>
         </copy>
 
         <copy file="${output.jarfile.backcompat.withouthadoop}" tofile="${tar.dist.dir}/${final.name}-withouthadoop.jar" />
