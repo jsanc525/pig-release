@@ -172,7 +172,7 @@
       conf="compile->master;test->master"/>
     <dependency org="commons-cli" name="commons-cli" rev="${commons-cli.version}"
       conf="compile->master;checkstyle->master"/>
-    
+
     <dependency org="org.apache.avro" name="avro" rev="${avro.version}"
       conf="compile->default;checkstyle->master"/>
     <dependency org="com.googlecode.json-simple" name="json-simple" rev="${json-simple.version}"
@@ -225,20 +225,29 @@
       <exclude org="org.apache.ant" module="ant" />
       <exclude org="org.slf4j" module="slf4j"/>
       <exclude org="org.slf4j" module="slf4j-api"/>
-      <exclude org="org.slf4j" module="log4j12"/>
       <exclude org="org.slf4j" module="slf4j-log4j12" />
+      <exclude org="org.slf4j" module="log4j12"/>
+      <exclude org="org.slf4j" module="log4j-over-slf4j"/>
       <exclude org="stax" module="stax-api" />
       <exclude org="javax.xml.bind" module="jaxb-api" />
       <exclude org="javax.ws.rs" module="jsr311-api" />
-      <exclude org="com.google.protobuf" module="protobuf-java"/>
       <exclude org="tomcat" module="jasper-runtime"/>
       <exclude org="tomcat" module="jasper-compiler"/>
-      <exclude org="org.slf4j" module="log4j-over-slf4j"/>
+      <exclude org="com.google.protobuf" module="protobuf-java"/>
       <exclude org="com.sun.jersey" module="jersey-core"/>
       <exclude org="com.sun.jersey" module="jersey-server"/>
       <exclude org="com.sun.jersey" module="jersey-json"/>
       <exclude org="asm" module="asm"/>
     </dependency>
+
+    <!-- for TestHBaseStorage -->
+    <dependency org="com.github.stephenc.high-scale-lib" name="high-scale-lib" rev="${high-scale-lib.version}"
+       conf="test->default"/>
+    <dependency org="com.google.protobuf" name="protobuf-java" rev="${protobuf-java.version}"
+       conf="test->default"/>
+    <dependency org="com.yammer.metrics" name="metrics-core" rev="${metrics-core.version}"
+       conf="test->default"/>
+
     <!-- for piggybank -->
     <dependency org="hsqldb" name="hsqldb" rev="${hsqldb.version}"
       conf="test->default" />

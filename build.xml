@@ -741,12 +741,11 @@
                 <include name="guava-${guava.version}.jar" />
                 <include name="automaton-${automaton.version}.jar" />
                 <include name="avro-${avro.version}.jar" />
-                <include name="hbase-${hbase.version}.jar" />
+                <include name="protobuf-java-${protobuf-java.version}.jar" />
                 <include name="commons*.jar" />
                 <include name="log4j*.jar" />
                 <include name="slf4j*.jar" />
                 <include name="jsp-api*.jar" />
-                <include name="zookeeper*.jar" />
                 <include name="jansi-${jansi.version}.jar" />
             </zipgroupfileset>
             <fileset file="${basedir}/src/pig-default.properties" />
