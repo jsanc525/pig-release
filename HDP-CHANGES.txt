@@ -34,3 +34,7 @@ Condor-0.11 branched from Apache @ https://svn.apache.org/repos/asf/pig/branches
   BUG-2647: Fix the TestJobSubmission test case for Bimota
 
   Fixes for regular expression issues in negative tests (UdfException, IOError, LineageErrors)
+
+  fix perl path issue for Parameters_4 system test - BUG-1975
+
+  Fix bigwheel unit test failures
