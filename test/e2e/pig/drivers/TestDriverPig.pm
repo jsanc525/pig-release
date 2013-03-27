@@ -73,7 +73,7 @@ sub replaceParameters
     $cmd =~ s/:INPATH:/$testCmd->{'inpathbase'}/g;
     $cmd =~ s/:OUTPATH:/$outfile/g;
     $cmd =~ s/:FUNCPATH:/$testCmd->{'funcjarPath'}/g;
-    $cmd =~ s/:PIGPATH:/$testCmd->{'pigpath'}/g;
+    $cmd =~ s/:PIGGYBANKPATH:/$testCmd->{'piggybankjarPath'}/g;
     $cmd =~ s/:RUNID:/$testCmd->{'UID'}/g;
     $cmd =~ s/:USRHOMEPATH:/$testCmd->{'userhomePath'}/g;
     $cmd =~ s/:MAPREDJARS:/$testCmd->{'mapredjars'}/g;
@@ -374,7 +374,7 @@ sub getPigCmd($$$)
     # command.
     $ENV{'PIG_CLASSPATH'} = $pcp;
 
-    @pigCmd = ("$testCmd->{'pigpath'}/bin/pig");
+    @pigCmd = ("$testCmd->{'pigbin'}");
 
     if (defined($testCmd->{'additionaljars'})) {
         push(@pigCmd, '-Dpig.additional.jars='.$testCmd->{'additionaljars'});
@@ -603,7 +603,7 @@ sub generateBenchmark
 	}
     else {
 		# Change so we're looking at the old version of Pig
-		$modifiedTestCmd{'pigpath'} = $testCmd->{'oldpigpath'};
+		$modifiedTestCmd{'pigbin'} = $testCmd->{'oldpigbin'};
                 if (defined($testCmd->{'oldconfigpath'})) {
 		    $modifiedTestCmd{'testconfigpath'} = $testCmd->{'oldconfigpath'};
                 }

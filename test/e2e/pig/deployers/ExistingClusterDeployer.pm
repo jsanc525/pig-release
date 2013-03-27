@@ -352,7 +352,7 @@ sub runPigCmd($$$$)
 {
     my ($self, $cfg, $log, $c) = @_;
 
-    my @pigCmd = ("$cfg->{'pigpath'}/bin/pig");
+    my @pigCmd = ("$cfg->{'pigbin'}");
     push(@pigCmd, '-e');
     push(@pigCmd, split(' ', $c));
 
