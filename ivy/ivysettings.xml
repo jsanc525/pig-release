@@ -46,10 +46,10 @@
     <ibiblio name="jboss-maven2" root="${repo.jboss.org}" pattern="${maven2.pattern.ext}" m2compatible="true"/>
     <ibiblio name="apache-snapshots" root="${repo.apache.snapshots}" pattern="${snapshot.pattern}"
          checkmodified="true" changingPattern=".*SNAPSHOT" m2compatible="true"/>
-    <filesystem name="fs" m2compatible="true" checkconsistency="false" force="${force-resolve}"
+    <filesystem name="fs" m2compatible="true" alwaysCheckExactRevision="true" checkconsistency="false" force="${force-resolve}">
          checkmodified="true" changingPattern=".*SNAPSHOT">
       <artifact pattern="${repo.dir}/${maven2.pattern.ext}"/>
-      <ivy pattern="${repo.dir}/[organisation]/[module]/[revision]/[module]-[revision].pom"/>
+      <ivy pattern="${repo.dir}/[organisation]/[module]/[revision]/[module]-[revision](-[classifier]).pom"/>
     </filesystem>
     <chain name="default" dual="true">
       <resolver ref="local"/>
@@ -57,9 +57,11 @@
       <resolver ref="jboss-maven2"/>
       <resolver ref="apache-snapshots"/>
     </chain>
-    <chain name="internal">
+    <chain name="internal" dual="true">
       <resolver ref="fs"/>
       <resolver ref="maven2"/>
+      <resolver ref="jboss-maven2"/>
+      <resolver ref="apache-snapshots"/>
     </chain>
     <chain name="external">
       <resolver ref="maven2"/>
