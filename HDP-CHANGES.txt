@@ -44,3 +44,5 @@ Condor-0.11 branched from Apache @ https://svn.apache.org/repos/asf/pig/branches
   BUG-4200: pig system tests should test rpm
 
   BUG-4617: Pig rpm should bundle jruby.jar
+
+  PIG-3262: Pig contrib 0.11 doesn't compile on certain rpm systems
