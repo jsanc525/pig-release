@@ -1,18 +1,10 @@
-  <project name="nexus-deploy" default="stage" basedir="." xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+  <project name="nexus-deploy" default="stage" basedir="." 
+  xmlns:artifact="urn:maven-artifact-ant">
     <import file="build.xml" as="apache"/>
-    <property name="ant-task.version" value="2.1.3" />
-    <property name="mvnrepo" value="http://repo2.maven.org/maven2"/>
-    <property name="ant_task.jar" location="${ivy.dir}/maven-ant-tasks-${ant-task.version}.jar"/>
-    <property name="ant_task_repo_url"
-    value="${mvnrepo}/org/apache/maven/maven-ant-tasks/${ant-task.version}/maven-ant-tasks-${ant-task.version}.jar"/>
-
-    <target name="stage" depends="apache.jar, apache.source-jar, apache.javadoc-jar, apache.set-version" description="deploy artifact to a nexus repository">
-      <get src="${ant_task_repo_url}" dest="${basedir}/ivy/maven-ant-tasks-2.1.3.jar" usetimestamp="true"/>
-      <path id="mvn-ant-task-classpath" path="${basedir}/ivy/maven-ant-tasks-2.1.3.jar"/>
-      <typedef resource="org/apache/maven/artifact/ant/antlib.xml"
-        uri="antlib:org.apache.maven.artifact.ant" classpathref="mvn-ant-task-classpath"/>
+    
       <macrodef name="nexus-plugin" description="macro definition for publishing artifacts to nexus">
         <attribute name="maven-jar"/>
+        <attribute name="pomname"/>
         <attribute name="attachas" default=""/>
         <sequential>
           <artifact:mvn>
@@ -21,15 +13,20 @@
             <arg value="-DrepositoryId=${staging_repo_id}"/>
             <arg value="-Dfile=@{maven-jar}"/>
             <arg value="-Dpackaging=jar"/>
-            <arg value="-DpomFile=${pig.pom}"/>
+            <arg value="-DpomFile=@{pomname}"/>
             <arg value="-Dclassifier=@{attachas}"/>
             <arg value="-Dtype=jar"/>
             <arg value="-Pgpg"/>
           </artifact:mvn>
         </sequential>
       </macrodef>
-      <nexus-plugin maven-jar="${pig-core.jar}"/>
-      <nexus-plugin maven-jar="${pig-sources.jar}" attachas="sources"/>
-      <nexus-plugin maven-jar="${pig-javadoc.jar}" attachas="javadoc"/>
+
+    <target name="stage" depends="apache.mvn-taskdef, apache.jar, apache.source-jar, apache.javadoc-jar, apache.smoketests-jar, apache.pigunit-jar, apache.set-version" description="deploy artifact to a nexus repository">
+    <!--<target name="stage" depends="apache.mvn-taskdef, apache.jar, apache.mvn-jar, apache.source-jar, apache.javadoc-jar, apache.smoketests-jar, apache.pigunit-jar, apache.set-version" description="deploy artifact to a nexus repository">-->
+      <nexus-plugin maven-jar="${output.jarfile.core}" pomname="${pig.pom}"/>
+      <nexus-plugin maven-jar="${output.jarfile.sources}" pomname="${pig.pom}" attachas="sources"/>
+      <nexus-plugin maven-jar="${output.jarfile.javadoc}" pomname="${pig.pom}" attachas="javadoc"/>
+      <nexus-plugin maven-jar="${pigunit.jarfile}" pomname="${pigunit.pom}"/>
+      <nexus-plugin maven-jar="${smoke.tests.jarfile}" pomname="${pigsmoke.pom}"/>
     </target>
   </project>
