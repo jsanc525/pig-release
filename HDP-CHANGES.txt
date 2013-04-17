@@ -13,6 +13,8 @@ Condor-0.11 branched from Apache @ https://svn.apache.org/repos/asf/pig/branches
 
   PIG-3276: change the default value for hcat.bin to hcat instead of /usr/local/hcat/bin/hcat
 
+  PIG-3277: fix the path to the benchmarks file in the print statement
+
  BACKPORT from bimota-0.10.1
 
   fs resolver fix for 3party downloads
