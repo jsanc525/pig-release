@@ -11,6 +11,8 @@ Condor-0.11 branched from Apache @ https://svn.apache.org/repos/asf/pig/branches
 
  BUG FIXES
 
+  PIG-3276: change the default value for hcat.bin to hcat instead of /usr/local/hcat/bin/hcat
+
  BACKPORT from bimota-0.10.1
 
   fs resolver fix for 3party downloads
