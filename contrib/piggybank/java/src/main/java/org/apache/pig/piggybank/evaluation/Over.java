@@ -353,7 +353,8 @@ public class Over extends EvalFunc<DataBag> {
         } else if ("percent_rank".equalsIgnoreCase(agg)) {
             func = new PercentRank(udfArgs);
         } else if ("cume_dist".equalsIgnoreCase(agg)) {
-            func = new CumeDist(udfArgs);
+            //func = new CumeDist(udfArgs);
+            func = new CumeDist();
         } else if ("debug".equalsIgnoreCase(agg)) {
             func = new Debug();
         } else {
@@ -759,6 +760,7 @@ public class Over extends EvalFunc<DataBag> {
         }
     }
 
+    /*
     private static class CumeDist extends BaseRank<Double> {
         CumeDist(Object[] args) throws IOException {
             super(args);
@@ -772,6 +774,20 @@ public class Over extends EvalFunc<DataBag> {
             return ((double)lastRankUsed) / (double)iter.tuples.size();
         }
     }
+    */
+
+    private static class CumeDist extends ResetableEvalFunc<Double> {
+
+        @Override
+        public Double exec(Tuple input) throws IOException {
+            DataBag inbag = (DataBag)input.get(0);
+            OverBag.OverBagIterator iter =
+                (OverBag.OverBagIterator)inbag.iterator();
+
+            return ((double)++currentRow)/(double)iter.tuples.size();
+        }
+    }
+
 
 
 
