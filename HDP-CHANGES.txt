@@ -1,5 +1,6 @@
 Condor-0.11 branched from Apache @ https://svn.apache.org/repos/asf/pig/branches/branch-0.11@1459158 13f79535-47bb-0310-9956-ffa450edef68
 
+CONDOR:
  INCOMPATIBLE CHANGES
 
 
@@ -52,3 +53,18 @@ Condor-0.11 branched from Apache @ https://svn.apache.org/repos/asf/pig/branches
   PIG-3262: Pig contrib 0.11 doesn't compile on certain rpm systems
 
   PIG-2786: enhance Pig launcher script wrt. HBase/HCat integration
+  
+  
+  
+  
+ COMANCHE:
+     INCOMPATIBLE CHANGES
+
+
+     NEW FEATURES
+
+
+     IMPROVEMENTS
+
+
+     BUG FIXES
