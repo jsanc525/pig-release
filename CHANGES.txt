@@ -32,6 +32,8 @@ IMPROVEMENTS
 
 PIG-3503: More document for Pig 0.12 new features (daijy)
 
+PIG-3445: Make Parquet format available out of the box in Pig (lbendig via aniket486)
+
 PIG-3483: Document ASSERT keyword (aniket486 via daijy)
 
 PIG-3470: Print configuration variables in grunt (lbendig via daijy)
