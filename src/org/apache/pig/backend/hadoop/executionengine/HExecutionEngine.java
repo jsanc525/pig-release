@@ -124,9 +124,6 @@ public class HExecutionEngine {
     
     @SuppressWarnings("deprecation")
     private void init(Properties properties) throws ExecException {
-        //First set the ssh socket factory
-        setSSHFactory();
-        
         String cluster = null;
         String nameNode = null;
     
@@ -340,22 +337,6 @@ public class HExecutionEngine {
         return newPreoptimizedPlan;
     }
       
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    private void setSSHFactory(){
-        Properties properties = this.pigContext.getProperties();
-        String g = properties.getProperty("ssh.gateway");
-        if (g == null || g.length() == 0) return;
-        try {
-            Class clazz = Class.forName("org.apache.pig.shock.SSHSocketImplFactory");
-            SocketImplFactory f = (SocketImplFactory)clazz.getMethod("getFactory", new Class[0]).invoke(0, new Object[0]);
-            Socket.setSocketImplFactory(f);
-        } 
-        catch (SocketException e) {}
-        catch (Exception e){
-            throw new RuntimeException(e);
-        }
-    }
-
     /**
      * Method to apply pig properties to JobConf
      * (replaces properties with resulting jobConf values)
