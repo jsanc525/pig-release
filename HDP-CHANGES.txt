@@ -1,4 +1,4 @@
-bighweel-GA-0.12.0 is branched from hortonworks git@github.com:hortonworks/pig.git  @ bighweel-beta2-0.11-12.0  (SHA1 c5c9c6266ac879e86f65f08f65844ba25e530218)
+bighweel-m16-0.12.0 is branched from hortonworks git@github.com:hortonworks/pig.git  @ bighweel-GA-2.0.6.0-72  (SHA1 e8a8a209a59e0ee5d58f6a19767b64d5d7a68b51)
 
 INCOMPATIBLE CHANGES
 
