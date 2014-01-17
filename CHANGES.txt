@@ -30,6 +30,8 @@ PIG-3047: Check the size of a relation before adding it to distributed cache in 
 
 PIG-3480: TFile-based tmpfile compression crashes in some cases (dvryaboy via aniket486)
 
+PIG-3573: Provide StoreFunc and LoadFunc for Accumulo (elserj via daijy)
+
 BUG FIXES
 
 PIG-3621: Python Avro library can't read Avros made with builtin AvroStorage (rusell.jurney via cheolsoo)
