@@ -1124,8 +1124,7 @@
           uri="urn:maven-artifact-ant"
           classpathref="mvn-ant-task.classpath"/>
     </target>
-    <target name="mvn-install" depends="mvn-taskdef,jar, set-version, source-jar,
-      javadoc-jar, pigunit-jar, smoketests-jar, piggybank"
+    <target name="mvn-install" depends="mvn-build, mvn-taskdef, set-version"
          description="To install pig to local filesystem's m2 cache">
          <artifact:pom file="${pig.pom}" id="pig"/>
           <artifact:install file="${output.jarfile.core}">
