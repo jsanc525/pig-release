@@ -28,7 +28,6 @@ import java.util.Map.Entry;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.pig.ExecType;
-import org.apache.pig.backend.hadoop.executionengine.HExecutionEngine;
 import org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.PigMapReduce;
 import org.apache.pig.backend.hadoop.executionengine.util.MapRedUtil;
 
@@ -95,8 +94,7 @@ public class ConfigurationUtil {
             }
         }
         Properties props = ConfigurationUtil.toProperties(localConf);
-        props.setProperty(HExecutionEngine.FILE_SYSTEM_LOCATION, "file:///");
-        props.setProperty(HExecutionEngine.ALTERNATIVE_FILE_SYSTEM_LOCATION, "file:///");
+        props.setProperty(MapRedUtil.FILE_SYSTEM_NAME, "file:///");
         return props;
     }
 }

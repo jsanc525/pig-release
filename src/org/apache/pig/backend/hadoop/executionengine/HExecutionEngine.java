@@ -68,8 +68,8 @@ import org.apache.pig.pen.POOptimizeDisabler;
 public class HExecutionEngine {
     
     public static final String JOB_TRACKER_LOCATION = "mapred.job.tracker";
-    public static final String FILE_SYSTEM_LOCATION = "fs.default.name";
-    public static final String ALTERNATIVE_FILE_SYSTEM_LOCATION = "fs.defaultFS";
+    private static final String FILE_SYSTEM_LOCATION = "fs.default.name";
+    private static final String ALTERNATIVE_FILE_SYSTEM_LOCATION = "fs.defaultFS";
     
     private static final String HADOOP_SITE = "hadoop-site.xml";
     private static final String CORE_SITE = "core-site.xml";
