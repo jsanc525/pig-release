@@ -130,6 +130,14 @@ public class AccumuloBinaryConverter implements LoadStoreCaster {
      * NOT IMPLEMENTED
      */
     @Override
+    public Map<String, Object> bytesToMap(byte[] b) throws IOException {
+        throw new ExecException("Can't generate Map from byte[]");
+    }
+
+    /**
+     * NOT IMPLEMENTED
+     */
+    @Override
     public Map<String, Object> bytesToMap(byte[] b,
             ResourceFieldSchema fieldSchema) throws IOException {
         throw new ExecException("Can't generate Map from byte[]");
