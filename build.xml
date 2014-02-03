@@ -140,6 +140,10 @@
 
     <!-- javadoc properties  -->
     <property name="javadoc.link.java" value="http://download.oracle.com/javase/1.5.0/docs/api/" />
+	
+	<!-- env properties -->
+	<property environment="env"/>
+	<property name="build.path" value="${env.Path};${hadoop.root}\bin" />
 
     <!-- test patch properties -->
     <property name="scratch.dir" value="${user.home}/tmp"/>
@@ -851,6 +855,7 @@
             <sysproperty key="java.security.krb5.kdc" value="" />
             <sysproperty key="log4j.configuration" value="file:${basedir}/conf/test-log4j.properties"/>
             <env key="MALLOC_ARENA_MAX" value="4"/>
+			<env key="PATH" path="${build.path}"/> 
             <classpath>
                 <pathelement location="${output.jarfile.withouthadoop}" />
                 <pathelement location="${test.build.classes}" />
