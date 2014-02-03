@@ -208,7 +208,7 @@ sub runTest
        }
 
        if ( $testCmd->{'hadoopversion'} == '23' && $testCmd->{'pig23'}) {
-           $oldpig = $testCmd->{'pig'};
+           $oldpig = $testCmd->{'pig23'};
            $testCmd->{'pig'} = $testCmd->{'pig23'};
        }
        if ( $testCmd->{'hadoopversion'} == '23' && $testCmd->{'expected_err_regex23'}) {
@@ -228,7 +228,7 @@ sub runTest
        }
 
        if ( $testCmd->{'hadoopversion'} == '23' && $testCmd->{'pig23'}) {
-           $oldpig = $testCmd->{'pig'};
+           $oldpig = $testCmd->{'pig23'};
            $testCmd->{'pig'} = $testCmd->{'pig23'};
        }
        my $res = $self->runPig( $testCmd, $log, 1, $resources );
