@@ -53,7 +53,7 @@ public class TestInvokerSpeed {
         }
         long dynamicSpeed = System.currentTimeMillis()-start;
         System.err.println("Dynamic to static ratio: "+((float) dynamicSpeed)/staticSpeed);
-        assertTrue( ((float) dynamicSpeed)/staticSpeed < 5);
+        assertTrue( ((float) dynamicSpeed)/staticSpeed < 7);
     }
     
     private class Log extends EvalFunc<Double> {

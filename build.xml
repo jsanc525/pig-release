@@ -107,6 +107,7 @@
     <property name="smoke.tests.jarfile" value="${build.dir}/${final.name}-smoketests.jar" />
     <property name="test.pigunit.src.dir" value="${test.src.dir}/org/apache/pig/test/pigunit" />
     <property name="test.pigunit.file" value="${test.src.dir}/pigunit-tests"/>
+    <property name="junit.jvm.args" value="-XX:-UseSplitVerifier -XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=128M"/>
 
 
     <!-- test configuration, use ${user.home}/build.properties to configure values  -->
@@ -851,6 +852,7 @@
             <sysproperty key="java.io.tmpdir" value="${junit.tmp.dir}" />
             <sysproperty key="hadoop.log.dir" value="${test.log.dir}"/>
             <jvmarg line="${debugArgs}"/>
+			<jvmarg line="${junit.jvm.args}"/>
             <sysproperty key="java.security.krb5.realm" value="" />
             <sysproperty key="java.security.krb5.kdc" value="" />
             <sysproperty key="log4j.configuration" value="file:${basedir}/conf/test-log4j.properties"/>
