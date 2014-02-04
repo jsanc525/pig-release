@@ -38,7 +38,6 @@
     <conf name="jdiff" visibility="private"/>
     <conf name="checkstyle" visibility="private"/>
     <conf name="buildJar" extends="compile,test" visibility="private"/>
-    <conf name="hadoop20" visibility="private"/>
     <conf name="hadoop23" visibility="private"/>
     <conf name="hbase94" visibility="private"/>
     <conf name="hbase95" visibility="private"/>
@@ -111,12 +110,6 @@
       conf="hadoop23->master"/>
     <dependency org="log4j" name="log4j" rev="${log4j.version}"
       conf="compile->master"/>
-    <dependency org="com.sun.jersey" name="jersey-core" rev="${jersey-core.version}"
-      conf="hadoop20->default"/>
-    <dependency org="org.apache.hadoop" name="hadoop-core" rev="${hadoop-core.version}"
-      conf="hadoop20->default"/>
-    <dependency org="org.apache.hadoop" name="hadoop-test" rev="${hadoop-test.version}"
-      conf="hadoop20->default"/>
     <dependency org="org.apache.hadoop" name="hadoop-annotations" 
       rev="${hadoop-common.version}" conf="hadoop23->master"/>
     <dependency org="org.apache.hadoop" name="hadoop-auth" 
