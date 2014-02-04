@@ -221,7 +221,7 @@ public class TestScriptUDF{
         String userenv = Shell.WINDOWS?"USERNAME":"USER";
         String[] input = {
                 userenv,
-                "PATH"
+                "JAVA_HOME"
         };
 
         Util.createInputFile(cluster, "testPythonBuiltinModuleImport1", input);
