@@ -29,6 +29,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.ql.io.orc.CompressionKind;
@@ -65,11 +66,13 @@ public class TestOrcStorage {
     
     private static PigServer pigServer = null;
     private static FileSystem fs;
+    private static Configuration conf;
     
     @Before
     public void setup() throws ExecException, IOException {
         pigServer = new PigServer(ExecType.LOCAL);
-        fs = FileSystem.get(ConfigurationUtil.toConfiguration(pigServer.getPigContext().getProperties()));
+        conf = ConfigurationUtil.toConfiguration(pigServer.getPigContext().getProperties());
+        fs = FileSystem.get(conf);
         deleteTestFiles();
         pigServer.mkdirs(outbasedir);
         generateInputFiles();
@@ -149,7 +152,7 @@ public class TestOrcStorage {
         pigServer.registerQuery("A = load '" + INPUT1 + "' as (a0:int, a1:chararray);");
         pigServer.store("A", OUTPUT1, "OrcStorage");
         Path outputFilePath = new Path(new Path(OUTPUT1), "part-m-00000");
-        Reader reader = OrcFile.createReader(fs, outputFilePath);
+        Reader reader = OrcFile.createReader(fs, outputFilePath, conf);
         assertEquals(reader.getNumberOfRows(), 2);
         
         RecordReader rows = reader.rows(null);
@@ -201,12 +204,12 @@ public class TestOrcStorage {
         pigServer.executeBatch();
         
         Path outputFilePath = new Path(new Path(OUTPUT2), "part-r-00000");
-        Reader reader = OrcFile.createReader(fs, outputFilePath);
+        Reader reader = OrcFile.createReader(fs, outputFilePath, conf);
         assertEquals(reader.getNumberOfRows(), 2);
         assertEquals(reader.getCompression(), CompressionKind.ZLIB);
         
         outputFilePath = new Path(new Path(OUTPUT3), "part-r-00000");
-        reader = OrcFile.createReader(fs, outputFilePath);
+        reader = OrcFile.createReader(fs, outputFilePath, conf);
         assertEquals(reader.getNumberOfRows(), 2);
         assertEquals(reader.getCompression(), CompressionKind.SNAPPY);
     }
