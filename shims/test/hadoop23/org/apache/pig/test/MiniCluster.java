@@ -44,6 +44,7 @@ import org.apache.pig.backend.hadoop.datastorage.ConfigurationUtil;
 public class MiniCluster extends MiniGenericCluster {
     private static final File CONF_DIR = new File("build/classes");
     private static final File CONF_FILE = new File(CONF_DIR, "hadoop-site.xml");
+    private static final File YARN_CONF_FILE = new File(CONF_DIR, "yarn-site.xml");
 
     protected MiniMRYarnCluster m_mr = null;
     private Configuration m_dfs_conf = null;
@@ -77,6 +78,9 @@ public class MiniCluster extends MiniGenericCluster {
             
             //Create user home directory
             m_fileSys.mkdirs(m_fileSys.getWorkingDirectory());
+
+            Configuration dummy_conf = new Configuration(false);
+            dummy_conf.writeXml(new FileOutputStream(YARN_CONF_FILE));
 
             m_mr = new MiniMRYarnCluster("PigMiniCluster", taskTrackers);
             m_mr.init(m_dfs_conf);
