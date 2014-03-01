@@ -343,7 +343,7 @@ public class OrcStorage extends LoadFunc implements StoreFuncInterface, LoadMeta
         if (path==null) {
             throw new IOException("Cannot find any ORC files from " + location);
         }
-        Reader reader = OrcFile.createReader(fs, path, job.getConfiguration());
+        Reader reader = OrcFile.createReader(fs, path);
         ObjectInspector oip = (ObjectInspector)reader.getObjectInspector();
         return TypeInfoUtils.getTypeInfoFromObjectInspector(oip);
     }
