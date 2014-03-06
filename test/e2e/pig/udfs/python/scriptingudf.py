@@ -16,8 +16,10 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import sys
+import sys, os
+sys.path.append(os.environ['PIG_HOME']+"/test/e2e/pig/testdist/libexec/python")
 sys.path.append("./libexec/python")
+print sys.path #tmp log
 import stringutil
 
 from org.apache.hadoop.fs import Path # Test for PIG-1824
