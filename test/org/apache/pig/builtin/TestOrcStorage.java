@@ -57,11 +57,11 @@ public class TestOrcStorage {
     final private static String basedir = "test/org/apache/pig/builtin/orc/";
     final private static String outbasedir = System.getProperty("user.dir") + "/build/test/TestOrcStorage/";
     
-    private static final String INPUT1 = outbasedir + "TestOrcStorage_1";
-    private static final String OUTPUT1 = outbasedir + "TestOrcStorage_2";
-    private static final String OUTPUT2 = outbasedir + "TestOrcStorage_3";
-    private static final String OUTPUT3 = outbasedir + "TestOrcStorage_4";
-    private static final String OUTPUT4 = outbasedir + "TestOrcStorage_5";
+    private static String INPUT1 = outbasedir + "TestOrcStorage_1";
+    private static String OUTPUT1 = outbasedir + "TestOrcStorage_2";
+    private static String OUTPUT2 = outbasedir + "TestOrcStorage_3";
+    private static String OUTPUT3 = outbasedir + "TestOrcStorage_4";
+    private static String OUTPUT4 = outbasedir + "TestOrcStorage_5";
     
     private static PigServer pigServer = null;
     private static FileSystem fs;
@@ -73,6 +73,13 @@ public class TestOrcStorage {
         deleteTestFiles();
         pigServer.mkdirs(outbasedir);
         generateInputFiles();
+        if(Util.WINDOWS){
+            INPUT1 = INPUT1.replace("\\", "/");
+            OUTPUT1 = OUTPUT1.replace("\\", "/");
+            OUTPUT2 = OUTPUT2.replace("\\", "/");
+            OUTPUT3 = OUTPUT3.replace("\\", "/");
+            OUTPUT4 = OUTPUT4.replace("\\", "/");
+        }
     }
     
     @After
@@ -91,7 +98,7 @@ public class TestOrcStorage {
     private static void deleteTestFiles() throws IOException {
         Util.deleteDirectory(new File(outbasedir));
     }
-    
+
     @Test
     public void testSimpleLoad() throws Exception {
         pigServer.registerQuery("A = load '" + basedir + "orc-file-11-format.orc'" + " using OrcStorage();" );
@@ -143,7 +150,7 @@ public class TestOrcStorage {
         }
         assertEquals(count, 10);
     }
-    
+
     @Test
     public void testSimpleStore() throws Exception {
         pigServer.registerQuery("A = load '" + INPUT1 + "' as (a0:int, a1:chararray);");
@@ -190,7 +197,7 @@ public class TestOrcStorage {
         
         assertFalse(iter.hasNext());
     }
-    
+
     @Test
     public void testMultiStore() throws Exception {
         pigServer.setBatchOn();
