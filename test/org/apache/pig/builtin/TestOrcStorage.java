@@ -231,7 +231,9 @@ public class TestOrcStorage {
         Schema s = pigServer.dumpSchema("A");
         Iterator<Tuple> iter = pigServer.openIterator("A");
         Tuple t = iter.next();
-        assertEquals(t.toString(), "(false,1,1024,65536,9223372036854775807,1.0,-15.0," +
-                "   ,hi,({(1,bye),(2,sigh)}),{(3,good),(4,bad)},[],2000-03-12T00:00:00.000Z,12345678.6547456)");
+        assertTrue(t.toString().startsWith("(false,1,1024,65536,9223372036854775807,1.0,-15.0," +
+                "   ,hi,({(1,bye),(2,sigh)}),{(3,good),(4,bad)},[],"));
+        assertTrue(t.get(12).toString().matches("2000-03-12T00:00:00.000.*"));
+        assertTrue(t.toString().endsWith(",12345678.6547456)"));
     }
 }
