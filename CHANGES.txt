@@ -22,6 +22,8 @@ Release 0.12.1 (unreleased changes)
 
 IMPROVEMENTS
 
+PIG-3529: Upgrade HBase dependency from 0.95-SNAPSHOT to 0.96 (jarcec via daijy)
+
 PIG-3552: UriUtil used by reducer estimator should support viewfs (amatsukawa via aniket486)
 
 PIG-3549: Print hadoop jobids for failed, killed job (aniket486)
@@ -33,6 +35,30 @@ PIG-3480: TFile-based tmpfile compression crashes in some cases (dvryaboy via an
 PIG-3573: Provide StoreFunc and LoadFunc for Accumulo (elserj via daijy)
 
 BUG FIXES
+
+PIG-3516: pig does not bring in joda-time as dependency in its pig-template.xml (daijy)
+
+PIG-3753: LOGenerate generates null schema (daijy)
+
+PIG-3782: PushDownForEachFlatten + ColumnMapKeyPrune with user defined schema failing due to incorrect UID assignment (knoguchi via daijy)
+
+PIG-3779: Assert constructs ConstantExpression with null when no comment is given (thedatachef via cheolsoo)
+
+PIG-3777: Pig 12.0 Documentation (karinahauser via daijy)
+
+PIG-3774: Piggybank Over UDF get wrong result (daijy)
+
+PIG-3657: New partition filter extractor fails with NPE (cheolsoo)
+
+PIG-3347: Store invocation brings side effect (daijy)
+
+PIG-3670: Fix assert in Pig script (daijy)
+
+PIG-3741: Utils.setTmpFileCompressionOnConf can cause side effect for SequenceFileInterStorage (aniket486)
+
+PIG-3641: Split "otherwise" producing incorrect output when combined with ColumnPruning (knoguchi)
+
+PIG-3677: ConfigurationUtil.getLocalFSProperties can return an inconsistent property set (rohini)
 
 PIG-3621: Python Avro library can't read Avros made with builtin AvroStorage (rusell.jurney via cheolsoo)
 
