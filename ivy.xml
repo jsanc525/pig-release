@@ -108,6 +108,8 @@
       conf="hadoop23->master"/>
     <dependency org="org.mortbay.jetty" name="jsp-api-2.1" rev="${jasper.version}"
       conf="hadoop23->master"/>
+    <dependency org="org.fusesource.leveldbjni" name="leveldbjni-all" rev="${leveldbjni.version}"
+      conf="hadoop23->master"/>
     <dependency org="log4j" name="log4j" rev="${log4j.version}"
       conf="compile->master"/>
     <dependency org="org.apache.hadoop" name="hadoop-annotations" 
