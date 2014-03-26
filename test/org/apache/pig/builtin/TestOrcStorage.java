@@ -43,6 +43,7 @@ import org.apache.pig.PigServer;
 import org.apache.pig.backend.executionengine.ExecException;
 import org.apache.pig.backend.hadoop.datastorage.ConfigurationUtil;
 import org.apache.pig.data.DataBag;
+import org.apache.pig.data.DataByteArray;
 import org.apache.pig.data.Tuple;
 import org.apache.pig.impl.logicalLayer.schema.Schema;
 import org.apache.pig.test.Util;
@@ -104,7 +105,7 @@ public class TestOrcStorage {
         pigServer.registerQuery("A = load '" + basedir + "orc-file-11-format.orc'" + " using OrcStorage();" );
         Schema s = pigServer.dumpSchema("A");
         assertEquals(s.toString(), "{boolean1: boolean,byte1: int,short1: int,int1: int,long1: long," +
-                "float1: float,double1: double,bytes1: chararray,string1: chararray," +
+                "float1: float,double1: double,bytes1: bytearray,string1: chararray," +
                 "middle: (list: {(int1: int,string1: chararray)}),list: {(int1: int,string1: chararray)}," +
                 "map: map[(int1: int,string1: chararray)],ts: datetime,decimal1: bigdecimal}");
         Iterator<Tuple> iter = pigServer.openIterator("A");
@@ -120,7 +121,7 @@ public class TestOrcStorage {
             assertTrue(t.get(4) instanceof Long);
             assertTrue(t.get(5) instanceof Float);
             assertTrue(t.get(6) instanceof Double);
-            assertTrue(t.get(7) instanceof String);
+            assertTrue(t.get(7) instanceof DataByteArray);
             assertTrue(t.get(8) instanceof String);
             assertTrue(t.get(9) instanceof Tuple);
             assertTrue(t.get(10) instanceof DataBag);
@@ -222,7 +223,8 @@ public class TestOrcStorage {
     @Test
     public void testLoadStoreMoreDataType() throws Exception {
         pigServer.registerQuery("A = load '" + basedir + "orc-file-11-format.orc'" + " using OrcStorage();" );
-        pigServer.store("A", OUTPUT4, "OrcStorage");
+        pigServer.registerQuery("B = foreach A generate boolean1..double1, '' as bytes1, string1..;");
+        pigServer.store("B", OUTPUT4, "OrcStorage");
         
         // A bug in ORC InputFormat does not allow empty file in input directory
         fs.delete(new Path(OUTPUT4, "_SUCCESS"));
@@ -232,7 +234,7 @@ public class TestOrcStorage {
         Iterator<Tuple> iter = pigServer.openIterator("A");
         Tuple t = iter.next();
         assertTrue(t.toString().startsWith("(false,1,1024,65536,9223372036854775807,1.0,-15.0," +
-                "   ,hi,({(1,bye),(2,sigh)}),{(3,good),(4,bad)},[],"));
+                ",hi,({(1,bye),(2,sigh)}),{(3,good),(4,bad)},[],"));
         assertTrue(t.get(12).toString().matches("2000-03-12T00:00:00.000.*"));
         assertTrue(t.toString().endsWith(",12345678.6547456)"));
     }

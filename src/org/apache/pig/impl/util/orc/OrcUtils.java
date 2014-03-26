@@ -58,6 +58,7 @@ import org.apache.pig.ResourceSchema.ResourceFieldSchema;
 import org.apache.pig.backend.executionengine.ExecException;
 import org.apache.pig.data.BagFactory;
 import org.apache.pig.data.DataBag;
+import org.apache.pig.data.DataByteArray;
 import org.apache.pig.data.DataType;
 import org.apache.pig.data.Tuple;
 import org.apache.pig.data.TupleFactory;
@@ -130,7 +131,7 @@ public class OrcUtils {
             result = (int)(Short)poi.getPrimitiveJavaObject(obj);
             break;
         case BINARY:
-            result = new String(((BytesWritable) obj).get());
+            result = new DataByteArray(((BytesWritable) obj).copyBytes());
             break;
         case TIMESTAMP:
             java.sql.Timestamp origTimeStamp = (java.sql.Timestamp)poi.getPrimitiveJavaObject(obj);
@@ -256,7 +257,7 @@ public class OrcUtils {
                 fieldSchema.setType(DataType.LONG);
                 break;
             case BINARY:
-                fieldSchema.setType(DataType.CHARARRAY);
+                fieldSchema.setType(DataType.BYTEARRAY);
                 break;
             case STRING:
                 fieldSchema.setType(DataType.CHARARRAY);
