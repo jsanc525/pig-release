@@ -156,10 +156,10 @@ if [ "$includeHCatalog" == "true" ]; then
 
   # hcatalog jar name for 0.4 and earlier
   hcatJarOld=hcatalog-*.jar
-  # hcatalog jar name for 0.5
-  hcatJar=hcatalog-core-*.jar
-  hbaseHCatJar=hbase-storage-handler-*.jar
-  pigHCatJar=hcatalog-pig-adapter-*.jar
+  # hcatalog jar name for 0.5 and newer
+  hcatJar=*hcatalog-core-*.jar
+  hbaseHCatJar=*hbase-storage-handler-*.jar
+  pigHCatJar=*hcatalog-pig-adapter-*.jar
   if [ "$HCAT_HOME" == "" ]; then
     if [ -d "/usr/lib/hcatalog" ]; then
       HCAT_HOME=/usr/lib/hcatalog
@@ -364,11 +364,11 @@ if [ -n "$HADOOP_BIN" ]; then
     fi
 
     export HADOOP_CLASSPATH=$CLASSPATH:$HADOOP_CLASSPATH
-    export HADOOP_OPTS="$JAVA_HEAP_MAX $PIG_OPTS $HADOOP_OPTS"
+    export HADOOP_CLIENT_OPTS="$JAVA_HEAP_MAX $PIG_OPTS $HADOOP_CLIENT_OPTS"
     if [ "$debug" == "true" ]; then
         echo "dry run:"
         echo "HADOOP_CLASSPATH: $HADOOP_CLASSPATH"
-        echo "HADOOP_OPTS: $HADOOP_OPTS"
+        echo "HADOOP_CLIENT_OPTS: $HADOOP_CLIENT_OPTS"
         echo "$HADOOP_BIN" jar "$PIG_JAR" "${remaining[@]}"
         echo
     else

@@ -39,7 +39,7 @@
 
 setlocal enabledelayedexpansion
 
-set HADOOP_BIN_PATH=%HADOOP_HOME%\bin
+set HADOOP_BIN_PATH=%HADOOP_HOME%\libexec
 
 set hadoop-config-script=%HADOOP_BIN_PATH%\hadoop-config.cmd
 call %hadoop-config-script%
@@ -93,6 +93,9 @@ set PIGARGS=
     for %%i in (%PIG_HOME%\*.jar) do (
       set CLASSPATH=!CLASSPATH!;%%i
     )
+    for %%i in (%PIG_HOME%\lib\*.jar) do (
+      set CLASSPATH=!CLASSPATH!;%%i
+    )
     if not defined PIG_CONF_DIR (
       set PIG_CONF_DIR=%PIG_HOME%\conf
     )
@@ -115,7 +118,7 @@ set PIGARGS=
   )
   
   if defined HCAT_HOME (
-      call :AddJar %HCAT_HOME%\share\hcatalog hcatalog-*.jar
+      call :AddJar %HCAT_HOME%\share\hcatalog *hcatalog-*.jar
   ) else (
       echo "HCAT_HOME should be defined"
       exit /b 1

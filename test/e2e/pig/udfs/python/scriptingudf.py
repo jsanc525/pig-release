@@ -16,9 +16,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import sys
-sys.path.append("./libexec/python")
-import stringutil
+import sys, os
 
 from org.apache.hadoop.fs import Path # Test for PIG-1824
 p = Path('foo')
@@ -95,4 +93,4 @@ def isretired(age):
 
 outputSchema("words:{(word:chararray)}")
 def tokenize(sentence):
-    return stringutil.tokenize(sentence)
+    return sentence.split(' ')
