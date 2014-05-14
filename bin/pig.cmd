@@ -27,7 +27,7 @@
 ::     HADOOP_CONF_DIR     Hadoop conf dir
 ::
 ::     PIG_HEAPSIZE        The maximum amount of heap to use, in MB. 
-::                                        Default is 1000.
+::                                        Default is 2000.
 ::
 ::     PIG_OPTS            Extra Java runtime options.
 ::
@@ -86,7 +86,7 @@ set PIGARGS=
   )
 
   if not defined PIG_HEAPSIZE (
-    set PIG_HEAPSIZE=1000
+    set PIG_HEAPSIZE=2000
   )
 
   if defined PIG_HOME (
