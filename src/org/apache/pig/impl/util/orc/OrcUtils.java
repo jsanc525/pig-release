@@ -94,7 +94,7 @@ public class OrcUtils {
             for (Map.Entry<Object, Object> entry : m.entrySet()) {
                 Object convertedKey = convertOrcToPig(entry.getKey(), keyObjectInspector, null);
                 Object convertedValue = convertOrcToPig(entry.getValue(), valueObjectInspector, null);
-                ((Map)result).put(convertedKey.toString(), convertedValue);
+                ((Map)result).put(convertedKey!=null?convertedKey.toString():null, convertedValue);
             }
             break;
         case LIST:
