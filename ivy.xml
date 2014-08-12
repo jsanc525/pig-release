@@ -176,7 +176,9 @@
     <dependency org="org.apache.avro" name="avro" rev="${avro.version}"
       conf="compile->default;checkstyle->master"/>
     <dependency org="org.apache.avro" name="avro-mapred" rev="${avro.version}"
-      conf="compile->default;checkstyle->master"/>
+      conf="compile->default;checkstyle->master">
+       <artifact name="avro-mapred" type="jar" m:classifier="hadoop2"/>
+    </dependency>
     <dependency org="org.apache.avro" name="trevni-core" rev="${avro.version}"
       conf="compile->default;checkstyle->master"/>
     <dependency org="org.apache.avro" name="trevni-avro" rev="${avro.version}"
