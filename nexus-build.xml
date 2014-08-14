@@ -5,7 +5,7 @@
       <macrodef name="nexus-plugin" description="macro definition for publishing artifacts to nexus">
         <attribute name="maven-jar"/>
         <attribute name="pomname"/>
-        <attribute name="attachas" default=""/>
+        <attribute name="attachas" default="h2"/>
         <sequential>
           <artifact:mvn>
             <arg value="org.apache.maven.plugins:maven-gpg-plugin:1.4:sign-and-deploy-file" />
