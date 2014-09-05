@@ -704,6 +704,14 @@
         <antcall target="copyh2Dependencies"/>
     </target>
 
+    <target name="jar-all" depends="compile,ivy-buildJar" description="Create pig core jar">
+        <buildJar svnString="${svn.revision}" outputFile="${output.jarfile.core}" includedJars="core.dependencies.jar"/>
+        <buildJar svnString="${svn.revision}" outputFile="${output.jarfile.withouthadoop}" includedJars="runtime.dependencies-withouthadoop.jar"/>
+        <antcall target="copyCommonDependencies"/>
+        <antcall target="copyh1Dependencies"/>
+        <antcall target="copyh2Dependencies"/>
+    </target>
+
     <target name="copyCommonDependencies">
         <mkdir dir="${lib.dir}" />
         <copy todir="${lib.dir}">
