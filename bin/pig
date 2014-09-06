@@ -136,6 +136,7 @@ if [ "$includeHCatalog" == "true" ]; then
   fbJar=libfb303-*.jar
   jdoECJar=jdo*-api-*.jar
   slfJar=slf4j-api-*.jar
+  commonlang3Jar=commons-lang3-*.jar
   hbaseHiveJar=hive-hbase-handler-*.jar
   if [ "$HIVE_HOME" == "" ]; then
     if [ -d "/usr/lib/hive" ]; then
@@ -152,6 +153,7 @@ if [ "$includeHCatalog" == "true" ]; then
   fbJarVersion=`ls $HIVE_HOME/lib/$fbJar`
   jdoECJarVersion=`ls $HIVE_HOME/lib/$jdoECJar`
   slfJarVersion=`ls $HIVE_HOME/lib/$slfJar`
+  commonlang3JarVersion=`ls $HIVE_HOME/lib/$commonlang3Jar`
   hbaseHiveVersion=`ls $HIVE_HOME/lib/$hbaseHiveJar`
 
   # hcatalog jar name for 0.4 and earlier
@@ -187,7 +189,7 @@ if [ "$includeHCatalog" == "true" ]; then
   # get the pig storage handler jar
   pigHCatJarPath=`ls $HCAT_HOME/share/hcatalog/${pigHCatJar}`
 
-  ADDITIONAL_CLASSPATHS=$hiveMetaStoreVersion:$thriftVersion:$hiveExecVersion:$fbJarVersion:$jdoECJarVersion:$slfJarVersion:$hbaseHiveVersion:$hcatJarPath:$hbaseHCatJarPath:$pigHCatJarPath
+  ADDITIONAL_CLASSPATHS=$hiveMetaStoreVersion:$thriftVersion:$hiveExecVersion:$fbJarVersion:$jdoECJarVersion:$slfJarVersion:$commonlang3JarVersion:$hbaseHiveVersion:$hcatJarPath:$hbaseHCatJarPath:$pigHCatJarPath
   if [ "$additionalJars" != "" ]; then
     ADDITIONAL_CLASSPATHS=$ADDITIONAL_CLASSPATHS:$additionalJars
   fi
