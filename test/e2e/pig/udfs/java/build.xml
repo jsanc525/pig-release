@@ -20,7 +20,7 @@
     <!-- <property name="lib.dir" value="${basedir}/lib" />
     <property name="pig.jarfile" value="${lib.dir}/pig.jar" /> -->
     <property name="udf.src.dir" value="${basedir}/org/" />
-
+    <property name="pig.jar.dir" value="${pig.dir}" />
 
     <path id="udf-classpath">
     <!-- <fileset dir="lib">
@@ -29,8 +29,24 @@
         <fileset dir="${pig.dir}/build/ivy/lib/Pig" erroronmissingdir="false">
             <include name="*.jar"/>
         </fileset>
+        <fileset dir="${pig.jar.dir}">
+            <include name="pig-*.jar"/>
+        </fileset>
         <fileset dir="${pig.dir}">
             <include name="pig*-core-*.jar"/>
+        </fileset>
+        <fileset dir="${pig.dir}/build/ivy/lib/Pig" erroronmissingdir="false">
+            <include name="*.jar"/>
+        </fileset>
+        <fileset dir="${hadoop.common.dir}" erroronmissingdir="false">
+            <include name="hadoop-common*.jar"/>
+        </fileset>
+        <fileset dir="${hadoop.common.lib.dir}" erroronmissingdir="false">
+            <include name="commons-codec*.jar"/>
+            <include name="commons-logging*.jar"/>
+        </fileset>
+        <fileset dir="${hadoop.mapreduce.dir}" erroronmissingdir="false">
+            <include name="hadoop-mapreduce-client-core*.jar"/>
         </fileset>
     </path>
 
