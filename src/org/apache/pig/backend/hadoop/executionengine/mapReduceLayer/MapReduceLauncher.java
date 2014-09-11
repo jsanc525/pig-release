@@ -466,9 +466,10 @@ public class MapReduceLauncher extends Launcher{
                     }
                 }
 
-                getStats(job, jobClient, false, pc);
+                JobClient newJobClient = new JobClient(conf);
+                getStats(job, newJobClient, false, pc);
                 if (aggregateWarning) {
-                    computeWarningAggregate(job, jobClient, warningAggMap);
+                    computeWarningAggregate(job, newJobClient, warningAggMap);
                 }
             }
 
