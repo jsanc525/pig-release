@@ -135,6 +135,7 @@ set PIGARGS=
       call :AddJar %HIVE_HOME%\lib slf4j-api-*.jar
       call :AddJar %HIVE_HOME%\lib hive-hbase-handler-*.jar
       call :AddJar %HIVE_HOME%\lib httpclient-*.jar
+      call :AddJar %HIVE_HOME%\lib commons-lang3-*.jar
 
       REM Include datanucleus to support embedded metastore use case via setting
       REM hive.metastore.uris to ''
