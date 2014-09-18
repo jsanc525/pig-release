@@ -206,7 +206,7 @@ public class StreamingUDF extends EvalFunc<Object> {
                 filePath.substring(0, lastSeparator - 1);
         command[UDF_NAME] = funcName;
         String fileCachePath = jobDir + filePath.substring(0, lastSeparator);
-        command[PATH_TO_FILE_CACHE] = fileCachePath;
+        command[PATH_TO_FILE_CACHE] = "'" + fileCachePath + "'";
         command[STD_OUT_OUTPUT_PATH] = outFileName;
         command[STD_ERR_OUTPUT_PATH] = errOutFileName;
         command[CONTROLLER_LOG_FILE_PATH] = controllerLogFileName;
