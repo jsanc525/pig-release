@@ -5,7 +5,7 @@
       <macrodef name="nexus-plugin" description="macro definition for publishing artifacts to nexus">
         <attribute name="maven-jar"/>
         <attribute name="pomname"/>
-        <attribute name="attachas" default="h2"/>
+        <attribute name="attachas"/>
         <sequential>
           <artifact:mvn>
             <arg value="org.apache.maven.plugins:maven-gpg-plugin:1.4:sign-and-deploy-file" />
@@ -21,12 +21,29 @@
         </sequential>
       </macrodef>
 
+      <macrodef name="nexus-plugin-no-classifier" description="macro definition for publishing artifacts to nexus">
+        <attribute name="maven-jar"/>
+        <attribute name="pomname"/>
+        <sequential>
+          <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-gpg-plugin:1.4:sign-and-deploy-file" />
+            <arg value="-Durl=${asfstagingrepo}"/>
+            <arg value="-DrepositoryId=${staging_repo_id}"/>
+            <arg value="-Dfile=@{maven-jar}"/>
+            <arg value="-Dpackaging=jar"/>
+            <arg value="-DpomFile=@{pomname}"/>
+            <arg value="-Dtype=jar"/>
+            <arg value="-Pgpg"/>
+          </artifact:mvn>
+        </sequential>
+      </macrodef>
+
     <target name="stage" depends="apache.mvn-taskdef, apache.jar, apache.source-jar, apache.javadoc-jar, apache.smoketests-jar, apache.pigunit-jar, apache.set-version" description="deploy artifact to a nexus repository">
-      <nexus-plugin maven-jar="${output.jarfile.core}" pomname="${pig.pom}"/>
+      <nexus-plugin-no-classifier maven-jar="${output.jarfile.core}" pomname="${pig.pom}"/>
       <nexus-plugin maven-jar="${output.jarfile.sources}" pomname="${pig.pom}" attachas="sources"/>
       <nexus-plugin maven-jar="${output.jarfile.javadoc}" pomname="${pig.pom}" attachas="javadoc"/>
-      <nexus-plugin maven-jar="${pigunit.jarfile}" pomname="${pigunit.pom}"/>
-      <nexus-plugin maven-jar="${smoke.tests.jarfile}" pomname="${pigsmoke.pom}"/>
+      <nexus-plugin-no-classifier maven-jar="${pigunit.jarfile}" pomname="${pigunit.pom}"/>
+      <nexus-plugin-no-classifier maven-jar="${smoke.tests.jarfile}" pomname="${pigsmoke.pom}"/>
       <nexus-plugin maven-jar="${output.jarfile.core-h2}" pomname="${pig.pom}" attachas="h2"/>
     </target>
   </project>
