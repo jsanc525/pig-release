@@ -29,7 +29,7 @@
         <fileset dir="${pig.base.dir}/build/ivy/lib/Pig" erroronmissingdir="false">
             <include name="*.jar"/>
         </fileset>
-        <fileset dir="${pig.base.dir}">
+        <fileset dir="${pig.dir}">
             <include name="pig*-core-*.jar"/>
         </fileset>
         <fileset dir="${hadoop.common.dir}" erroronmissingdir="false">
