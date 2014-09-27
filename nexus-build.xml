@@ -24,6 +24,7 @@
      <macrodef name="windowsnexus-plugin" description="macro definition for publishing artifacts to nexus">
         <attribute name="maven-jar"/>
         <attribute name="attachas" default=""/>
+        <attribute name="pomname" default=""/>
         <sequential>
           <artifact:mvn mavenHome="${env.MAVEN_HOME}" fork="true">
             <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.8.2:deploy-file"/>
@@ -31,7 +32,7 @@
             <arg value="-DrepositoryId=${staging_repo_id}"/>
             <arg value="-Dfile=@{maven-jar}"/>
             <arg value="-Dpackaging=jar"/>
-            <arg value="-DpomFile=${dist.maven.dir}/${name}.pom"/>
+            <arg value="-DpomFile=@{pomname}"/>
             <arg value="-Dclassifier=@{attachas}"/>
             <arg value="-Dtype=jar"/>
           </artifact:mvn>
