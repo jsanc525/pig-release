@@ -43,7 +43,7 @@
         <attribute name="maven-jar"/>
         <attribute name="pomname"/>
         <sequential>
-          <artifact:mvn>
+          <artifact:mvn mavenHome="${env.MAVEN_HOME}" fork="true">
             <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.8.2:deploy-file"/>
             <arg value="-Durl=${asfstagingrepo}"/>
             <arg value="-DrepositoryId=${staging_repo_id}"/>
