@@ -21,8 +21,8 @@ import java.io.IOException;
 import java.util.Random;
 
 import org.apache.hadoop.conf.Configuration;
-
 import org.apache.pig.EvalFunc;
+import org.apache.pig.PigConfiguration;
 import org.apache.pig.backend.executionengine.ExecException;
 import org.apache.pig.data.BagFactory;
 import org.apache.pig.data.DataBag;
@@ -37,9 +37,17 @@ public class GFCross extends EvalFunc<DataBag> {
     private TupleFactory mTupleFactory = TupleFactory.getInstance();
     private int parallelism = 0;
     private Random r = new Random();
+    private String crossKey;
 
     static private final int DEFAULT_PARALLELISM = 96;
-    
+
+    public GFCross(String key) {
+        crossKey = key;
+    }
+
+    public String getCrossKey() {
+        return crossKey;
+    }
 
     @Override
     public DataBag exec(Tuple input) throws IOException {
@@ -47,9 +55,9 @@ public class GFCross extends EvalFunc<DataBag> {
             parallelism = DEFAULT_PARALLELISM;
             Configuration cfg = UDFContext.getUDFContext().getJobConf();
             if (cfg != null) {
-                String s = cfg.get("mapred.reduce.tasks");
+                String s = cfg.get(PigConfiguration.PIG_CROSS_PARALLELISM_HINT + "." + crossKey);
                 if (s == null) {
-                    throw new IOException("Unable to determine parallelism from job conf");
+                    throw new IOException("Unable to get parallelism hint from job conf");
                 }
                 parallelism = Integer.valueOf(s);
             }

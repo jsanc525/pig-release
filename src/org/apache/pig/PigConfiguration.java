@@ -81,4 +81,9 @@ public class PigConfiguration {
      * will be set in the environment.
      */
     public static final String PIG_STREAMING_ENVIRONMENT = "pig.streaming.environment";
+
+    public static final String PIG_CROSS_PARALLELISM_HINT = "pig.cross.parallelism.hint";
+
+    public static final String REDUCER_ESTIMATOR_KEY = "pig.exec.reducer.estimator";
+    public static final String REDUCER_ESTIMATOR_ARG_KEY =  "pig.exec.reducer.estimator.arg";
 }
