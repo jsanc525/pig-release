@@ -99,4 +99,9 @@ public class PigConfiguration {
      * application master getting restarted.
      */
     public static final String PIG_OUTPUT_COMMITTER_RECOVERY = "pig.output.committer.recovery.support";
+
+    public static final String PIG_CROSS_PARALLELISM_HINT = "pig.cross.parallelism.hint";
+
+    public static final String REDUCER_ESTIMATOR_KEY = "pig.exec.reducer.estimator";
+    public static final String REDUCER_ESTIMATOR_ARG_KEY =  "pig.exec.reducer.estimator.arg";
 }

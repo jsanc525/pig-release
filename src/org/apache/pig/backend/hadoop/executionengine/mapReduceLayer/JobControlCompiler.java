@@ -54,7 +54,9 @@ import org.apache.hadoop.mapred.jobcontrol.Job;
 import org.apache.hadoop.mapred.jobcontrol.JobControl;
 import org.apache.pig.ComparisonFunc;
 import org.apache.pig.ExecType;
+import org.apache.pig.FuncSpec;
 import org.apache.pig.LoadFunc;
+import org.apache.pig.PigConfiguration;
 import org.apache.pig.PigException;
 import org.apache.pig.StoreFuncInterface;
 import org.apache.pig.backend.executionengine.ExecException;
@@ -82,6 +84,7 @@ import org.apache.pig.data.SchemaTupleFrontend;
 import org.apache.pig.data.Tuple;
 import org.apache.pig.data.TupleFactory;
 import org.apache.pig.impl.PigContext;
+import org.apache.pig.impl.builtin.GFCross;
 import org.apache.pig.impl.io.FileLocalizer;
 import org.apache.pig.impl.io.FileSpec;
 import org.apache.pig.impl.io.NullableBigDecimalWritable;
@@ -504,6 +507,16 @@ public class JobControlCompiler{
                 }
             }
 
+            for (String udf : mro.UDFs) {
+                if (udf.contains("GFCross")) {
+                    Object func = PigContext.instantiateFuncFromSpec(new FuncSpec(udf));
+                    if (func instanceof GFCross) {
+                        String crossKey = ((GFCross)func).getCrossKey();
+                        conf.set(PigConfiguration.PIG_CROSS_PARALLELISM_HINT + "." + crossKey,
+                                Integer.toString(mro.getRequestedParallelism()));
+                    }
+                }
+            }
             if (!pigContext.inIllustrator && pigContext.getExecType() != ExecType.LOCAL)
             {
 
