@@ -228,6 +228,7 @@ public class StreamingUDF extends EvalFunc<Object> {
         File userUdfFile = new File(fileCachePath + command[UDF_FILE_NAME] + getUserFileExtension());
         if (!userUdfFile.exists()) {
             String absolutePath = filePath.startsWith("/") ? filePath : "/" + filePath;
+            absolutePath = absolutePath.replaceAll(":", "");
             String controllerDir = new File(command[PATH_TO_CONTROLLER_FILE]).getParent();
             String userUdfPath = controllerDir + absolutePath + getUserFileExtension();
             userUdfFile = new File(userUdfPath);
