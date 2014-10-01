@@ -92,6 +92,12 @@ OPTIMIZATIONS
  
 BUG FIXES
 
+PIG-4212: Allow LIMIT of 0 for variableLimit (constant 0 is already allowed) (knoguchi)
+
+PIG-4196: Auto ship udf jar is broken (daijy)
+
+PIG-4214: Fix unit test fail TestMRJobStats (daijy)
+
 PIG-4217: Fix documentation in BuildBloom (praveenr019 via daijy)
 
 PIG-4215: Fix unit test failure TestParamSubPreproc and TestMacroExpansion (daijy)
