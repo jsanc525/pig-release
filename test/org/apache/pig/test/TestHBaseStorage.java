@@ -30,7 +30,6 @@ import org.apache.hadoop.hbase.HBaseTestingUtility;
 import org.apache.hadoop.hbase.MiniHBaseCluster;
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Get;
-import org.apache.hadoop.hbase.client.Durability;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
@@ -978,7 +977,7 @@ public class TestHBaseStorage {
 
         Object key = "somekey";
         byte type = DataType.CHARARRAY;
-        Assert.assertFalse(hbaseStorage.createPut(key, type).getDurability() == Durability.SKIP_WAL);
+        Assert.assertFalse(hbaseStorage.createPut(key, type).getWriteToWAL());
     }
 
     /**
@@ -992,7 +991,7 @@ public class TestHBaseStorage {
 
         Object key = "somekey";
         byte type = DataType.CHARARRAY;
-        Assert.assertTrue(hbaseStorage.createPut(key, type).getDurability() == Durability.SKIP_WAL);
+        Assert.assertTrue(hbaseStorage.createPut(key, type).getWriteToWAL());
     }
 
     /**
