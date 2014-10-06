@@ -354,6 +354,9 @@
     </dependency>
 
     <dependency org="org.htrace" name="htrace-core" rev="${htrace.version}" conf="hadoop23->master"/>
+    <dependency org="org.cloudera.htrace" name="htrace-core" rev="2.00" conf="hbase95->master">
+      <artifact name="htrace-core" type="jar"/>
+    </dependency>
 
     <!-- for TestHBaseStorage -->
     <dependency org="com.github.stephenc.high-scale-lib" name="high-scale-lib" rev="${high-scale-lib.version}"
