@@ -31,6 +31,7 @@ import org.apache.pig.impl.io.FileSpec;
 import org.apache.pig.impl.io.ReadToEndLoader;
 import org.apache.pig.impl.plan.OperatorKey;
 import org.apache.pig.backend.hadoop.datastorage.ConfigurationUtil;
+import org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.PigMapReduce;
 import org.apache.pig.backend.hadoop.executionengine.physicalLayer.PhysicalOperator;
 import org.apache.pig.backend.hadoop.executionengine.physicalLayer.POStatus;
 import org.apache.pig.backend.hadoop.executionengine.physicalLayer.Result;

@@ -423,6 +423,10 @@ public class POMergeCogroup extends PhysicalOperator {
 
         // Index file is distributed through Distributed Cache to all mappers. So, read it locally.
         Properties props = ConfigurationUtil.getLocalFSProperties();
+        if (PigMapReduce.sJobConf != null && PigMapReduce.sJobConf.get("yarn.resourcemanager.principal") != null) {
+            props.setProperty("yarn.resourcemanager.principal", PigMapReduce.sJobConf.get("yarn.resourcemanager.principal"));
+        }
+
         ld.setPc(new PigContext(ExecType.LOCAL, props));
 
         // Each index entry is read as a pair of split index and a tuple consisting of key.

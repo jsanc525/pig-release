@@ -313,6 +313,9 @@ public class PigGenericMapReduce {
                 PigContext.setPackageImportList((ArrayList<String>)ObjectSerializer.deserialize(jConf.get("udf.import.list")));
                 pigContext = (PigContext)ObjectSerializer.deserialize(jConf.get("pig.pigContext"));
 
+                pigContext.getProperties().setProperty("yarn.resourcemanager.principal",
+                        context.getConfiguration().get("yarn.resourcemanager.principal"));
+
                 // This attempts to fetch all of the generated code from the distributed cache, and resolve it
                 SchemaTupleBackend.initialize(jConf, pigContext);
 

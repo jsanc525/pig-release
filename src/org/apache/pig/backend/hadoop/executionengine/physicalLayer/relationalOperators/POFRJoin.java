@@ -32,6 +32,7 @@ import org.apache.pig.ExecType;
 import org.apache.pig.PigException;
 import org.apache.pig.backend.executionengine.ExecException;
 import org.apache.pig.backend.hadoop.datastorage.ConfigurationUtil;
+import org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.PigMapReduce;
 import org.apache.pig.backend.hadoop.executionengine.physicalLayer.POStatus;
 import org.apache.pig.backend.hadoop.executionengine.physicalLayer.PhysicalOperator;
 import org.apache.pig.backend.hadoop.executionengine.physicalLayer.Result;
@@ -392,6 +393,9 @@ public class POFRJoin extends PhysicalOperator {
                     replFile);
             
             Properties props = ConfigurationUtil.getLocalFSProperties();
+            if (PigMapReduce.sJobConf != null && PigMapReduce.sJobConf.get("yarn.resourcemanager.principal") != null) {
+                props.setProperty("yarn.resourcemanager.principal", PigMapReduce.sJobConf.get("yarn.resourcemanager.principal"));
+            }
             PigContext pc = new PigContext(ExecType.LOCAL, props);   
             ld.setPc(pc);
             // We use LocalRearrange Operator to seperate Key and Values
