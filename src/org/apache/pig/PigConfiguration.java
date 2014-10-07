@@ -123,4 +123,9 @@ public class PigConfiguration {
      * the distributed cache when doing fragment-replicated join
      */
     public static final String PIG_JOIN_REPLICATED_MAX_BYTES = "pig.join.replicated.max.bytes";
+
+    public static final String PIG_CROSS_PARALLELISM_HINT = "pig.cross.parallelism.hint";
+
+    public static final String REDUCER_ESTIMATOR_KEY = "pig.exec.reducer.estimator";
+    public static final String REDUCER_ESTIMATOR_ARG_KEY =  "pig.exec.reducer.estimator.arg";
 }
