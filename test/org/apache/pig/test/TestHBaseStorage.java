@@ -978,7 +978,7 @@ public class TestHBaseStorage {
 
         Object key = "somekey";
         byte type = DataType.CHARARRAY;
-        Assert.assertFalse(hbaseStorage.createPut(key, type).getDurability() == Durability.SKIP_WAL);
+        Assert.assertTrue(hbaseStorage.createPut(key, type).getDurability() == Durability.SKIP_WAL);
     }
 
     /**
@@ -992,7 +992,7 @@ public class TestHBaseStorage {
 
         Object key = "somekey";
         byte type = DataType.CHARARRAY;
-        Assert.assertTrue(hbaseStorage.createPut(key, type).getDurability() == Durability.SKIP_WAL);
+        Assert.assertFalse(hbaseStorage.createPut(key, type).getDurability() == Durability.SKIP_WAL);
     }
 
     /**
