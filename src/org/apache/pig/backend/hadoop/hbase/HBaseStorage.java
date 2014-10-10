@@ -59,8 +59,6 @@ import org.apache.hadoop.hbase.filter.QualifierFilter;
 import org.apache.hadoop.hbase.filter.RegexStringComparator;
 import org.apache.hadoop.hbase.filter.RowFilter;
 import org.apache.hadoop.hbase.filter.WhileMatchFilter;
-import org.apache.hadoop.hbase.filter.QualifierFilter;
-import org.apache.hadoop.hbase.client.Durability;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
 import org.apache.hadoop.hbase.mapreduce.TableInputFormat;
 import org.apache.hadoop.hbase.mapreduce.TableMapReduceUtil;
@@ -975,7 +973,7 @@ public class HBaseStorage extends LoadFunc implements StoreFuncInterface, LoadPu
         Put put = new Put(objToBytes(key, type));
 
         if(noWAL_) {
-            put.setDurability(Durability.SKIP_WAL);
+            put.setWriteToWAL(false);
         }
 
         return put;
