@@ -68,7 +68,10 @@ import org.joda.time.DateTime;
 
 public class OrcUtils {
     public static Object convertOrcToPig(Object obj, ObjectInspector oi, boolean[] includedColumns) {
-        Object result;
+        Object result = null;
+        if (obj == null) {
+            return result;
+        }
         switch (oi.getCategory()) {
         case PRIMITIVE:
             PrimitiveObjectInspector poi = (PrimitiveObjectInspector)oi;
@@ -116,7 +119,10 @@ public class OrcUtils {
     }
     
     public static Object getPrimaryFromOrc(Object obj, PrimitiveObjectInspector poi) {
-        Object result;
+        Object result = null;
+        if (obj == null) {
+            return result;
+        }
         switch (poi.getPrimitiveCategory()) {
         case FLOAT:
         case DOUBLE:
