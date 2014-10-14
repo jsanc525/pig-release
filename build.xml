@@ -146,7 +146,7 @@
     <property environment="env"/>
     <property name="windows" value="false"/>
     <condition property="isWindows">
-      <equals arg1="${windows}" arg2="true" />
+      <os family="windows"/>
     </condition>
 	
     <target name="setTezEnv">
