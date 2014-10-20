@@ -115,7 +115,7 @@ function Install(
 		###
 		$conf_file = Join-Path $ENV:PIG_HOME "conf\pig.properties"
 		Write-log "$env:HADOOP_NODE_INSTALL_ROOT"
-		$path  = Join-Path $env:HADOOP_NODE_INSTALL_ROOT "hcatalog-@hcat.version@\\bin\\hcat.py"
+		$path  = Join-Path $ENV:HCAT_HOME   "bin\hcat.py"
 		(Get-Content $conf_file) | Foreach-Object {
 	    $_ -replace "hcat.bin=/usr/local/hcat/bin/hcat", "hcat.bin=$path"
 	    } | Set-Content $conf_file
