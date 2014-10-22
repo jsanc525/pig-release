@@ -452,6 +452,10 @@
       conf="hadoop23->master"/>
     <dependency org="org.apache.commons" name="commons-math3" rev="${commons-math3.version}"
       conf="hadoop23->master"/>
+    <dependency org="org.apache.curator" name="curator-framework" rev="${curator.version}"
+      conf="hadoop23->master"/>
+    <dependency org="org.apache.curator" name="curator-client" rev="${curator.version}"
+      conf="hadoop23->master"/>
 
   </dependencies>
 </ivy-module>
