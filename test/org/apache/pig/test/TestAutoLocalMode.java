@@ -120,7 +120,7 @@ public class TestAutoLocalMode {
     @Test
     public void testSmallJob() throws IOException {
         pigServer.registerQuery("A = LOAD '"
-                + Util.generateURI((smallFileName), pigServer
+                + Util.generateURI(Util.encodeEscape(smallFileName), pigServer
                         .getPigContext()) + "' AS (num:int);");
         pigServer.registerQuery("B = filter A by 1 == 0;");
         pigServer.openIterator("B");
@@ -131,7 +131,7 @@ public class TestAutoLocalMode {
     @Test
     public void testBigJob() throws IOException {
         pigServer.registerQuery("A = LOAD '"
-                + Util.generateURI((bigFileName), pigServer
+                + Util.generateURI(Util.encodeEscape(bigFileName), pigServer
                         .getPigContext()) + "' AS (num:int);");
         pigServer.registerQuery("B = filter A by 1 == 0;");
         pigServer.openIterator("B");
@@ -142,10 +142,10 @@ public class TestAutoLocalMode {
     @Test
     public void testReplicatedJoin() throws IOException {
         pigServer.registerQuery("A1 = LOAD '"
-                + Util.generateURI((smallFileName), pigServer
+                + Util.generateURI(Util.encodeEscape(smallFileName), pigServer
                         .getPigContext()) + "' AS (num:int);");
         pigServer.registerQuery("A2 = LOAD '"
-                + Util.generateURI((miniFileName), pigServer
+                + Util.generateURI(Util.encodeEscape(miniFileName), pigServer
                         .getPigContext()) + "' AS (num:int);");
         pigServer.registerQuery("A = join A1 by num, A2 by num using 'replicated';");
         pigServer.registerQuery("B = filter A by 1 == 0;");
@@ -157,7 +157,7 @@ public class TestAutoLocalMode {
     @Test
     public void testOrderBy() throws IOException {
         pigServer.registerQuery("A1 = LOAD '"
-                + Util.generateURI((bigFileName), pigServer
+                + Util.generateURI(Util.encodeEscape(bigFileName), pigServer
                         .getPigContext()) + "' AS (num:int);");
         pigServer.registerQuery("A = filter A1 by num == 1;");
         pigServer.registerQuery("B = order A by num;");

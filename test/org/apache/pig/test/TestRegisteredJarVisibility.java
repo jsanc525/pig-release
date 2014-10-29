@@ -144,7 +144,7 @@ public class TestRegisteredJarVisibility {
 
     public void testRegisteredJarVisibility(PigServer pigServer, String inputPath) throws IOException {
         String query = "register " + jarFile.getAbsolutePath() + ";\n"
-                + "a = load '" + Util.generateURI((inputPath), pigServer.getPigContext())
+                + "a = load '" + Util.generateURI(Util.encodeEscape(inputPath), pigServer.getPigContext())
                 + "' using org.apache.pig.test.RegisteredJarVisibilityLoader();\n"
                 // register again to test classloader consistency
                 + "register " +  jarFile.getAbsolutePath() + ";\n"
