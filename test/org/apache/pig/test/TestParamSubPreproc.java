@@ -1356,8 +1356,8 @@ public class TestParamSubPreproc {
         File outputFile = File.createTempFile("tmp", "");
         outputFile.delete();
         PigContext pc = new PigContext(ExecType.LOCAL, new Properties());
-        String command = "a = load '" + Util.generateURI(Util.encodeEscape(inputFile.toString()), pc)  + "' as ($param1:chararray, $param2:int);\n"
-                + "store a into '" + Util.generateURI(Util.encodeEscape(outputFile.toString()), pc) + "';\n"
+        String command = "a = load '" + Util.generateURI(inputFile.toString(), pc)  + "' as ($param1:chararray, $param2:int);\n"
+                + "store a into '" + Util.generateURI(outputFile.toString(), pc) + "';\n"
                 + "quit\n";
         System.setProperty("jline.WindowsTerminal.directConsole", "false");
         System.setIn(new ByteArrayInputStream(command.getBytes()));

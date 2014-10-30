@@ -166,8 +166,8 @@ public class TestOrcStoragePushdown {
         bw.close();
 
         // Store only 1000 rows in each row block (MIN_ROW_INDEX_STRIDE is 1000. So can't use less than that)
-        pigServer.registerQuery("A = load '" + Util.generateURI(Util.encodeEscape(inputTxtFile), pigServer.getPigContext()) + "' as (f1:boolean, f2:int, f3:int, f4:int, f5:long, f6:float, f7:double, f8:bytearray, f9:chararray, f10:datetime, f11:bigdecimal);");
-        pigServer.registerQuery("store A into '" + Util.generateURI(Util.encodeEscape(INPUT), pigServer.getPigContext()) +"' using OrcStorage('-r 1000 -s 100000');");
+        pigServer.registerQuery("A = load '" + Util.generateURI(inputTxtFile, pigServer.getPigContext()) + "' as (f1:boolean, f2:int, f3:int, f4:int, f5:long, f6:float, f7:double, f8:bytearray, f9:chararray, f10:datetime, f11:bigdecimal);");
+        pigServer.registerQuery("store A into '" + Util.generateURI(INPUT, pigServer.getPigContext()) +"' using OrcStorage('-r 1000 -s 100000');");
         Util.copyFromLocalToCluster(cluster, INPUT, INPUT);
     }
 
