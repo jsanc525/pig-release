@@ -20,7 +20,6 @@
     <!-- <property name="lib.dir" value="${basedir}/lib" />
     <property name="pig.jarfile" value="${lib.dir}/pig.jar" /> -->
     <property name="udf.src.dir" value="${basedir}/org/" />
-    <property name="pig.jar.dir" value="${pig.dir}" />
 
     <path id="udf-classpath">
     <!-- <fileset dir="lib">
