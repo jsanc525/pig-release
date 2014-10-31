@@ -82,7 +82,8 @@
         </sequential>
       </macrodef>
 
-    <target name="stage" depends="apache.mvn-taskdef, apache.jar, apache.source-jar, apache.javadoc-jar, apache.smoketests-jar, apache.pigunit-jar, apache.set-version" description="deploy artifact to a nexus repository">
+    <target name="stage" depends="apache.mvn-taskdef, apache.jar, apache.piggybank, apache.source-jar, apache.javadoc-jar, apache.smoketests-jar, apache.pigunit-jar, apache.set-version" description="deploy artifact to a nexus repository">
+      <nexus-plugin-no-classifier maven-jar="${piggybank.jarfile}" pomname="${piggybank.pom}"/>
       <nexus-plugin maven-jar="${output.jarfile.core}" pomname="${pig.pom}"/>
       <nexus-plugin maven-jar="${output.jarfile.sources}" pomname="${pig.pom}" attachas="sources"/>
       <nexus-plugin maven-jar="${output.jarfile.javadoc}" pomname="${pig.pom}" attachas="javadoc"/>
