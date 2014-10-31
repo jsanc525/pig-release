@@ -553,7 +553,7 @@ public class Utils {
             Iterator<Map.Entry<String, String>> iter = jobConf.iterator();
             while (iter.hasNext()) {
                 Map.Entry<String, String> entry = iter.next();
-                properties.put(entry.getKey(), jobConf.get(entry.getKey()));
+                properties.put(entry.getKey(), entry.getValue());
             }
         }
     }
