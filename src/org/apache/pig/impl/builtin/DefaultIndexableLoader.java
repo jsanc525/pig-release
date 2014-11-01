@@ -116,11 +116,6 @@ public class DefaultIndexableLoader extends LoadFunc implements IndexableLoadFun
         POLoad ld = new POLoad(genKey(), new FileSpec(indexFile, new FuncSpec(indexFileLoadFuncSpec)));
                 
         Properties props = ConfigurationUtil.getLocalFSProperties();
-
-        if (PigMapReduce.sJobConf != null && PigMapReduce.sJobConf.get("yarn.resourcemanager.principal") != null) {
-            props.setProperty("yarn.resourcemanager.principal", PigMapReduce.sJobConf.get("yarn.resourcemanager.principal"));
-        }
-
         PigContext pc = new PigContext(ExecType.LOCAL, props);
         ld.setPc(pc);
         index = new LinkedList<Tuple>();
