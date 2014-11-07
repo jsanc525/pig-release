@@ -32,6 +32,8 @@ INCOMPATIBLE CHANGES
  
 IMPROVEMENTS
 
+PIG-3977: Get TezStats working for Oozie (rohini)
+
 PIG-3979: group all performance, garbage collection, and incremental aggregation (rohini)
 
 PIG-4253: Add a UniqueID UDF (daijy)
@@ -106,6 +108,8 @@ PIG-3970: Merge Tez branch into trunk (daijy)
 OPTIMIZATIONS
  
 BUG FIXES
+
+PIG-4298: Descending order-by is broken in some cases when key is bytearrays (cheolsoo)
 
 PIG-4263: Move tez local mode unit tests to a separate target (daijy)
 
