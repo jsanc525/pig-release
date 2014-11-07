@@ -627,6 +627,25 @@ sub postProcessSingleOutputFile
     print $log join(" ", @sortCmd) . "\n";
     IPC::Run::run(\@sortCmd, '>', "$localdir/out_sorted") or die "Sort for benchmark comparison failed on $localdir/out_original";
 
+    # Remove extra \r from $localdir/out_sorted for Windows benchmark
+    if(Util::isWindows()||Util::isCygwin()) {
+        my $tmpfile = "$localdir/out_sorted.tmp";
+        link("$localdir/out_sorted", $tmpfile) or
+            die "Unable to create temporary file $tmpfile, $!\n";
+        unlink("$localdir/out_sorted") or
+            die "Unable to unlink file $localdir/out_sorted, $!\n";
+        open(IFH, "< $tmpfile") or
+            die "Unable to open file $tmpfile, $!\n";
+        open(OFH, "> $localdir/out_sorted") or
+            die "Unable to open file $localdir/out_sorted, $!\n";
+        while(<IFH>) {
+            $_ =~ s/\r$//g;
+            print OFH $_;
+        }
+        close(OFH);
+        close(IFH);
+        unlink($tmpfile);
+    }
     return "$localdir/out_sorted";
 }
 
