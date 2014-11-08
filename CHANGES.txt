@@ -32,6 +32,8 @@ INCOMPATIBLE CHANGES
  
 IMPROVEMENTS
 
+PIG-4224: Upload Tez payload history string to timeline server (daijy)
+
 PIG-3977: Get TezStats working for Oozie (rohini)
 
 PIG-3979: group all performance, garbage collection, and incremental aggregation (rohini)
@@ -108,6 +110,10 @@ PIG-3970: Merge Tez branch into trunk (daijy)
 OPTIMIZATIONS
  
 BUG FIXES
+
+PIG-4312: TestStreamingUDF tez mode leave orphan process on Windows (daijy)
+
+PIG-4314: BigData_5 hang on some machine (daijy)
 
 PIG-4299: SpillableMemoryManager assumes tenured heap incorrectly (prkommireddi via daijy)
 
