@@ -32,6 +32,8 @@ INCOMPATIBLE CHANGES
  
 IMPROVEMENTS
 
+PIG-4316: Port TestHBaseStorage to tez local mode (rohini)
+
 PIG-4224: Upload Tez payload history string to timeline server (daijy)
 
 PIG-3977: Get TezStats working for Oozie (rohini)
@@ -110,6 +112,10 @@ PIG-3970: Merge Tez branch into trunk (daijy)
 OPTIMIZATIONS
  
 BUG FIXES
+
+PIG-4267: ToDate has incorrect timezone offsets (bridiver via daijy)
+
+PIG-4319: Make LoadPredicatePushdown InterfaceAudience.Private till PIG-4093 (rohini)
 
 PIG-4312: TestStreamingUDF tez mode leave orphan process on Windows (daijy)
 

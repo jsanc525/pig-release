@@ -50,6 +50,7 @@ import org.apache.pig.data.Tuple;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -102,7 +103,7 @@ public class TestHBaseStorage {
 
     @Before
     public void beforeTest() throws Exception {
-        pig = new PigServer(ExecType.LOCAL, conf);
+        pig = new PigServer(Util.getLocalTestMode(), conf);
     }
 
     @After
@@ -126,6 +127,7 @@ public class TestHBaseStorage {
             deletes.add(new Delete(row.getRow()));
         }
         table.delete(deletes);
+        table.close();
     }
 
     /**
@@ -826,7 +828,7 @@ public class TestHBaseStorage {
         Assert.assertEquals(100, index);
         LOG.info("testLoadWithProjection_2 done");
     }
-    
+
     /**
      * Test merge inner join with two tables
      *
@@ -834,6 +836,7 @@ public class TestHBaseStorage {
      */
     @Test
     public void testMergeJoin() throws IOException {
+        Assume.assumeTrue("Skip this test for TEZ. See PIG-4315", pig.getPigContext().getExecType().equals(ExecType.LOCAL));
         prepareTable(TESTTABLE_1, true, DataFormat.HBaseBinary);
         prepareTable(TESTTABLE_2, true, DataFormat.HBaseBinary);
         pig.registerQuery("a = load 'hbase://" + TESTTABLE_1 + "' using "
@@ -854,7 +857,7 @@ public class TestHBaseStorage {
             Tuple t = it.next();
             // the columns for both relations should be merged into one tuple
             // left side
-            String rowKey = (String) t.get(0);            
+            String rowKey = (String) t.get(0);
             int col_a = (Integer) t.get(1);
             double col_b = (Double) t.get(2);
             String col_c = (String) t.get(3);
@@ -876,7 +879,7 @@ public class TestHBaseStorage {
             Assert.assertEquals(count, col_a2);
             Assert.assertEquals(count + 0.0, col_b2, 1e-6);
             Assert.assertEquals("Text_" + count, col_c2);
-            
+
             count++;
         }
         Assert.assertEquals(count, TEST_ROW_COUNT);
@@ -884,9 +887,9 @@ public class TestHBaseStorage {
     }
 
     /**
-     * Test collected group 
+     * Test collected group
      * not much to test here since keys are unique
-     * 
+     *
      * @throws IOException
      */
     @Test
@@ -921,7 +924,7 @@ public class TestHBaseStorage {
                 int col_a = (Integer) row.get(1);
                 double col_b = (Double) row.get(2);
                 String col_c = (String) row.get(3);
-                
+
                 Assert.assertEquals(count, col_a);
                 Assert.assertEquals(count + 0.0, col_b, 1e-6);
                 Assert.assertEquals("Text_" + count, col_c);
@@ -1003,6 +1006,7 @@ public class TestHBaseStorage {
 
         pig.getPigContext().getProperties()
                 .setProperty(MRConfiguration.FILEOUTPUTCOMMITTER_MARKSUCCESSFULJOBS, "false");
+        table.close();
     }
 
     /**
@@ -1039,6 +1043,7 @@ public class TestHBaseStorage {
             Assert.assertEquals(i + 0.0, col_b, 1e-6);
         }
         Assert.assertEquals(100, i);
+        table.close();
     }
 
     /**
@@ -1075,6 +1080,7 @@ public class TestHBaseStorage {
             Assert.assertEquals("Text_" + i, col_c);
         }
         Assert.assertEquals(100, i);
+        table.close();
     }
 
     /**
@@ -1137,6 +1143,7 @@ public class TestHBaseStorage {
             Assert.assertEquals(i + 0.0, col_b, 1e-6);
         }
         Assert.assertEquals(100, i);
+        table.close();
     }
 
     /**
@@ -1172,6 +1179,7 @@ public class TestHBaseStorage {
             Assert.assertEquals(i + 0.0 + "", col_b);
         }
         Assert.assertEquals(100, i);
+        table.close();
     }
 
     /**
