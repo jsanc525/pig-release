@@ -458,7 +458,14 @@ public class POPartialAgg extends PhysicalOperator implements Spillable, Groupin
         valueTuple.set(0, key);
 
         for (int i = 0; i < valuePlans.size(); i++) {
-            DataBag bag = new InternalCachedBag();
+            DataBag bag = null;
+            if (doContingentSpill) {
+                // Don't use additional memory since we already have memory stress
+                bag = new InternalCachedBag();
+            } else {
+                // Take 10% of memory, need fine tune later
+                bag = new InternalCachedBag(1, 0.1F);
+            }
             valueTuple.set(i + 1, bag);
         }
         for (Tuple t : inpTuples) {
