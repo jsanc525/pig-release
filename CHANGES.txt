@@ -18,6 +18,49 @@
 
 Pig Change Log
 
+Trunk (unreleased changes)
+ 
+INCOMPATIBLE CHANGES
+ 
+IMPROVEMENTS
+
+PIG-4333: Split BigData tests into multiple groups (rohini)
+ 
+BUG FIXES
+
+PIG-4345: e2e test "RubyUDFs_13" fails because of the different result of "group a all" in different engines like "spark", "mapreduce" (kellyzly via rohini)
+
+PIG-4332: Remove redundant jars packaged into pig-withouthadoop.jar for hadoop 2 (rohini)
+
+PIG-4331: update README, '-x' option in usage to include tez (thejas via daijy)
+
+PIG-4327: Schema of map with value that has an alias can't be parsed again (mprim via daijy)
+
+PIG-4330: Regression test for PIG-3584 - AvroStorage does not correctly translate arrays of strings (brocknoland via daijy)
+
+PIG-3615: Update the way that JsonLoader/JsonStorage deal with BigDecimal (tyro89 via daijy)
+
+PIG-4329: Fetch optimization should be disabled when limit is not pushed up (lbendig via cheolsoo)
+
+PIG-3413: JsonLoader fails the pig job in case of malformed json input (eyal via daijy)
+
+PIG-4247: S3 properties are not picked up from core-site.xml in local mode (cheolsoo)
+
+PIG-4242: For indented xmls with multiline content (e.g. wikipedia) XMLLoader cuts out the begining of every line
+ (holdfenytolvaj via daijy)
+
+Release 0.14.1 - Unreleased
+
+INCOMPATIBLE CHANGES
+
+IMPROVEMENTS
+
+BUG FIXES
+
+PIG-4334: PigProcessor does not set pig.datetime.default.tz (rohini)
+
+PIG-4342: Pig 0.14 cannot identify the uppercase of DECLARE and DEFAULT (daijy)
+
 Release 0.14.0
  
 INCOMPATIBLE CHANGES
@@ -110,6 +153,8 @@ PIG-3970: Merge Tez branch into trunk (daijy)
 OPTIMIZATIONS
  
 BUG FIXES
+
+PIG-4335: Pig release tarball miss tez classes (daijy)
 
 PIG-4325: StackOverflow when spilling InternalCachedBag (daijy)
 
