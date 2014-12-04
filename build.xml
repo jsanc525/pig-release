@@ -145,6 +145,7 @@
 
     <!-- env properties -->
     <property environment="env"/>
+    <property name="windows" value="false"/>
     <condition property="isWindows">
       <os family="windows"/>
     </condition>
