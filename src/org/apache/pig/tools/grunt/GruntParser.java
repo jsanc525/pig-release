@@ -79,6 +79,8 @@ import org.apache.pig.tools.pigscript.parser.TokenMgrError;
 import org.apache.pig.tools.pigstats.JobStats;
 import org.apache.pig.tools.pigstats.PigStats;
 import org.apache.pig.tools.pigstats.PigStats.JobGraph;
+import org.apache.pig.validator.BlackAndWhitelistFilter;
+import org.apache.pig.validator.PigCommandFilter;
 import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.AnsiConsole;
 import org.python.google.common.collect.Lists;
@@ -86,14 +88,26 @@ import org.python.google.common.collect.Lists;
 public class GruntParser extends PigScriptParser {
 
     private static final Log log = LogFactory.getLog(GruntParser.class);
+    private PigCommandFilter filter;
 
-    public GruntParser(Reader stream) {
-        super(stream);
+    public GruntParser(Reader reader) {
+        this(reader, null);
+        init();
+    }
+
+    public GruntParser(Reader reader, PigServer pigServer) {
+        super(reader);
+        mPigServer = pigServer;
         init();
     }
 
     public GruntParser(InputStream stream, String encoding) {
+        this(stream, encoding, null);
+    }
+
+    public GruntParser(InputStream stream, String encoding, PigServer pigServer) {
         super(stream, encoding);
+        mPigServer = pigServer;
         init();
     }
 
@@ -102,8 +116,19 @@ public class GruntParser extends PigScriptParser {
         init();
     }
 
+    public GruntParser(InputStream stream, PigServer pigServer) {
+        super(stream);
+        mPigServer = pigServer;
+        init();
+    }
+
     public GruntParser(PigScriptParserTokenManager tm) {
+        this(tm, null);
+    }
+
+    public GruntParser(PigScriptParserTokenManager tm, PigServer pigServer) {
         super(tm);
+        mPigServer = pigServer;
         init();
     }
 
@@ -112,12 +137,23 @@ public class GruntParser extends PigScriptParser {
         mLoadOnly = false;
         mExplain = null;
         mScriptIllustrate = false;
+
+        setProps();
+
+        filter = new BlackAndWhitelistFilter(mPigServer);
+    }
+
+    private void setProps() {
+        mDfs = mPigServer.getPigContext().getDfs();
+        mLfs = mPigServer.getPigContext().getLfs();
+        mConf = mPigServer.getPigContext().getProperties();
+        shell = new FsShell(ConfigurationUtil.toConfiguration(mConf));
     }
 
     @Override
-    public void setInteractive(boolean isInteractive){
+    public void setInteractive(boolean isInteractive) {
         super.setInteractive(isInteractive);
-        if(isInteractive){
+        if(isInteractive) {
             setValidateEachStatement(true);
         }
     }
@@ -223,25 +259,6 @@ public class GruntParser extends PigScriptParser {
         mLoadOnly = loadOnly;
     }
 
-    public void setParams(PigServer pigServer)
-    {
-        mPigServer = pigServer;
-
-        mDfs = mPigServer.getPigContext().getDfs();
-        mLfs = mPigServer.getPigContext().getLfs();
-        mConf = mPigServer.getPigContext().getProperties();
-        shell = new FsShell(ConfigurationUtil.toConfiguration(mConf));
-
-        // TODO: this violates the abstraction layer decoupling between
-        // front end and back end and needs to be changed.
-        // Right now I am not clear on how the Job Id comes from to tell
-        // the back end to kill a given job (mJobClient is used only in
-        // processKill)
-        //
-        HExecutionEngine execEngine = mPigServer.getPigContext().getExecutionEngine();
-        mJobConf = execEngine.getJobConf();
-    }
-
     public void setScriptIllustrate() {
         mScriptIllustrate = true;
     }
@@ -340,7 +357,7 @@ public class GruntParser extends PigScriptParser {
                                   List<String> params, List<String> files,
                                   boolean dontPrintOutput)
         throws IOException, ParseException {
-
+        filter.validate(PigCommandFilter.Command.EXPLAIN);
         if (null != mExplain) {
             return;
         }
@@ -461,11 +478,13 @@ public class GruntParser extends PigScriptParser {
 
     @Override
     protected void processRegister(String jar) throws IOException {
+        filter.validate(PigCommandFilter.Command.REGISTER);
         mPigServer.registerJar(jar);
     }
 
     @Override
     protected void processRegister(String path, String scriptingLang, String namespace) throws IOException, ParseException {
+        filter.validate(PigCommandFilter.Command.REGISTER);
         if(path.endsWith(".jar")) {
             if(scriptingLang != null || namespace != null) {
                 throw new ParseException("Cannot register a jar with a scripting language or namespace");
@@ -489,6 +508,11 @@ public class GruntParser extends PigScriptParser {
     protected void processScript(String script, boolean batch,
                                  List<String> params, List<String> files)
         throws IOException, ParseException {
+        if(batch) {
+            filter.validate(PigCommandFilter.Command.EXEC);
+        } else {
+            filter.validate(PigCommandFilter.Command.RUN);
+        }
 
         if(mExplain == null) { // process only if not in "explain" mode
             if (script == null) {
@@ -549,8 +573,7 @@ public class GruntParser extends PigScriptParser {
             throw new ParseException("Cannot access file: " + script);
         }
 
-        GruntParser parser = new GruntParser(inputReader);
-        parser.setParams(mPigServer);
+        GruntParser parser = new GruntParser(inputReader, mPigServer);
         parser.setConsoleReader(reader);
         parser.setInteractive(interactive);
         parser.setLoadOnly(loadOnly);
@@ -570,6 +593,7 @@ public class GruntParser extends PigScriptParser {
 
     @Override
     protected void processSet(String key, String value) throws IOException, ParseException {
+        filter.validate(PigCommandFilter.Command.SET);
         if (key.equals("debug"))
         {
             if (value.equals("on"))
@@ -635,21 +659,21 @@ public class GruntParser extends PigScriptParser {
             //log.info("PIG-2508: keys dropped from properties: " + keysBefore);
         }
     }
-    
+
     @Override
     protected void processSet() throws IOException, ParseException {
+        filter.validate(PigCommandFilter.Command.SET);
         Properties jobProps = mPigServer.getPigContext().getProperties();
         Properties sysProps = System.getProperties();
-        
+
         List<String> jobPropsList = Lists.newArrayList();
         List<String> sysPropsList = Lists.newArrayList();
 
         for (Object key : jobProps.keySet()) {
-            String propStr = key + "=" + jobProps.getProperty((String)key);
+            String propStr = key + "=" + jobProps.getProperty((String) key);
             if (sysProps.containsKey(key)) {
                 sysPropsList.add("system: " + propStr);
-            }
-            else {
+            } else {
                 jobPropsList.add(propStr);
             }
         }
@@ -662,8 +686,8 @@ public class GruntParser extends PigScriptParser {
     }
 
     @Override
-    protected void processCat(String path) throws IOException
-    {
+    protected void processCat(String path) throws IOException {
+        filter.validate(PigCommandFilter.Command.CAT);
         if(mExplain == null) { // process only if not in "explain" mode
 
             executeBatch();
@@ -711,8 +735,8 @@ public class GruntParser extends PigScriptParser {
     }
 
     @Override
-    protected void processCD(String path) throws IOException
-    {
+    protected void processCD(String path) throws IOException {
+        filter.validate(PigCommandFilter.Command.CD);
         ContainerDescriptor container;
         if(mExplain == null) { // process only if not in "explain" mode
 
@@ -749,8 +773,8 @@ public class GruntParser extends PigScriptParser {
     }
 
     @Override
-    protected void processDump(String alias) throws IOException
-    {
+    protected void processDump(String alias) throws IOException {
+        filter.validate(PigCommandFilter.Command.DUMP);
         if (alias == null) {
             if (mPigServer.isBatchOn()) {
                 mPigServer.parseAndBuild();
@@ -785,6 +809,7 @@ public class GruntParser extends PigScriptParser {
     @Override
     protected void processIllustrate(String alias, String script, String target, List<String> params, List<String> files) throws IOException, ParseException
     {
+        filter.validate(PigCommandFilter.Command.ILLUSTRATE);
         if (mScriptIllustrate)
             throw new ParseException("'illustrate' statement can not appear in a script that is illustrated opon.");
 
@@ -840,6 +865,7 @@ public class GruntParser extends PigScriptParser {
     @Override
     protected void processKill(String jobid) throws IOException
     {
+        filter.validate(PigCommandFilter.Command.KILL);
         if (mJobConf != null) {
             JobClient jc = new JobClient(mJobConf);
             JobID id = JobID.forName(jobid);
@@ -857,6 +883,7 @@ public class GruntParser extends PigScriptParser {
     @Override
     protected void processLS(String path) throws IOException
     {
+        filter.validate(PigCommandFilter.Command.LS);
         if(mExplain == null) { // process only if not in "explain" mode
 
             executeBatch();
@@ -914,6 +941,7 @@ public class GruntParser extends PigScriptParser {
     @Override
     protected void processPWD() throws IOException
     {
+        filter.validate(PigCommandFilter.Command.PWD);
         if(mExplain == null) { // process only if not in "explain" mode
 
             executeBatch();
@@ -979,6 +1007,7 @@ public class GruntParser extends PigScriptParser {
     @Override
     protected void processMove(String src, String dst) throws IOException
     {
+        filter.validate(PigCommandFilter.Command.MV);
         if(mExplain == null) { // process only if not in "explain" mode
 
             executeBatch();
@@ -1004,6 +1033,7 @@ public class GruntParser extends PigScriptParser {
     @Override
     protected void processCopy(String src, String dst) throws IOException
     {
+        filter.validate(PigCommandFilter.Command.CP);
         if(mExplain == null) { // process only if not in "explain" mode
 
             executeBatch();
@@ -1025,6 +1055,7 @@ public class GruntParser extends PigScriptParser {
     @Override
     protected void processCopyToLocal(String src, String dst) throws IOException
     {
+        filter.validate(PigCommandFilter.Command.COPYTOLOCAL);
         if(mExplain == null) { // process only if not in "explain" mode
 
             executeBatch();
@@ -1046,6 +1077,7 @@ public class GruntParser extends PigScriptParser {
     @Override
     protected void processCopyFromLocal(String src, String dst) throws IOException
     {
+        filter.validate(PigCommandFilter.Command.COPYFROMLOCAL);
         if(mExplain == null) { // process only if not in "explain" mode
 
             executeBatch();
@@ -1067,6 +1099,7 @@ public class GruntParser extends PigScriptParser {
     @Override
     protected void processMkdir(String dir) throws IOException
     {
+        filter.validate(PigCommandFilter.Command.MKDIR);
         if(mExplain == null) { // process only if not in "explain" mode
 
             executeBatch();
@@ -1095,11 +1128,12 @@ public class GruntParser extends PigScriptParser {
     }
 
     @Override
-    protected void processRemove(String path, String options ) throws IOException
-    {
+    protected void processRemove(String path, String options) throws IOException {
+        filter.validate(PigCommandFilter.Command.RM);
+        filter.validate(PigCommandFilter.Command.RMF);
         int MAX_MS_TO_WAIT_FOR_FILE_DELETION = 10 * 60 * 1000;
         int MS_TO_SLEEP_WHILE_WAITING_FOR_FILE_DELETION = 250;
-        
+
         if(mExplain == null) { // process only if not in "explain" mode
             Path filePath = new Path(path);
             ElementDescriptor dfsPath = null;
@@ -1139,7 +1173,8 @@ public class GruntParser extends PigScriptParser {
     }
 
     @Override
-    protected void processFsCommand(String[] cmdTokens) throws IOException{
+    protected void processFsCommand(String[] cmdTokens) throws IOException {
+        filter.validate(PigCommandFilter.Command.FS);
         if(mExplain == null) { // process only if not in "explain" mode
 
             executeBatch();
@@ -1164,7 +1199,8 @@ public class GruntParser extends PigScriptParser {
     }
 
     @Override
-    protected void processShCommand(String[] cmdTokens) throws IOException{
+    protected void processShCommand(String[] cmdTokens) throws IOException {
+        filter.validate(PigCommandFilter.Command.SH);
         if(mExplain == null) { // process only if not in "explain" mode
             try {
                 executeBatch();

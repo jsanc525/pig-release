@@ -609,10 +609,8 @@ public class Util {
         }
         PigServer ps = new PigServer(ExecType.MAPREDUCE, cluster.getProperties());
         String script = getMkDirCommandForHadoop2_0(fileNameOnCluster) + "fs -put " + localFileName + " " + fileNameOnCluster;
-
-	    GruntParser parser = new GruntParser(new StringReader(script));
+        GruntParser parser = new GruntParser(new StringReader(script), ps);
         parser.setInteractive(false);
-        parser.setParams(ps);
         try {
             parser.parseStopOnError();
         } catch (org.apache.pig.tools.pigscript.parser.ParseException e) {
@@ -631,9 +629,8 @@ public class Util {
 
         new File(toLocalFileName).deleteOnExit();
 
-        GruntParser parser = new GruntParser(new StringReader(script));
+        GruntParser parser = new GruntParser(new StringReader(script), ps);
         parser.setInteractive(false);
-        parser.setParams(ps);
         try {
             parser.parseStopOnError();
         } catch (org.apache.pig.tools.pigscript.parser.ParseException e) {
@@ -1261,5 +1258,20 @@ public class Util {
         if (version.matches("\\b2\\.\\d\\..+"))
             return true;
         return false;
+    }
+
+    /**
+     * 
+     * @param expected
+     *            Exception class that is expected to be thrown
+     * @param found
+     *            Exception that occurred in the test
+     * @param message
+     *            expected String to verify against
+     */
+    public static void assertExceptionAndMessage(Class<?> expected,
+            Exception found, String message) {
+        assertEquals(expected, found.getClass());
+        assertEquals(found.getMessage(), message);
     }
 }

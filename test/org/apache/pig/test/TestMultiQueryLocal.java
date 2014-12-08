@@ -18,15 +18,13 @@
 package org.apache.pig.test;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.FileReader;
-import java.io.StringReader;
-import java.io.IOException;
 import java.io.File;
-import java.util.Iterator;
-import java.util.List;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.Properties;
 
 import junit.framework.Assert;
@@ -44,13 +42,13 @@ import org.apache.pig.backend.hadoop.executionengine.physicalLayer.plans.Physica
 import org.apache.pig.builtin.PigStorage;
 import org.apache.pig.data.Tuple;
 import org.apache.pig.data.TupleFactory;
+import org.apache.pig.impl.PigContext;
 import org.apache.pig.impl.io.FileLocalizer;
 import org.apache.pig.impl.plan.Operator;
 import org.apache.pig.impl.plan.OperatorPlan;
-import org.apache.pig.impl.PigContext;
-import org.apache.pig.tools.grunt.GruntParser;
 import org.apache.pig.impl.util.LogUtils;
 import org.apache.pig.newplan.logical.relational.LogicalPlan;
+import org.apache.pig.tools.grunt.GruntParser;
 import org.apache.pig.tools.pigscript.parser.ParseException;
 import org.apache.pig.tools.pigstats.JobStats;
 import org.apache.pig.tools.pigstats.PigStats;
@@ -442,10 +440,9 @@ public class TestMultiQueryLocal {
                           + "b = filter a by uid > 5;"
                           + "explain b;"
                           + "store b into '" + TMP_DIR + "/Pig-TestMultiQueryLocal1';\n";
-            
-            GruntParser parser = new GruntParser(new StringReader(script));
+
+            GruntParser parser = new GruntParser(new StringReader(script), myPig);
             parser.setInteractive(false);
-            parser.setParams(myPig);
             parser.parseStopOnError();
 
         } catch (Exception e) {
@@ -467,10 +464,9 @@ public class TestMultiQueryLocal {
                           + "b = filter a by uid > 5;"
                           + "dump b;"
                           + "store b into '" + TMP_DIR + "/Pig-TestMultiQueryLocal1';\n";
-            
-            GruntParser parser = new GruntParser(new StringReader(script));
+
+            GruntParser parser = new GruntParser(new StringReader(script), myPig);
             parser.setInteractive(false);
-            parser.setParams(myPig);
             parser.parseStopOnError();
 
         } catch (Exception e) {
@@ -492,10 +488,9 @@ public class TestMultiQueryLocal {
                           + "b = filter a by uid > 5;"
                           + "describe b;"
                           + "store b into '" + TMP_DIR + "/Pig-TestMultiQueryLocal1';\n";
-            
-            GruntParser parser = new GruntParser(new StringReader(script));
+
+            GruntParser parser = new GruntParser(new StringReader(script), myPig);
             parser.setInteractive(false);
-            parser.setParams(myPig);
             parser.parseStopOnError();
 
         } catch (Exception e) {
@@ -517,11 +512,10 @@ public class TestMultiQueryLocal {
                           + "b = filter a by uid > 5;"
                           + "illustrate b;"
                           + "store b into '" + TMP_DIR + "/Pig-TestMultiQueryLocal1';\n";
-            
-            GruntParser parser = new GruntParser(new StringReader(script));
+
+            GruntParser parser = new GruntParser(new StringReader(script), myPig);
             parser.setInteractive(false);
             myPig.getPigContext().getProperties().setProperty("pig.usenewlogicalplan", "true");
-            parser.setParams(myPig);
             parser.parseStopOnError();
 
         } catch (Exception e) {

@@ -397,6 +397,7 @@ public class PigContext implements Serializable {
 
     public String doParamSubstitution(BufferedReader reader) throws IOException {
         try {
+            preprocessorContext.setPigContext(this);
             preprocessorContext.loadParamVal(params, paramFiles);
             ParameterSubstitutionPreprocessor psp
                 = new ParameterSubstitutionPreprocessor(preprocessorContext);
