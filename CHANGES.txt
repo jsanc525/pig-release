@@ -42,6 +42,8 @@ PIG-3573: Provide StoreFunc and LoadFunc for Accumulo (elserj via daijy)
 
 BUG FIXES
 
+PIG-4342: Pig 0.14 cannot identify the uppercase of DECLARE and DEFAULT (daijy)
+
 PIG-4215: Fix unit test failure TestParamSubPreproc and TestMacroExpansion (daijy)
 
 PIG-3765: Ability to disable Pig commands and operators - minor refactor (aniket486)
