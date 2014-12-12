@@ -111,6 +111,8 @@ OPTIMIZATIONS
  
 BUG FIXES
 
+PIG-4342: Pig 0.14 cannot identify the uppercase of DECLARE and DEFAULT (daijy)
+
 PIG-4334: PigProcessor does not set pig.datetime.default.tz (rohini)
 
 PIG-4325: StackOverflow when spilling InternalCachedBag (daijy)
