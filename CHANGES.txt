@@ -24,11 +24,33 @@ INCOMPATIBLE CHANGES
  
 IMPROVEMENTS
 
+PIG-4337: Split Types and MultiQuery e2e tests into multiple groups (rohini)
+
 PIG-4066: An optimization for ROLLUP operation in Pig (hxquangnhat via cheolsoo)
 
 PIG-4333: Split BigData tests into multiple groups (rohini)
  
 BUG FIXES
+
+PIG-4368: Port local mode tests to Tez - TestLoadStoreFuncLifeCycle (daijy)
+
+PIG-4367: Port local mode tests to Tez - TestMultiQueryBasic (daijy)
+
+PIG-4339: e2e test framework assumes default exectype as mapred (rohini)
+
+PIG-4360: HBaseStorage should support setting the timestamp field (bridiver via daijy)
+
+PIG-2949: JsonLoader only reads arrays of objects (eyal via daijy)
+
+PIG-4213: CSVExcelStorage not quoting texts containing \r (CR) when storing (alfonso.nishikawa via daijy)
+
+PIG-2647: Split Combining drops splits with empty getLocations() (tmwoodruff via daijy)
+
+PIG-4294: Enable unit test "TestNestedForeach" for spark (kellyzly via rohini)
+
+PIG-4282: Enable unit test "TestForEachNestedPlan" for spark (kellyzly via rohini) 
+
+PIG-4361: Fix perl script problem in TestStreaming.java (kellyzly via xuefu)
 
 PIG-4354: Port local mode tests to Tez - part3 (daijy)
 
