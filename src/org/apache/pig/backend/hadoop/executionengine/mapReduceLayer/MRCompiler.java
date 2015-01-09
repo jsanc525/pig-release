@@ -1945,7 +1945,7 @@ public class MRCompiler extends PhyPlanVisitor {
                 eps.add(ep);
                 if (!inner[i]) {
                     // Add an empty bag for outer join
-                    CompilerUtils.addEmptyBagOuterJoin(ep, op.getSchema(i));
+                    CompilerUtils.addEmptyBagOuterJoin(ep, op.getSchema(i), true);
                 }
                 flat.add(true);
             }

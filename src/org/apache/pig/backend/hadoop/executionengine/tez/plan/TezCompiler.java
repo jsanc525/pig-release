@@ -1474,8 +1474,12 @@ public class TezCompiler extends PhyPlanVisitor {
             if (pigProperties.containsKey(PigConfiguration.PIG_SKEWEDJOIN_REDUCE_MEMUSAGE)) {
                 heapPerc = Float.valueOf(pigProperties.getProperty(PigConfiguration.PIG_SKEWEDJOIN_REDUCE_MEMUSAGE));
             }
+            long totalMemory = -1;
+            if (pigProperties.containsKey(PigConfiguration.PIG_SKEWEDJOIN_REDUCE_MEM)) {
+                totalMemory = Long.valueOf(pigProperties.getProperty(PigConfiguration.PIG_SKEWEDJOIN_REDUCE_MEM));
+            }
             POPoissonSample poSample = new POPoissonSample(new OperatorKey(scope,nig.getNextNodeId(scope)),
-                    -1, sampleRate, heapPerc);
+                    -1, sampleRate, heapPerc, totalMemory);
 
             TezOperator prevOp = compiledInputs[0];
             prevOp.plan.addAsLeaf(lrTez);
@@ -1642,7 +1646,7 @@ public class TezCompiler extends PhyPlanVisitor {
                 eps.add(ep);
                 if (!inner[i]) {
                     // Add an empty bag for outer join
-                    CompilerUtils.addEmptyBagOuterJoin(ep, op.getSchema(i));
+                    CompilerUtils.addEmptyBagOuterJoin(ep, op.getSchema(i), true);
                 }
                 flat.add(true);
             }

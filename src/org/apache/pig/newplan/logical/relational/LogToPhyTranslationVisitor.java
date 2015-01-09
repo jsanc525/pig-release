@@ -1751,7 +1751,7 @@ public class LogToPhyTranslationVisitor extends LogicalRelationalNodesVisitor {
             throw new LogicalToPhysicalTranslatorException(msg, errCode, PigException.BUG, e);
         }
 
-        CompilerUtils.addEmptyBagOuterJoin(fePlan, Util.translateSchema(inputSchema));
+        CompilerUtils.addEmptyBagOuterJoin(fePlan, Util.translateSchema(inputSchema), false);
 
     }
 
