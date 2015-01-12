@@ -37,7 +37,6 @@ import org.apache.pig.data.NonSpillableDataBag;
 import org.apache.pig.data.Tuple;
 import org.apache.pig.data.TupleFactory;
 import org.apache.pig.impl.PigContext;
-import org.apache.pig.impl.builtin.IsFirstReduceOfKey;
 import org.apache.pig.impl.logicalLayer.schema.Schema;
 import org.apache.pig.impl.plan.NodeIdGenerator;
 import org.apache.pig.impl.plan.OperatorKey;
@@ -49,7 +48,8 @@ import org.apache.pig.impl.plan.PlanException;
  */
 public class CompilerUtils {
 
-    public static void addEmptyBagOuterJoin(PhysicalPlan fePlan, Schema inputSchema, boolean skewedJoin) throws PlanException {
+    public static void addEmptyBagOuterJoin(PhysicalPlan fePlan, Schema inputSchema,
+            boolean skewedJoin, String isFirstReduceOfKeyClassName) throws PlanException {
         // we currently have POProject[bag] as the only operator in the plan
         // If the bag is an empty bag, we should replace
         // it with a bag with one tuple with null fields so that when we flatten
@@ -100,7 +100,7 @@ public class CompilerUtils {
 
                 POAnd and = new POAnd(new OperatorKey(scope, NodeIdGenerator.getGenerator().
                         getNextNodeId(scope)));
-                FuncSpec isFirstReduceOfKeySpec = new FuncSpec(IsFirstReduceOfKey.class.getName());
+                FuncSpec isFirstReduceOfKeySpec = new FuncSpec(isFirstReduceOfKeyClassName);
                 Object f1 = PigContext.instantiateFuncFromSpec(isFirstReduceOfKeySpec);
                 POUserFunc isFirstReduceOfKey = new POUserFunc(new OperatorKey(scope, NodeIdGenerator.getGenerator().
                             getNextNodeId(scope)), -1, null, isFirstReduceOfKeySpec, (EvalFunc) f1);

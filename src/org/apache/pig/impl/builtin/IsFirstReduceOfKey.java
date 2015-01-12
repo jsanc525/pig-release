@@ -33,7 +33,7 @@ import org.apache.pig.impl.util.UDFContext;
 
 public class IsFirstReduceOfKey extends EvalFunc<Boolean> {
     protected static final TupleFactory tf = TupleFactory.getInstance();
-    private Map<Object, Pair<Integer, Integer> > reducerMap = null;
+    protected Map<Object, Pair<Integer, Integer> > reducerMap = null;
     /* Loads the key distribution file obtained from the sampler */
     protected void init() {
         Configuration conf = PigMapReduce.sJobConfInternal.get();
