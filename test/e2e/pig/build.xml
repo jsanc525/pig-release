@@ -307,6 +307,7 @@
       <arg value="${test.location}/tests/hcat.conf"/>
       <arg value="${test.location}/tests/avro.conf"/>
       <arg value="${test.location}/tests/datafu.conf"/>
+      <arg value="${test.location}/tests/utf8.conf"/>
     </exec>
   </target>
 
@@ -419,6 +420,7 @@
       <arg value="${test.location}/tests/hcat.conf"/>
       <arg value="${test.location}/tests/avro.conf"/>
       <arg value="${test.location}/tests/datafu.conf"/>
+      <arg value="${test.location}/tests/utf8.conf"/>
     </exec>
   </target>
 
