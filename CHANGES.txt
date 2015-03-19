@@ -113,6 +113,8 @@ OPTIMIZATIONS
  
 BUG FIXES
 
+PIG-4461: Use benchmarks for Windows Pig e2e tests (nmaheshwari via daijy)
+
 PIG-4342: Pig 0.14 cannot identify the uppercase of DECLARE and DEFAULT (daijy)
 
 PIG-4334: PigProcessor does not set pig.datetime.default.tz (rohini)
