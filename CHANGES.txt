@@ -64,8 +64,6 @@ BUG FIXES
 
 PIG-4498: AvroStorage in Piggbank does not handle bad records and fails (viraj via rohini)
 
-PIG-4499: mvn-build miss tez classes in pig-h2.jar (daijy)
-
 PIG-4488: Pig on tez mask tez.queue.name (daijy)
 
 PIG-4497: [Pig on Tez] NPE for null scalar (rohini)
