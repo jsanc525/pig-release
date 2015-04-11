@@ -356,6 +356,7 @@
     <dependency org="org.cloudera.htrace" name="htrace-core" rev="2.00" conf="hbase95->master">
       <artifact name="htrace-core" type="jar"/>
     </dependency>
+    <dependency org="com.lmax" name="disruptor" rev="3.3.0" conf="hbase95->master"/>
 
     <!-- for TestHBaseStorage -->
     <dependency org="com.github.stephenc.high-scale-lib" name="high-scale-lib" rev="${high-scale-lib.version}"
