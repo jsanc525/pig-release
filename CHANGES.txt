@@ -18,11 +18,13 @@
 
 Pig Change Log
 
-Trunk (unreleased changes)
+Release 0.15.0 - Unreleased
  
 INCOMPATIBLE CHANGES
  
 IMPROVEMENTS
+
+PIG-4511: Add columns to prune from PluckTuple (jbabcock via daijy)
 
 PIG-4434: Improve auto-parallelism for tez (daijy)
 
