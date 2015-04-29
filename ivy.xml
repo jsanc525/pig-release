@@ -350,15 +350,9 @@
       <exclude org="asm" module="asm"/>
     </dependency>
 
-<<<<<<< HEAD
-    <dependency org="org.fusesource.leveldbjni" name="leveldbjni-all" rev="${leveldbjni.version}"
-      conf="hadoop23->master"/>
-    <dependency org="org.apache.htrace" name="htrace-core" rev="${htrace.version}" conf="hadoop23->master"/>
-=======
     <dependency org="org.htrace" name="htrace-core" rev="${htrace.version}" conf="hadoop23->master"/>
     <dependency org="org.fusesource.leveldbjni" name="leveldbjni-all" rev="${leveldbjni.version}"
       conf="hadoop23->master"/>
->>>>>>> origin/apache-ref/branch-0.15
     <dependency org="org.cloudera.htrace" name="htrace-core" rev="2.00" conf="hbase95->master">
       <artifact name="htrace-core" type="jar"/>
     </dependency>
@@ -462,10 +456,6 @@
       conf="hadoop23->master"/>
     <dependency org="org.apache.curator" name="curator-client" rev="${curator.version}"
       conf="hadoop23->master"/>
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/apache-ref/branch-0.15
   </dependencies>
 </ivy-module>
 
