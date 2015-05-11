@@ -173,7 +173,6 @@ public class FetchOptimizer {
 
         @Override
         public void visit() throws VisitorException {
-            new PhyPlanSetter(mPlan).visit();
             super.visit();
         }
 
