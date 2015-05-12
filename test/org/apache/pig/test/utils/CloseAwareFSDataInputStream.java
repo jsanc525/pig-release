@@ -15,16 +15,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.pig.backend.hadoop.executionengine.tez.runtime;
+package org.apache.pig.test.utils;
 
-import org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.partitioners.SkewedPartitioner;
-import org.apache.pig.backend.hadoop.executionengine.tez.util.TezRuntimeUtil;
+import org.apache.hadoop.fs.FSDataInputStream;
 
-public class SkewedPartitionerTez extends SkewedPartitioner {
+import java.io.IOException;
+import java.io.InputStream;
 
-    @Override
-    protected void init() {
-        reducerMap = TezRuntimeUtil.readReduceMapFromSample(tf);
-        inited = true;
-    }
+public class CloseAwareFSDataInputStream extends FSDataInputStream {
+
+  private boolean isClosed;
+
+  public CloseAwareFSDataInputStream(InputStream in) throws IOException {
+    super(in);
+    isClosed = false;
+  }
+
+  @Override
+  public void close() throws IOException {
+    super.close();
+    isClosed = true;
+  }
+
+  public boolean isClosed() {
+    return isClosed;
+  }
 }
