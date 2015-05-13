@@ -402,7 +402,7 @@ public class OrcStorage extends LoadFunc implements StoreFuncInterface, LoadMeta
         }
         Class[] classList = new Class[] {OrcFile.class, HiveConf.class, AbstractSerDe.class,
                 org.apache.hadoop.hive.shims.HadoopShims.class, HadoopShimsSecure.class, hadoopVersionShimsClass,
-                Input.class};
+                Input.class, org.apache.commons.lang3.exception.ExceptionUtils.class};
         return FuncUtils.getShipFiles(classList);
     }
 
