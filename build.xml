@@ -715,6 +715,7 @@
     <target name="copyCommonDependencies">
         <mkdir dir="${lib.dir}" />
         <copy todir="${lib.dir}">
+            <fileset dir="${ivy.lib.dir}" includes="commons-lang3-*.jar"/>
             <fileset dir="${ivy.lib.dir}" includes="antlr-runtime-*.jar"/>
             <fileset dir="${ivy.lib.dir}" includes="ST4-*.jar"/>
             <fileset dir="${ivy.lib.dir}" includes="jline-*.jar"/>
