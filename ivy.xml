@@ -357,6 +357,8 @@
       <exclude org="asm" module="asm"/>
     </dependency>
 
+    <dependency org="org.apache.hbase" name="hbase-procedure" rev="${hbase95.version}" conf="hbase95->master"/>
+
     <dependency org="org.htrace" name="htrace-core" rev="3.0.4" conf="hadoop23->master"/>
     <dependency org="org.apache.htrace" name="htrace-core" rev="${htrace.version}" conf="hadoop23->master"/>
     <dependency org="org.fusesource.leveldbjni" name="leveldbjni-all" rev="${leveldbjni.version}"

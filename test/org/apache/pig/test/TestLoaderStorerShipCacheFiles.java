@@ -53,7 +53,7 @@ public abstract class TestLoaderStorerShipCacheFiles {
                 "hive-shims-0." + hadoopVersion, "hive-shims-common",
                 "kryo"};
 
-        checkPlan(pp, expectedJars, 6, pigServer.getPigContext());
+        checkPlan(pp, expectedJars, 7, pigServer.getPigContext());
     }
 
     @Test
@@ -70,7 +70,7 @@ public abstract class TestLoaderStorerShipCacheFiles {
                 "hive-shims-0." + hadoopVersion, "hive-shims-common",
                 "kryo"};
 
-        checkPlan(pp, expectedJars, 6, pigServer.getPigContext());
+        checkPlan(pp, expectedJars, 7, pigServer.getPigContext());
     }
 
     @Test
