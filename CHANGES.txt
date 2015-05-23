@@ -24,6 +24,8 @@ INCOMPATIBLE CHANGES
  
 IMPROVEMENTS
 
+PIG-4560: Pig 0.15.0 Documentation (daijy)
+
 PIG-4429: Add Pig alias information and Pig script to the DAG view in Tez UI (daijy)
 
 PIG-3994: Implement getting backend exception for Tez (rohini)
@@ -71,6 +73,8 @@ PIG-4337: Split Types and MultiQuery e2e tests into multiple groups (rohini)
 PIG-4333: Split BigData tests into multiple groups (rohini)
  
 BUG FIXES
+
+PIG-4564: Pig can deadlock in POPartialAgg if there is a bag (rohini via daijy)
 
 PIG-4569: Fix e2e test Rank_1 failure (rohini)
 
