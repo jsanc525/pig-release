@@ -233,7 +233,7 @@ public class TezOperPlan extends OperatorPlan<TezOperator> {
             if (list.contains(pair.first) && list.contains(pair.second)) {
                 // Need to reconnect in newPlan
                 TezEdgeDescriptor edge = pair.second.inEdges.get(pair.first.getOperatorKey());
-                TezCompilerUtil.connect(newPlan, pair.first, pair.second, edge);
+                TezCompilerUtil.connectNoLRReconnect(newPlan, pair.first, pair.second, edge);
             }
         }
 

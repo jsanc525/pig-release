@@ -242,7 +242,7 @@ public class MultiQueryOptimizerTez extends TezOpPlanVisitor {
 
                 // Do not connect again in case of self join/cross/cogroup or union
                 if (splitterSuccs == null || !splitterSuccs.contains(succTezOperator)) {
-                    TezCompilerUtil.connect(plan, splitter, succTezOperator, edge);
+                    TezCompilerUtil.connectNoLRReconnect(plan, splitter, succTezOperator, edge);
                 }
 
                 try {
