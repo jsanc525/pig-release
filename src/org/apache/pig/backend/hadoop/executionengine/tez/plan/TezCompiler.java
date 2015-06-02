@@ -1636,6 +1636,7 @@ public class TezCompiler extends PhyPlanVisitor {
             List<PhysicalPlan> eps = new ArrayList<PhysicalPlan>();
             List<Boolean> flat = new ArrayList<Boolean>();
 
+            boolean containsOuter = false;
             // Add corresponding POProjects
             for (int i=0; i < 2; i++) {
                 ep = new PhysicalPlan();
@@ -1648,6 +1649,7 @@ public class TezCompiler extends PhyPlanVisitor {
                 if (!inner[i]) {
                     // Add an empty bag for outer join
                     CompilerUtils.addEmptyBagOuterJoin(ep, op.getSchema(i), true, IsFirstReduceOfKeyTez.class.getName());
+                    containsOuter = true;
                 }
                 flat.add(true);
             }
@@ -1678,12 +1680,16 @@ public class TezCompiler extends PhyPlanVisitor {
 
             POValueOutputTez sampleOut = (POValueOutputTez) sampleJobPair.first.plan.getLeaves().get(0);
             for (int i = 0; i <= 2; i++) {
-                joinJobs[i].setSampleOperator(sampleJobPair.first);
+                if (i != 2 || containsOuter) {
+                    // We need to send sample to left relation partitioner vertex, right relation load vertex,
+                    // and join vertex (IsFirstReduceOfKey in join vertex need sample file as well)
+                    joinJobs[i].setSampleOperator(sampleJobPair.first);
 
-                // Configure broadcast edges for distribution map
-                edge = TezCompilerUtil.connect(tezPlan, sampleJobPair.first, joinJobs[i]);
-                TezCompilerUtil.configureValueOnlyTupleOutput(edge, DataMovementType.BROADCAST);
-                sampleOut.addOutputKey(joinJobs[i].getOperatorKey().toString());
+                    // Configure broadcast edges for distribution map
+                    edge = TezCompilerUtil.connect(tezPlan, sampleJobPair.first, joinJobs[i]);
+                    TezCompilerUtil.configureValueOnlyTupleOutput(edge, DataMovementType.BROADCAST);
+                    sampleOut.addOutputKey(joinJobs[i].getOperatorKey().toString());
+                }
 
                 // Configure skewed partitioner for join
                 if (i != 2) {
