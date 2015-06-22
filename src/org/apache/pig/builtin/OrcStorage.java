@@ -479,7 +479,7 @@ public class OrcStorage extends LoadFunc implements StoreFuncInterface, LoadMeta
             try {
                 reader = OrcFile.createReader(fs, path);
                 ObjectInspector oip = (ObjectInspector)reader.getObjectInspector();
-                ResourceFieldSchema rs = OrcUtils.getResourceFieldSchema(TypeInfoUtils.getTypeInfoFromObjectInspector(oip));
+                ResourceFieldSchema rs = HiveUtils.getResourceFieldSchema(TypeInfoUtils.getTypeInfoFromObjectInspector(oip));
                 if (rs.getSchema().getFields().length!=0) {
                     return true;
                 }
