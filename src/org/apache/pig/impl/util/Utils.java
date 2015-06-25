@@ -651,7 +651,7 @@ public class Utils {
 
       for (FileStatus f : statusArray) {
           if (fileSystem.isFile(f.getPath())) {
-              if ((filter != null) && filter.accept(f.getPath())) {
+              if (filter == null || filter.accept(f.getPath())) {
                   return f.getPath();
               } else {
                   continue;
