@@ -1,0 +1,12 @@
+Changes only in Hortonworks github and not in Apache Pig release 0.15.0 and hence not covered by CHANGES.txt.
+
+
+INCOMPATIBLE CHANGES
+
+NEW FEATURES
+
+IMPROVEMENTS
+
+BUG FIXES
+ PIG-4624 - Error on ORC empty file without schema
+
