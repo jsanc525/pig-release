@@ -10,3 +10,10 @@ IMPROVEMENTS
 BUG FIXES
  PIG-4624 - Error on ORC empty file without schema
 
+ PIG-4627: [Pig on Tez] Self join does not handle null values correctly
+
+ PIG-4628: Pig 0.14 job with order by fails in mapreduce mode with Oozie
+
+ PIG-4649: [Pig on Tez] Union followed by HCatStorer misses some data
+
+ PIG-4679: Performance degradation due to InputSizeReducerEstimator since PIG-3754
