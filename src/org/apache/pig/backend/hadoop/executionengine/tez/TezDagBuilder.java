@@ -341,6 +341,7 @@ public class TezDagBuilder extends TezOpPlanVisitor {
         }
 
         conf.setBoolean(MRConfiguration.MAPPER_NEW_API, true);
+        conf.setBoolean(MRConfiguration.REDUCE_NEW_API, true);
         conf.set("pig.pigContext", ObjectSerializer.serialize(pc));
         conf.set("udf.import.list",
                 ObjectSerializer.serialize(PigContext.getPackageImportList()));
@@ -407,6 +408,7 @@ public class TezDagBuilder extends TezOpPlanVisitor {
         conf.set(MRJobConfig.COMBINE_CLASS_ATTR,
                 PigCombiner.Combine.class.getName());
         conf.setBoolean(MRConfiguration.MAPPER_NEW_API, true);
+        conf.setBoolean(MRConfiguration.REDUCE_NEW_API, true);
         conf.set("pig.pigContext", ObjectSerializer.serialize(pc));
         conf.set("udf.import.list",
                 ObjectSerializer.serialize(PigContext.getPackageImportList()));
@@ -464,6 +466,7 @@ public class TezDagBuilder extends TezOpPlanVisitor {
                 ObjectSerializer.serialize(PigContext.getPackageImportList()));
         payloadConf.set("exectype", "TEZ");
         payloadConf.setBoolean(MRConfiguration.MAPPER_NEW_API, true);
+        payloadConf.setBoolean(MRConfiguration.REDUCE_NEW_API, true);
         payloadConf.setClass(MRConfiguration.INPUTFORMAT_CLASS,
                 PigInputFormat.class, InputFormat.class);
 

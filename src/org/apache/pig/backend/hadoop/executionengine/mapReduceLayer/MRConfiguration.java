@@ -45,6 +45,7 @@ public class MRConfiguration {
     public static final String MAP_MAX_ATTEMPTS = "mapred.map.max.attempts";
     public static final String MAP_TASKS = "mapred.map.tasks";
     public static final String MAPPER_NEW_API = "mapred.mapper.new-api";
+    public static final String REDUCE_NEW_API = "mapred.reducer.new-api";
     public static final String MAX_SPLIT_SIZE = "mapred.max.split.size";
     public static final String OUTPUT_BASENAME = "mapreduce.output.basename";
     public static final String OUTPUT_COMPRESS = "mapred.output.compress";
