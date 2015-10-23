@@ -314,7 +314,7 @@ public class PigConfiguration {
      */
     public static final String PIG_TEZ_DAG_STATUS_REPORT_INTERVAL = "pig.tez.dag.status.report.interval";
 
-
+    public static final String PIG_AUDIT_ID = "pig.script.id";
 
     // Deprecated settings of Pig 0.13
 

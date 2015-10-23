@@ -39,11 +39,13 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Queue;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.ipc.CallerContext;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.pig.backend.datastorage.ContainerDescriptor;
@@ -52,6 +54,7 @@ import org.apache.pig.backend.datastorage.ElementDescriptor;
 import org.apache.pig.backend.executionengine.ExecException;
 import org.apache.pig.backend.executionengine.ExecJob;
 import org.apache.pig.backend.executionengine.ExecJob.JOB_STATUS;
+import org.apache.pig.backend.hadoop.ATSService;
 import org.apache.pig.backend.hadoop.executionengine.HJob;
 import org.apache.pig.builtin.PigStorage;
 import org.apache.pig.classification.InterfaceAudience;
@@ -238,6 +241,23 @@ public class PigServer {
         }
         PigStats.start(pigContext.getExecutionEngine().instantiatePigStats());
 
+        // log ATS event includes the caller context
+        String auditId = ATSService.getPigAuditId(pigContext);
+        String callerId = (String)pigContext.getProperties().get(PigConstants.CALLER_ID);
+        log.info("Pig Audit ID for the session: " + auditId);
+        if (callerId != null) {
+            log.info("Caller ID for session: " + callerId);
+        }
+        ATSService.ATSEvent event = new ATSService.ATSEvent(auditId, callerId);
+        try {
+            ATSService.getInstance().logEvent(event);
+        } catch (Exception e) {
+            log.warn("Error posting to ATS: " + e.getMessage());
+        }
+
+        // set hdfs caller context
+        CallerContext hdfsContext = new CallerContext.Builder(auditId).build();
+        CallerContext.setCurrent(hdfsContext);
     }
 
     private void addJarsFromProperties() throws ExecException {
