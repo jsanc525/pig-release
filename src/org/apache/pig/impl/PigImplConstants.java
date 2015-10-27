@@ -63,4 +63,10 @@ public class PigImplConstants {
      * Parallelism to be used for CROSS operation by GFCross UDF
      */
     public static final String PIG_CROSS_PARALLELISM = "pig.cross.parallelism";
+
+    /**
+     * A unique id for a Pig session used as callerId for underlining component
+     */
+    public static final String PIG_AUDIT_ID = "pig.script.id";
+
 }

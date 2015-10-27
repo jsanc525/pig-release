@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.StringReader;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -52,6 +54,7 @@ import org.apache.pig.backend.datastorage.ElementDescriptor;
 import org.apache.pig.backend.executionengine.ExecException;
 import org.apache.pig.backend.executionengine.ExecJob;
 import org.apache.pig.backend.executionengine.ExecJob.JOB_STATUS;
+import org.apache.pig.backend.hadoop.ATSService;
 import org.apache.pig.backend.hadoop.executionengine.HJob;
 import org.apache.pig.builtin.PigStorage;
 import org.apache.pig.classification.InterfaceAudience;
@@ -238,6 +241,44 @@ public class PigServer {
         }
         PigStats.start(pigContext.getExecutionEngine().instantiatePigStats());
 
+        // log ATS event includes the caller context
+        String auditId = ATSService.getPigAuditId(pigContext);
+        String callerId = (String)pigContext.getProperties().get(PigConfiguration.CALLER_ID);
+        log.info("Pig Script ID for the session: " + auditId);
+        if (callerId != null) {
+            log.info("Caller ID for session: " + callerId);
+        }
+        ATSService.ATSEvent event = new ATSService.ATSEvent(auditId, callerId);
+        try {
+            ATSService.getInstance().logEvent(event);
+        } catch (Exception e) {
+            log.warn("Error posting to ATS: " + e.getMessage());
+        }
+
+        // set hdfs caller context
+        Class callerContextClass = null;
+        try {
+            callerContextClass = Class.forName("org.apache.hadoop.ipc.CallerContext");
+        } catch (ClassNotFoundException e) {
+            // If pre-Hadoop 2.8.0, skip setting CallerContext
+        }
+        if (callerContextClass != null) {
+            try {
+                // Reflection for the following code since it is only available since hadoop 2.8.0:
+                // CallerContext hdfsContext = new CallerContext.Builder(auditId).build();
+                // CallerContext.setCurrent(hdfsContext);
+                Class callerContextBuilderClass = Class.forName("org.apache.hadoop.ipc.CallerContext$Builder");
+                Constructor callerContextBuilderConstruct = callerContextBuilderClass.getConstructor(String.class);
+                Object builder = callerContextBuilderConstruct.newInstance(auditId);
+                Method builderBuildMethod = builder.getClass().getMethod("build");
+                Object hdfsContext = builderBuildMethod.invoke(builder);
+                Method callerContextSetCurrentMethod = callerContextClass.getMethod("setCurrent", hdfsContext.getClass());
+                callerContextSetCurrentMethod.invoke(callerContextClass, hdfsContext);
+            } catch (Exception e) {
+                // Shall not happen unless API change in future Hadoop commons
+                throw new ExecException(e);
+            }
+        }
     }
 
     private void addJarsFromProperties() throws ExecException {

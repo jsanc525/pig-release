@@ -314,7 +314,10 @@ public class PigConfiguration {
      */
     public static final String PIG_TEZ_DAG_STATUS_REPORT_INTERVAL = "pig.tez.dag.status.report.interval";
 
-
+    /**
+     * Log tracing id that can be used by upstream clients for tracking respective logs
+     */
+    public static final String CALLER_ID = "pig.log.trace.id";
 
     // Deprecated settings of Pig 0.13
 
