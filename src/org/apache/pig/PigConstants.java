@@ -59,6 +59,4 @@ public class PigConstants {
     public static final String TIME_UDFS_ELAPSED_TIME_COUNTER = "approx_microsecs";
 
     public static final String TASK_INDEX = "mapreduce.task.index";
-
-    public static final String CALLER_ID = "pig.caller.id";
 }
