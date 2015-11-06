@@ -1,3 +1,19 @@
+PIG-4683: Nested order is broken after PIG-3591 in some cases
+
+PIG-4696: Empty map returned by a streaming_python udf wrongly contains a null key
+
+PIG-4688: Limit followed by POPartialAgg can give empty or partial results in Tez
+
+PIG-4714: Improve logging across multiple components with callerId
+
+PIG-4715: Pig 0.14 does not work with Tez 0.5.4
+
+PIG-4679: Performance degradation due to InputSizeReducerEstimator since PIG-3754
+
+PIG-4628: Pig 0.14 job with order by fails in mapreduce mode with Oozie
+
+PIG-4624: Error on ORC empty file without schema
+
 PIG-4541: Skewed full outer join does not return records if any relation is empty. Outer join does not return any record if left relation is empty
 
 PIG-4624: Error on ORC empty file without schema
