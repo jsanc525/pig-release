@@ -39,7 +39,7 @@ import org.apache.pig.impl.io.FileLocalizer;
 public class TezResourceManager {
     private static TezResourceManager instance = null;
     private boolean inited = false;
-    private Path stagingDir;
+    private Path resourcesDir;
     private FileSystem remoteFs;
     private Configuration conf;
     private PigContext pigContext;
@@ -54,7 +54,7 @@ public class TezResourceManager {
 
     public void init(PigContext pigContext, Configuration conf) throws IOException {
         if (!inited) {
-            this.stagingDir = FileLocalizer.getTemporaryResourcePath(pigContext);
+            this.resourcesDir = FileLocalizer.getTemporaryResourcePath(pigContext);
             this.remoteFs = FileSystem.get(conf);
             this.conf = conf;
             this.pigContext = pigContext;
@@ -62,8 +62,8 @@ public class TezResourceManager {
         }
     }
 
-    public Path getStagingDir() {
-        return stagingDir;
+    public Path getResourcesDir() {
+        return resourcesDir;
     }
 
     // Add files from the source FS as local resources. The resource name will
@@ -79,7 +79,7 @@ public class TezResourceManager {
 
             // Ship the local resource to the staging directory on the remote FS
             if (!pigContext.getExecType().isLocal() && uri.toString().startsWith("file:")) {
-                Path remoteFsPath = remoteFs.makeQualified(new Path(stagingDir, resourceName));
+                Path remoteFsPath = remoteFs.makeQualified(new Path(resourcesDir, resourceName));
                 remoteFs.copyFromLocalFile(resourcePath, remoteFsPath);
                 remoteFs.setReplication(remoteFsPath, (short)conf.getInt(Job.SUBMIT_REPLICATION, 3));
                 resources.put(resourceName, remoteFsPath);
