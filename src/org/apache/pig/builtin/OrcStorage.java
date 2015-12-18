@@ -17,6 +17,7 @@
  */
 package org.apache.pig.builtin;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -32,6 +33,7 @@ import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.fs.FileStatus;
@@ -46,12 +48,13 @@ import org.apache.hadoop.hive.ql.io.orc.OrcNewOutputFormat;
 import org.apache.hadoop.hive.ql.io.orc.OrcSerde;
 import org.apache.hadoop.hive.ql.io.orc.OrcStruct;
 import org.apache.hadoop.hive.ql.io.orc.Reader;
-import org.apache.hadoop.hive.ql.io.orc.OrcFile.Version;
+import org.apache.hadoop.hive.ql.io.sarg.PredicateLeaf;
 import org.apache.hadoop.hive.ql.io.sarg.SearchArgument;
 import org.apache.hadoop.hive.ql.io.sarg.SearchArgument.Builder;
 import org.apache.hadoop.hive.ql.io.sarg.SearchArgumentFactory;
 import org.apache.hadoop.hive.serde2.AbstractSerDe;
 import org.apache.hadoop.hive.serde2.ColumnProjectionUtils;
+import org.apache.hadoop.hive.serde2.io.DateWritable;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
 import org.apache.hadoop.hive.serde2.typeinfo.StructTypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
@@ -64,6 +67,7 @@ import org.apache.hadoop.mapreduce.RecordReader;
 import org.apache.hadoop.mapreduce.RecordWriter;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.orc.OrcFile.Version;
 import org.apache.pig.Expression;
 import org.apache.pig.Expression.BetweenExpression;
 import org.apache.pig.Expression.Column;
@@ -95,7 +99,9 @@ import org.apache.pig.impl.util.Utils;
 import org.apache.pig.impl.util.hive.HiveUtils;
 import org.joda.time.DateTime;
 
+import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 import com.google.common.annotations.VisibleForTesting;
 
 /**
@@ -402,8 +408,9 @@ public class OrcStorage extends LoadFunc implements StoreFuncInterface, LoadMeta
             throw new RuntimeException("Cannot find Hadoop" + hadoopVersion + "ShimsClass in classpath");
         }
         Class[] classList = new Class[] {OrcFile.class, HiveConf.class, AbstractSerDe.class,
-                org.apache.hadoop.hive.shims.HadoopShims.class, HadoopShimsSecure.class, hadoopVersionShimsClass,
-                Input.class, org.apache.commons.lang3.exception.ExceptionUtils.class};
+                org.apache.hadoop.hive.shims.HadoopShims.class, HadoopShimsSecure.class, DateWritable.class,
+                hadoopVersionShimsClass, Input.class, org.apache.orc.OrcFile.class,
+                com.esotericsoftware.minlog.Log.class};
         return FuncUtils.getShipFiles(classList);
     }
 
@@ -587,7 +594,11 @@ public class OrcStorage extends LoadFunc implements StoreFuncInterface, LoadMeta
             log.info("Pushdown predicate SearchArgument is:\n" + sArg);
             Properties p = UDFContext.getUDFContext().getUDFProperties(this.getClass());
             try {
-                p.setProperty(signature + SearchArgsSuffix, sArg.toKryo());
+                Kryo kryo = new Kryo();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                Output output = new Output(baos);
+                kryo.writeObject(output, sArg);
+                p.setProperty(signature + SearchArgsSuffix, new String(Base64.encodeBase64(output.getBuffer())));
             } catch (Exception e) {
                 throw new IOException("Cannot serialize SearchArgument: " + sArg);
             }
@@ -630,35 +641,35 @@ public class OrcStorage extends LoadFunc implements StoreFuncInterface, LoadMeta
                 builder.end();
                 break;
             case OP_EQ:
-                builder.equals(getColumnName(lhs), getExpressionValue(rhs));
+                builder.equals(getColumnName(lhs), getColumnType(lhs), getExpressionValue(rhs));
                 break;
             case OP_NE:
                 builder.startNot();
-                builder.equals(getColumnName(lhs), getExpressionValue(rhs));
+                builder.equals(getColumnName(lhs), getColumnType(lhs), getExpressionValue(rhs));
                 builder.end();
                 break;
             case OP_LT:
-                builder.lessThan(getColumnName(lhs), getExpressionValue(rhs));
+                builder.lessThan(getColumnName(lhs), getColumnType(lhs), getExpressionValue(rhs));
                 break;
             case OP_LE:
-                builder.lessThanEquals(getColumnName(lhs), getExpressionValue(rhs));
+                builder.lessThanEquals(getColumnName(lhs), getColumnType(lhs), getExpressionValue(rhs));
                 break;
             case OP_GT:
                 builder.startNot();
-                builder.lessThanEquals(getColumnName(lhs), getExpressionValue(rhs));
+                builder.lessThanEquals(getColumnName(lhs), getColumnType(lhs), getExpressionValue(rhs));
                 builder.end();
                 break;
             case OP_GE:
                 builder.startNot();
-                builder.lessThan(getColumnName(lhs), getExpressionValue(rhs));
+                builder.lessThan(getColumnName(lhs), getColumnType(lhs), getExpressionValue(rhs));
                 builder.end();
                 break;
             case OP_BETWEEN:
                 BetweenExpression between = (BetweenExpression) rhs;
-                builder.between(getColumnName(lhs), getSearchArgObjValue(between.getLower()),  getSearchArgObjValue(between.getUpper()));
+                builder.between(getColumnName(lhs), getColumnType(lhs), getSearchArgObjValue(between.getLower()),  getSearchArgObjValue(between.getUpper()));
             case OP_IN:
                 InExpression in = (InExpression) rhs;
-                builder.in(getColumnName(lhs), getSearchArgObjValues(in.getValues()).toArray());
+                builder.in(getColumnName(lhs), getColumnType(lhs), getSearchArgObjValues(in.getValues()).toArray());
             default:
                 throw new RuntimeException("Unsupported binary expression type: " + expr.getOpType() + " in " + expr);
             }
@@ -666,7 +677,7 @@ public class OrcStorage extends LoadFunc implements StoreFuncInterface, LoadMeta
             Expression unaryExpr = ((UnaryExpression) expr).getExpression();
             switch (expr.getOpType()) {
             case OP_NULL:
-                builder.isNull(getColumnName(unaryExpr));
+                builder.isNull(getColumnName(unaryExpr), getColumnType(unaryExpr));
                 break;
             case OP_NOT:
                 builder.startNot();
@@ -685,6 +696,15 @@ public class OrcStorage extends LoadFunc implements StoreFuncInterface, LoadMeta
     private String getColumnName(Expression expr) {
         try {
             return ((Column) expr).getName();
+        } catch (ClassCastException e) {
+            throw new RuntimeException("Expected a Column but found " + expr.getClass().getName() +
+                    " in expression " + expr, e);
+        }
+    }
+
+    private PredicateLeaf.Type getColumnType(Expression expr) {
+        try {
+            return ((Column) expr).getDataType();
         } catch (ClassCastException e) {
             throw new RuntimeException("Expected a Column but found " + expr.getClass().getName() +
                     " in expression " + expr, e);

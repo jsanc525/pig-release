@@ -17,10 +17,19 @@
  */
 package org.apache.pig;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.sql.Timestamp;
 import java.util.List;
 
+import org.apache.hadoop.hive.common.type.HiveDecimal;
+import org.apache.hadoop.hive.ql.io.sarg.PredicateLeaf;
+import org.apache.hadoop.hive.serde2.io.HiveDecimalWritable;
+import org.apache.hadoop.hive.serde2.io.TimestampWritable;
 import org.apache.pig.classification.InterfaceAudience;
 import org.apache.pig.classification.InterfaceStability;
+import org.apache.pig.data.DataType;
+import org.joda.time.DateTime;
 
 /**
  * A class to communicate Filter expressions to LoadFuncs.
@@ -79,11 +88,40 @@ public abstract class Expression {
 
     protected OpType opType;
 
+    protected byte dataType;
+
     /**
      * @return the opType
      */
     public OpType getOpType() {
         return opType;
+    }
+
+    /**
+     * @return the opType
+     */
+    public PredicateLeaf.Type getDataType() {
+        switch (dataType) {
+        case DataType.INTEGER:
+            return PredicateLeaf.Type.LONG;
+        case DataType.LONG:
+            return PredicateLeaf.Type.LONG;
+        case DataType.DOUBLE:
+            return PredicateLeaf.Type.FLOAT;
+        case DataType.FLOAT:
+            return PredicateLeaf.Type.FLOAT;
+        case DataType.CHARARRAY:
+            return PredicateLeaf.Type.STRING;
+        case DataType.DATETIME:
+            return PredicateLeaf.Type.DATE;
+        case DataType.BIGINTEGER:
+        case DataType.BIGDECIMAL:
+            return PredicateLeaf.Type.DECIMAL;
+        case DataType.BOOLEAN:
+            return PredicateLeaf.Type.BOOLEAN;
+        default:
+            throw new RuntimeException("Unsupported data type:" + DataType.findTypeName(dataType));
+        }
     }
 
     //TODO: Apply a optimizer to Expression from PredicatePushdownOptimizer and
@@ -221,9 +259,10 @@ public abstract class Expression {
         /**
          * @param name
          */
-        public Column(String name) {
+        public Column(String name, byte dataType) {
             this.opType = OpType.TERM_COL;
             this.name = name;
+            this.dataType = dataType;
         }
 
         @Override
@@ -265,6 +304,17 @@ public abstract class Expression {
          */
         public Const(Object value) {
             this.opType = OpType.TERM_CONST;
+            if (value instanceof Integer) {
+                value = new Long((int)value);
+            } else if (value instanceof Float) {
+                value = new Double((float)value);
+            } else if (value instanceof BigInteger) {
+                value = new HiveDecimalWritable(HiveDecimal.create((BigInteger)value));
+            } else if (value instanceof BigDecimal) {
+                value = new HiveDecimalWritable(HiveDecimal.create((BigDecimal)value));
+            } else if (value instanceof DateTime) {
+                value = new java.sql.Date(((DateTime)value).getMillis());
+            }
             this.value = value;
         }
 

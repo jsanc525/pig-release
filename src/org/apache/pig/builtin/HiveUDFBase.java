@@ -33,6 +33,7 @@ import org.apache.hadoop.hive.ql.udf.generic.Collector;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDAFResolver;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDF;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDTF;
+import org.apache.hadoop.hive.serde2.io.HiveDecimalWritable;
 import org.apache.hadoop.hive.serde2.objectinspector.ConstantObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.PrimitiveObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.StructField;
@@ -193,7 +194,7 @@ abstract class HiveUDFBase extends EvalFunc<Object> {
         }
         List<String> files = FuncUtils.getShipFiles(new Class[] {GenericUDF.class,
                 PrimitiveObjectInspector.class, HiveConf.class, Serializer.class, ShimLoader.class, 
-                hadoopVersionShimsClass, HadoopShimsSecure.class, Collector.class});
+                hadoopVersionShimsClass, HadoopShimsSecure.class, Collector.class, HiveDecimalWritable.class});
         return files;
     }
 
