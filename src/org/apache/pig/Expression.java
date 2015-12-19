@@ -305,9 +305,9 @@ public abstract class Expression {
         public Const(Object value) {
             this.opType = OpType.TERM_CONST;
             if (value instanceof Integer) {
-                value = new Long((int)value);
+                value = new Long((Integer)value);
             } else if (value instanceof Float) {
-                value = new Double((float)value);
+                value = new Double((Float)value);
             } else if (value instanceof BigInteger) {
                 value = new HiveDecimalWritable(HiveDecimal.create((BigInteger)value));
             } else if (value instanceof BigDecimal) {
