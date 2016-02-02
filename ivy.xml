@@ -239,6 +239,10 @@
       conf="compile->master"/>
     <dependency org="org.codehaus.jackson" name="jackson-core-asl" rev="${jackson.version}"
       conf="compile->master"/>
+    <dependency org="org.codehaus.jackson" name="jackson-xc" rev="${jackson.version}"
+      conf="test->master"/>
+    <dependency org="org.codehaus.jackson" name="jackson-jaxrs" rev="${jackson.version}"
+      conf="test->master"/>
     <dependency org="org.fusesource.jansi" name="jansi" rev="${jansi.version}"
       conf="compile->master"/>
     <dependency org="joda-time" name="joda-time" rev="${joda-time.version}" conf="compile->master"/>
