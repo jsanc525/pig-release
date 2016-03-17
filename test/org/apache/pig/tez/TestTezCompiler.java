@@ -160,6 +160,35 @@ public class TestTezCompiler {
     }
 
     @Test
+    public void testSelfJoinUnion() throws Exception {
+        String query =
+                "a = load 'file:///tmp/input1' as (x:int, y:int);" +
+                "a1 = filter a by x > 5;" +
+                "a2 = filter a by x < 2;" +
+                "b = union a1, a2;" +
+                "c = join b by x, a by x;" +
+                "store c into 'file:///tmp/output';";
+
+        run(query, "test/org/apache/pig/test/data/GoldenFiles/tez/TEZC-SelfJoin-5.gld");
+    }
+
+    @Test
+    public void testSelfJoinUnionDifferentMembers() throws Exception {
+        String query =
+                "a = load 'file:///tmp/input1' as (x:int, y:int);" +
+                "a1 = filter a by x > 5;" +
+                "a2 = filter a by x < 2;" +
+                "a3 = filter a by y == 10;" +
+                "a4 = join a2 by x, a3 by x;" +
+                "a5 = foreach a4 generate a2::x as x, a3::y as y;" +
+                "b = union a1, a5;" +
+                "c = join b by x, a by x;" +
+                "store c into 'file:///tmp/output';";
+
+        run(query, "test/org/apache/pig/test/data/GoldenFiles/tez/TEZC-SelfJoin-6.gld");
+    }
+
+    @Test
     public void testCross() throws Exception {
         String query =
                 "a = load 'file:///tmp/input1' as (x:int, y:int);" +
