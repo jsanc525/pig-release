@@ -19,13 +19,14 @@ package org.apache.pig.backend.hadoop.executionengine.tez.util;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.pig.PigException;
 import org.apache.pig.backend.executionengine.ExecException;
 import org.apache.pig.backend.hadoop.executionengine.physicalLayer.PhysicalOperator;
 import org.apache.pig.backend.hadoop.executionengine.physicalLayer.expressionOperators.POProject;
+import org.apache.pig.backend.hadoop.executionengine.physicalLayer.expressionOperators.POUserFunc;
 import org.apache.pig.backend.hadoop.executionengine.physicalLayer.plans.PhysicalPlan;
 import org.apache.pig.backend.hadoop.executionengine.physicalLayer.relationalOperators.POForEach;
 import org.apache.pig.backend.hadoop.executionengine.physicalLayer.relationalOperators.POPackage;
@@ -37,6 +38,8 @@ import org.apache.pig.backend.hadoop.executionengine.tez.plan.TezOperator;
 import org.apache.pig.backend.hadoop.executionengine.tez.plan.operator.POLocalRearrangeTez;
 import org.apache.pig.backend.hadoop.executionengine.tez.plan.operator.POStoreTez;
 import org.apache.pig.backend.hadoop.executionengine.tez.plan.operator.POValueOutputTez;
+import org.apache.pig.backend.hadoop.executionengine.tez.plan.udf.ReadScalarsTez;
+import org.apache.pig.backend.hadoop.executionengine.tez.runtime.TezInput;
 import org.apache.pig.builtin.RoundRobinPartitioner;
 import org.apache.pig.data.DataType;
 import org.apache.pig.data.TupleFactory;
@@ -126,6 +129,29 @@ public class TezCompilerUtil {
         // Add edge descriptors to old and new operators
         to.inEdges.put(from.getOperatorKey(), edge);
         from.outEdges.put(to.getOperatorKey(), edge);
+    }
+
+    public static boolean isNonPackageInput(String inputKey, TezOperator tezOp) throws PlanException {
+        try {
+            List<TezInput> inputs = PlanHelper.getPhysicalOperators(tezOp.plan, TezInput.class);
+            for (TezInput input : inputs) {
+                if (ArrayUtils.contains(input.getTezInputs(), inputKey)) {
+                    return true;
+                }
+            }
+            List<POUserFunc> userFuncs = PlanHelper.getPhysicalOperators(tezOp.plan, POUserFunc.class);
+            for (POUserFunc userFunc : userFuncs) {
+                if (userFunc.getFunc() instanceof ReadScalarsTez) {
+                    TezInput input = (TezInput)userFunc.getFunc();
+                    if (ArrayUtils.contains(input.getTezInputs(), inputKey)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        } catch (VisitorException e) {
+            throw new PlanException(e);
+        }
     }
 
     static public POForEach getForEach(POProject project, int rp, String scope, NodeIdGenerator nig) {
