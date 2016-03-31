@@ -97,6 +97,7 @@
     <property name="test.build.dir" value="${build.dir}/test" />
     <property name="test.build.classes" value="${test.build.dir}/classes" />
     <property name="test.log.dir" value="${test.build.dir}/logs" />
+    <property name="tmpoutput" value="/tmp/output" />
     <property name="test.timeout" value="7200000" />
     <property name="test.junit.output.format" value="plain" />
     <property name="test.commit.file" value="${test.src.dir}/commit-tests"/>
@@ -921,6 +922,7 @@
       <attribute name="test.file" />
       <attribute name="tests.failed" />
       <sequential>
+        <delete dir="${tmpoutput}"/>
         <delete dir="${test.log.dir}"/>
         <mkdir dir="${test.log.dir}"/>
         <tempfile property="junit.tmp.dir" prefix="pig_junit_tmp" destDir="${java.io.tmpdir}" />
