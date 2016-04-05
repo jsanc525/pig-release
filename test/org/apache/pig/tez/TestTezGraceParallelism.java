@@ -141,9 +141,9 @@ public class TestTezGraceParallelism {
             Util.checkQueryOutputsAfterSort(iter, expectedResults);
             assertTrue(writer.toString().contains("Initialize parallelism for scope-52 to 20"));
             assertTrue(writer.toString().contains("Initialize parallelism for scope-61 to 100"));
-            assertTrue(writer.toString().contains("Reduce auto parallelism for vertex: scope-49 to 1 from 2"));
-            assertTrue(writer.toString().contains("Reduce auto parallelism for vertex: scope-52 to 1 from 20"));
-            assertTrue(writer.toString().contains("Reduce auto parallelism for vertex: scope-61 to 1 from 100"));
+            assertTrue(writer.toString().contains("Reducing auto parallelism for vertex: scope-49 from 2 to 1"));
+            assertTrue(writer.toString().contains("Reducing auto parallelism for vertex: scope-52 from 20 to 1"));
+            assertTrue(writer.toString().contains("Reducing auto parallelism for vertex: scope-61 from 100 to 1"));
         } finally {
             Util.removeLogAppender(PigGraceShuffleVertexManager.class, "testDecreaseParallelism");
             Util.removeLogAppender(ShuffleVertexManager.class, "testDecreaseParallelism");
@@ -184,7 +184,7 @@ public class TestTezGraceParallelism {
             System.out.println(writer.toString());
             assertTrue(writer.toString().contains("Initialize parallelism for scope-64 to 50"));
             // There are randomness in which task finishes first, so the auto parallelism could result different result
-            assertTrue(Pattern.compile("Reduce auto parallelism for vertex: scope-64 to (\\d+)* from 50").matcher(writer.toString()).find());
+            assertTrue(Pattern.compile("Reducing auto parallelism for vertex: scope-64 from 50 to (\\d+)*").matcher(writer.toString()).find());
         } finally {
             Util.removeLogAppender(PigGraceShuffleVertexManager.class, "testIncreaseParallelism");
             Util.removeLogAppender(ShuffleVertexManager.class, "testIncreaseParallelism");
