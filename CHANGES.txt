@@ -24,6 +24,8 @@ INCOMPATIBLE CHANGES
 
 IMPROVEMENTS
 
+PIG-4719: Documentation for PIG-4704: Customizable Error Handling for Storers in Pig (daijy)
+
 PIG-4714: Improve logging across multiple components with callerId (daijy)
 
 PIG-4885: Turn off union optimizer if there is PARALLEL clause in union in Tez (rohini)
@@ -130,6 +132,8 @@ PIG-4638: Allow TOMAP to accept dynamically sized input (nielsbasjes via daijy)
 PIG-4639: Add better parser for Apache HTTPD access log (nielsbasjes via daijy)
 
 BUG FIXES
+
+PIG-4821: Pig chararray field with special UTF-8 chars as part of tuple join key produces wrong results in Tez (rohini)
 
 PIG-4734: TOMAP schema inferring breaks some scripts in type checking for bincond (daijy)
 
