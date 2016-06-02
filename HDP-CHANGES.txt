@@ -8,6 +8,8 @@ NEW FEATURES
 IMPROVEMENTS
 
 BUG FIXES
+ PIG-4873: InputSplit.getLocations return null and result a NPE in Pig
+
  PIG-4624 - Error on ORC empty file without schema
 
  PIG-4627: [Pig on Tez] Self join does not handle null values correctly
