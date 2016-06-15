@@ -17,6 +17,8 @@
 
 package org.apache.pig.backend.hadoop.accumulo;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -25,7 +27,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Map;
 
-import org.apache.accumulo.core.Constants;
 import org.apache.pig.LoadStoreCaster;
 import org.apache.pig.ResourceSchema.ResourceFieldSchema;
 import org.apache.pig.backend.executionengine.ExecException;
@@ -83,7 +84,7 @@ public class AccumuloBinaryConverter implements LoadStoreCaster {
 
     @Override
     public String bytesToCharArray(byte[] b) throws IOException {
-        return new String(b, Constants.UTF8);
+        return new String(b, UTF_8);
     }
 
     /**
@@ -91,7 +92,7 @@ public class AccumuloBinaryConverter implements LoadStoreCaster {
      */
     @Override
     public DateTime bytesToDateTime(byte[] b) throws IOException {
-        String s = new String(b, Constants.UTF8);
+        String s = new String(b, UTF_8);
         return DateTime.parse(s);
     }
 
@@ -202,7 +203,7 @@ public class AccumuloBinaryConverter implements LoadStoreCaster {
 
     @Override
     public byte[] toBytes(DateTime dt) throws IOException {
-        return dt.toString().getBytes(Constants.UTF8);
+        return dt.toString().getBytes(UTF_8);
     }
 
     @Override
@@ -249,7 +250,7 @@ public class AccumuloBinaryConverter implements LoadStoreCaster {
 
     @Override
     public byte[] toBytes(String s) throws IOException {
-        return s.getBytes(Constants.UTF8);
+        return s.getBytes(UTF_8);
     }
 
     /**

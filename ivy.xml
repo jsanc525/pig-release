@@ -398,6 +398,8 @@
       <exclude org="org.slf4j" module="slf4j-log4j12"/>
     </dependency>
 
+    <dependency org="org.apache.accumulo" name="accumulo-trace" rev="${accumulo15.version}" conf="compile->master"/>
+
     <!-- Used for 'functional' Accumulo tests -->
     <dependency org="org.apache.accumulo" name="accumulo-minicluster" rev="${accumulo15.version}" conf="compile->default">
       <exclude org="com.google.guava" module="guava"/>
@@ -410,6 +412,7 @@
       <exclude org="jline" module="jline"/>
       <exclude org="log4j" module="log4j"/>
       <exclude org="org.apache.hadoop" module="hadoop-client"/>
+      <exclude org="org.apache.hadoop" module="hadoop-yarn-server-tests"/>
       <exclude org="org.apache.zookeeper" module="zookeeper"/>
       <exclude org="org.slf4j" module="slf4j-api"/>
       <exclude org="org.slf4j" module="slf4j-log4j12"/>
