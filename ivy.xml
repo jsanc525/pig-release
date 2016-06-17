@@ -247,6 +247,10 @@
       conf="compile->master"/>
     <dependency org="org.codehaus.jackson" name="jackson-core-asl" rev="${jackson.version}"
       conf="compile->master"/>
+    <dependency org="org.codehaus.jackson" name="jackson-xc" rev="${jackson.version}"
+      conf="compile->master"/>
+    <dependency org="org.codehaus.jackson" name="jackson-jaxrs" rev="${jackson.version}"
+      conf="compile->master"/>
     <dependency org="org.fusesource.jansi" name="jansi" rev="${jansi.version}"
       conf="compile->master"/>
     <dependency org="joda-time" name="joda-time" rev="${joda-time.version}" conf="compile->master"/>
@@ -365,6 +369,8 @@
       <exclude org="asm" module="asm"/>
     </dependency>
 
+    <dependency org="org.apache.hbase" name="hbase-procedure" rev="${hbase95.version}" conf="hbase95->master"/>
+
     <dependency org="org.htrace" name="htrace-core" rev="3.0.4" conf="hadoop23->master"/>
     <dependency org="org.apache.htrace" name="htrace-core" rev="${htrace.version}" conf="hadoop23->master"/>
     <dependency org="org.fusesource.leveldbjni" name="leveldbjni-all" rev="${leveldbjni.version}"
@@ -476,6 +482,8 @@
     <dependency org="org.apache.curator" name="curator-framework" rev="${curator.version}"
       conf="hadoop23->master"/>
     <dependency org="org.apache.curator" name="curator-client" rev="${curator.version}"
+      conf="hadoop23->master"/>
+    <dependency org="io.dropwizard.metrics" name="metrics-core" rev="${dropwizard.version}"
       conf="hadoop23->master"/>
   </dependencies>
 </ivy-module>
