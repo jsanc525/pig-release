@@ -1,0 +1,11 @@
+Changes only in Hortonworks github and not in Apache Pig release 0.16.0 and hence not covered by CHANGES.txt.
+
+
+INCOMPATIBLE CHANGES
+
+NEW FEATURES
+
+IMPROVEMENTS
+
+BUG FIXES
+ PIG-4921: Kill running jobs on InterruptedException
