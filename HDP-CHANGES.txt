@@ -8,4 +8,10 @@ NEW FEATURES
 IMPROVEMENTS
 
 BUG FIXES
+
+ PIG-4948: Pig on Tez AM use too much memory on a small cluster
+
  PIG-4921: Kill running jobs on InterruptedException
+
+ PIG-4947: LOAD with HBaseStorage using a mix of pure wildcards and prefixed wildcards results
+   in empty maps for the pure wildcarded column families
