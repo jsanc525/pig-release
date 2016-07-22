@@ -33,6 +33,7 @@ import org.apache.pig.PigConfiguration;
 import org.apache.pig.backend.hadoop.executionengine.tez.TezJob.TezJobConfig;
 import org.apache.pig.backend.hadoop.executionengine.tez.util.MRToTezHelper;
 import org.apache.pig.impl.PigContext;
+import org.apache.pig.impl.PigImplConstants;
 import org.apache.pig.impl.util.Utils;
 import org.apache.pig.tools.pigstats.tez.TezScriptState;
 import org.apache.tez.client.TezAppMasterStatus;
@@ -47,13 +48,13 @@ public class TezSessionManager {
     private static final Log log = LogFactory.getLog(TezSessionManager.class);
 
     static {
-        Runtime.getRuntime().addShutdownHook(new Thread() {
+        Utils.addShutdownHookWithPriority(new Runnable() {
 
             @Override
             public void run() {
                 TezSessionManager.shutdown();
             }
-        });
+        }, PigImplConstants.SHUTDOWN_HOOK_JOB_KILL_PRIORITY);
     }
 
     private static ReentrantReadWriteLock sessionPoolLock = new ReentrantReadWriteLock();
