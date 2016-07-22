@@ -248,11 +248,14 @@ public class PigServer {
         if (callerId != null) {
             log.info("Caller ID for session: " + callerId);
         }
-        ATSService.ATSEvent event = new ATSService.ATSEvent(auditId, callerId);
-        try {
-            ATSService.getInstance().logEvent(event);
-        } catch (Exception e) {
-            log.warn("Error posting to ATS: " + e.getMessage());
+        if (Boolean.parseBoolean(pigContext.getProperties()
+                .getProperty(PigConfiguration.ENABLE_ATS))) {
+            ATSService.ATSEvent event = new ATSService.ATSEvent(auditId, callerId);
+            try {
+                ATSService.getInstance().logEvent(event);
+            } catch (Exception e) {
+                log.warn("Error posting to ATS: " + e.getMessage());
+            }
         }
 
         // set hdfs caller context
