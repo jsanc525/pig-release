@@ -344,6 +344,11 @@ public class PigConfiguration {
      */
     public static final String CALLER_ID = "pig.log.trace.id";
 
+    /**
+     * Enable ATS for Pig
+     */
+    public static final String ENABLE_ATS = "pig.ats.enabled";
+
     // Deprecated settings of Pig 0.13
 
     /**
