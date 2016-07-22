@@ -18,9 +18,7 @@
 package org.apache.pig.backend.hadoop.executionengine.tez;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +33,6 @@ import org.apache.pig.PigConfiguration;
 import org.apache.pig.backend.hadoop.executionengine.tez.TezJob.TezJobConfig;
 import org.apache.pig.backend.hadoop.executionengine.tez.util.MRToTezHelper;
 import org.apache.pig.impl.PigContext;
-import org.apache.pig.impl.PigImplConstants;
 import org.apache.pig.impl.util.Utils;
 import org.apache.pig.tools.pigstats.tez.TezScriptState;
 import org.apache.tez.client.TezAppMasterStatus;
@@ -50,13 +47,13 @@ public class TezSessionManager {
     private static final Log log = LogFactory.getLog(TezSessionManager.class);
 
     static {
-        Utils.addShutdownHookWithPriority(new Runnable() {
+        Runtime.getRuntime().addShutdownHook(new Thread() {
 
             @Override
             public void run() {
                 TezSessionManager.shutdown();
             }
-        }, PigImplConstants.SHUTDOWN_HOOK_JOB_KILL_PRIORITY);
+        });
     }
 
     private static ReentrantReadWriteLock sessionPoolLock = new ReentrantReadWriteLock();
@@ -276,11 +273,6 @@ public class TezSessionManager {
                 synchronized (sessionInfo) {
                     if (sessionInfo.session == session) {
                         log.info("Stopping Tez session " + session);
-                        String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                                    .format(Calendar.getInstance().getTime());
-                        System.err.println(timeStamp + " Shutting down Tez session "
-                                + ", sessionName=" + session.getClientName()
-                                + ", applicationId=" + session.getAppMasterApplicationId());
                         session.stop();
                         sessionToRemove = sessionInfo;
                         break;
@@ -307,30 +299,19 @@ public class TezSessionManager {
             shutdown = true;
             for (SessionInfo sessionInfo : sessionPool) {
                 synchronized (sessionInfo) {
-                    TezClient session = sessionInfo.session;
                     try {
-                        String timeStamp = new SimpleDateFormat(
-                                "yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
-                        if (session.getAppMasterStatus().equals(
+                        if (sessionInfo.session.getAppMasterStatus().equals(
                                 TezAppMasterStatus.SHUTDOWN)) {
                             log.info("Tez session is already shutdown "
-                                    + session);
-                            System.err.println(timeStamp
-                                    + " Tez session is already shutdown " + session
-                                    + ", sessionName=" + session.getClientName()
-                                    + ", applicationId=" + session.getAppMasterApplicationId());
+                                    + sessionInfo.session);
                             continue;
                         }
-                        log.info("Shutting down Tez session " + session);
-                        // Since hadoop calls org.apache.log4j.LogManager.shutdown();
-                        // the log.info message is not displayed with shutdown hook in Oozie
-                        System.err.println(timeStamp + " Shutting down Tez session "
-                                + ", sessionName=" + session.getClientName()
-                                + ", applicationId=" + session.getAppMasterApplicationId());
-                        session.stop();
+                        log.info("Shutting down Tez session "
+                                + sessionInfo.session);
+                        sessionInfo.session.stop();
                     } catch (Exception e) {
                         log.error("Error shutting down Tez session "
-                                + session, e);
+                                + sessionInfo.session, e);
                     }
                 }
             }

@@ -19,9 +19,7 @@ package org.apache.pig.backend.hadoop.executionengine.mapReduceLayer;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -67,7 +65,6 @@ import org.apache.pig.backend.hadoop.executionengine.physicalLayer.relationalOpe
 import org.apache.pig.backend.hadoop.executionengine.physicalLayer.relationalOperators.POStore;
 import org.apache.pig.backend.hadoop.executionengine.shims.HadoopShims;
 import org.apache.pig.impl.PigContext;
-import org.apache.pig.impl.PigImplConstants;
 import org.apache.pig.impl.io.FileLocalizer;
 import org.apache.pig.impl.io.FileSpec;
 import org.apache.pig.impl.plan.CompilationMessageCollector;
@@ -89,7 +86,7 @@ import org.apache.pig.tools.pigstats.mapreduce.MRScriptState;
  * Main class that launches pig for Map Reduce
  *
  */
-public class MapReduceLauncher extends Launcher {
+public class MapReduceLauncher extends Launcher{
 
     public static final String SUCCEEDED_FILE_NAME = "_SUCCESS";
 
@@ -97,23 +94,14 @@ public class MapReduceLauncher extends Launcher {
 
     private boolean aggregateWarning = false;
 
-    public MapReduceLauncher() {
-        super();
-        Utils.addShutdownHookWithPriority(new HangingJobKiller(),
-                PigImplConstants.SHUTDOWN_HOOK_JOB_KILL_PRIORITY);
-    }
-
     @Override
     public void kill() {
         try {
-            log.info("Received kill signal");
+            log.debug("Receive kill signal");
             if (jc!=null) {
                 for (Job job : jc.getRunningJobs()) {
                     HadoopShims.killJob(job);
                     log.info("Job " + job.getAssignedJobID() + " killed");
-                    String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                            .format(Calendar.getInstance().getTime());
-                    System.err.println(timeStamp + " Job " + job.getAssignedJobID() + " killed");
                 }
             }
         } catch (Exception e) {
@@ -313,7 +301,8 @@ public class MapReduceLauncher extends Launcher {
                 // Now wait, till we are finished.
                 while(!jc.allFinished()){
 
-                    jcThread.join(sleepTime);
+                    try { jcThread.join(sleepTime); }
+                    catch (InterruptedException e) {}
 
                     List<Job> jobsAssignedIdInThisRun = new ArrayList<Job>();
 

@@ -76,7 +76,7 @@ public abstract class Launcher {
     protected Map<FileSpec, Exception> failureMap;
     protected JobControl jc = null;
 
-    protected class HangingJobKiller extends Thread {
+    class HangingJobKiller extends Thread {
         public HangingJobKiller() {}
 
         @Override
@@ -90,6 +90,7 @@ public abstract class Launcher {
     }
 
     protected Launcher() {
+        Runtime.getRuntime().addShutdownHook(new HangingJobKiller());
         // handle the windows portion of \r
         if (System.getProperty("os.name").toUpperCase().startsWith("WINDOWS")) {
             newLine = "\r\n";
@@ -103,6 +104,7 @@ public abstract class Launcher {
     public void reset() {
         failureMap = Maps.newHashMap();
         totalHadoopTimeSpent = 0;
+        jc = null;
     }
 
     /**
