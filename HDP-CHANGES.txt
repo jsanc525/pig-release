@@ -8,6 +8,9 @@ NEW FEATURES
 IMPROVEMENTS
 
 BUG FIXES
+
+ PIG-4587: Applying isFirstReduceOfKey for Skewed left outer join skips records
+
  PIG-4873: InputSplit.getLocations return null and result a NPE in Pig
 
  PIG-4624 - Error on ORC empty file without schema
