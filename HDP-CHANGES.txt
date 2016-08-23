@@ -38,6 +38,8 @@ BUG FIXES
  PIG-4707: [Pig on Tez] Streaming job hangs with pig.exec.mapPartAgg=true
 
  PIG-4712: [Pig on Tez] NPE in Bloom UDF after Union
+ 
+ PIG-4714: Improve logging across multiple components with callerId (Pig launch throws ATS errors)
 
  PIG-4744: Honor tez.staging-dir setting in tez-site.xml
 
@@ -50,3 +52,5 @@ BUG FIXES
  PIG-4690: Union with self replicate join will fail in Tez
 
  PIG-4816: Read a null scalar causing a Tez failure
+
+ PIG-4873: InputSplit.getLocations return null and result a NPE in Pig
