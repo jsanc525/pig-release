@@ -206,6 +206,10 @@ PIG-4639: Add better parser for Apache HTTPD access log (nielsbasjes via daijy)
 
 BUG FIXES
 
+PIG-5073: Skip e2e Limit_5 test for Tez (knoguchi)
+
+PIG-4976: streaming job with store clause stuck if the script fail (daijy via knoguchi)
+
 PIG-5112: Cleanup pig-template.xml (daijy)
 
 PIG-4821: Pig chararray field with special UTF-8 chars as part of tuple join key produces wrong results in Tez (rohini)
