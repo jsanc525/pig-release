@@ -103,12 +103,12 @@ public class Main {
 
     static {
 
-        Utils.addShutdownHookWithPriority(new Runnable() {
+        ShutdownHookManager.get().addShutdownHook(new Runnable() {
             @Override
             public void run() {
                 FileLocalizer.deleteTempResourceFiles();
             }
-        }, PigImplConstants.SHUTDOWN_HOOK_TMP_FILES_CLEANUP_PRIORITY);
+        }, FileSystem.SHUTDOWN_HOOK_PRIORITY + 1);
     }
 
     private final static Log log = LogFactory.getLog(Main.class);
