@@ -151,7 +151,7 @@
     </condition>
 	
     <target name="setTezEnv">
-        <propertyreset name="test.timeout" value="900000" />
+        <propertyreset name="test.timeout" value="1800000" />
         <propertyreset name="hadoopversion" value="23" />
         <propertyreset name="isHadoop23" value="true" />
         <propertyreset name="hbase.hadoop.version" value="hadoop2" />
