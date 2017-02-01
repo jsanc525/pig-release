@@ -45,6 +45,7 @@ import org.apache.pig.backend.hadoop.executionengine.tez.plan.TezOperator.Vertex
 import org.apache.pig.backend.hadoop.executionengine.tez.plan.operator.POStoreTez;
 import org.apache.pig.backend.hadoop.executionengine.tez.plan.operator.POValueOutputTez;
 import org.apache.pig.backend.hadoop.executionengine.tez.plan.udf.ReadScalarsTez;
+import org.apache.pig.backend.hadoop.executionengine.tez.runtime.HashValuePartitioner;
 import org.apache.pig.backend.hadoop.executionengine.tez.runtime.TezInput;
 import org.apache.pig.backend.hadoop.executionengine.tez.runtime.TezOutput;
 import org.apache.pig.backend.hadoop.executionengine.tez.util.TezCompilerUtil;
@@ -53,7 +54,6 @@ import org.apache.pig.builtin.AvroStorage;
 import org.apache.pig.builtin.JsonStorage;
 import org.apache.pig.builtin.OrcStorage;
 import org.apache.pig.builtin.PigStorage;
-import org.apache.pig.builtin.RoundRobinPartitioner;
 import org.apache.pig.builtin.mock.Storage;
 import org.apache.pig.impl.plan.OperatorKey;
 import org.apache.pig.impl.plan.PlanException;
@@ -259,7 +259,22 @@ public class UnionOptimizer extends TezOpPlanVisitor {
                 for (TezOperator succ : successors) {
                     if (succ.isVertexGroup() && unionStoreOutputs.get(i).getSFile().equals(succ.getVertexGroupInfo().getSFile())) {
                         existingVertexGroup = succ;
+                        break;
                     }
+                }
+            }
+            if (existingVertexGroup == null) {
+                // In the case of union + split + union + store, the different stores in the Split
+                // will be writing to same location after second union operator is optimized.
+                // So while optimizing the first union, we should just make it write to one vertex group
+                for (int j = 0; j < i; j++) {
+                    if (unionStoreOutputs.get(i).getSFile().equals(storeVertexGroupOps[j].getVertexGroupInfo().getSFile())) {
+                        storeVertexGroupOps[i] = storeVertexGroupOps[j];
+                        break;
+                    }
+                }
+                if (storeVertexGroupOps[i] != null) {
+                    continue;
                 }
             }
             if (existingVertexGroup != null) {
@@ -292,6 +307,15 @@ public class UnionOptimizer extends TezOpPlanVisitor {
         TezOperator[] outputVertexGroupOps = new TezOperator[unionOutputKeys.size()];
         String[] newOutputKeys = new String[unionOutputKeys.size()];
         for (int i=0; i < outputVertexGroupOps.length; i++) {
+            for (int j = 0; j < i; j++) {
+                if (unionOutputKeys.get(i).equals(unionOutputKeys.get(j))) {
+                    outputVertexGroupOps[i] = outputVertexGroupOps[j];
+                    break;
+                }
+            }
+            if (outputVertexGroupOps[i] != null) {
+                continue;
+            }
             outputVertexGroupOps[i] = new TezOperator(OperatorKey.genOpKey(scope));
             outputVertexGroupOps[i].setVertexGroupInfo(new VertexGroupInfo());
             outputVertexGroupOps[i].getVertexGroupInfo().setOutput(unionOutputKeys.get(i));
@@ -537,15 +561,24 @@ public class UnionOptimizer extends TezOpPlanVisitor {
         // Connect predecessor to the storeVertexGroups
         int i = 0;
         for (TezOperator storeVertexGroup : storeVertexGroupOps) {
+            // Skip connecting if they are already connected. Can happen in case of
+            // union + split + union + store. Because of the split all the stores
+            // will be writing to same location
+            List<OperatorKey> inputs = storeVertexGroup.getVertexGroupInfo().getInputs();
+            if (inputs == null || !inputs.contains(pred.getOperatorKey())) {
+                tezPlan.connect(pred, storeVertexGroup);
+            }
             storeVertexGroup.getVertexGroupInfo().addInput(pred.getOperatorKey());
             pred.addVertexGroupStore(clonedUnionStoreOutputs.get(i++).getOperatorKey(),
                     storeVertexGroup.getOperatorKey());
-            tezPlan.connect(pred, storeVertexGroup);
         }
 
         for (TezOperator outputVertexGroup : outputVertexGroupOps) {
+            List<OperatorKey> inputs = outputVertexGroup.getVertexGroupInfo().getInputs();
+            if (inputs == null || !inputs.contains(pred.getOperatorKey())) {
+                tezPlan.connect(pred, outputVertexGroup);
+            }
             outputVertexGroup.getVertexGroupInfo().addInput(pred.getOperatorKey());
-            tezPlan.connect(pred, outputVertexGroup);
         }
 
         copyOperatorProperties(pred, unionOp);
@@ -590,7 +623,7 @@ public class UnionOptimizer extends TezOpPlanVisitor {
             // more union predecessors. Change it to SCATTER_GATHER
             if (edge.dataMovementType == DataMovementType.ONE_TO_ONE) {
                 edge.dataMovementType = DataMovementType.SCATTER_GATHER;
-                edge.partitionerClass = RoundRobinPartitioner.class;
+                edge.partitionerClass = HashValuePartitioner.class;
                 edge.outputClassName = UnorderedPartitionedKVOutput.class.getName();
                 edge.inputClassName = UnorderedKVInput.class.getName();
             }

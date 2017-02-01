@@ -18,7 +18,88 @@
 
 Pig Change Log
 
-Release 0.16.0 - Unreleased
+Release 0.16.1 - Unreleased
+
+INCOMPATIBLE CHANGES
+
+IMPROVEMENTS
+
+PIG-5037: Add api getDisplayString to PigStats (zjffdu)
+
+PIG-4945: Update document for conflicting macro params (knoguchi via daijy)
+
+OPTIMIZATIONS
+
+BUG FIXES
+
+PIG-5119: SkewedJoin_15 is unstable (daijy)
+
+PIG-5118: Script fails with Invalid dag containing 0 vertices (rohini)
+
+PIG-5111: e2e Utf8Test fails in local mode (rohini)
+
+PIG-5112: Cleanup pig-template.xml (daijy)
+
+PIG-5046: Skewed join with auto parallelism hangs when right input also has autoparallelism (rohini)
+
+PIG-5108: AvroStorage on Tez with exception on nested records (daijy)
+
+PIG-4260: SpillableMemoryManager.spill should revert spill on all exception (rohini)
+
+PIG-4918: Pig on Tez cannot switch pig.temp.dir to another fs (daijy)
+
+PIG-5078: Script fails with error - POStoreTez only accepts MROutput (rohini)
+
+PIG-5088: HashValuePartitioner has skew when there is only map fields (rohini)
+
+PIG-5043: Slowstart not applied in Tez with PARALLEL clause (rohini)
+
+PIG-4930: Skewed Join Breaks On Empty Sampled Input When Key is From Map (nkollar via rohini)
+
+PIG-3417: Job fails when skewed join is done on tuple key (nkollar via rohini)
+
+PIG-5074: Build broken when hadoopversion=20 in branch 0.16 (szita via daijy)
+
+PIG-5064: NPE in TestScriptUDF#testPythonBuiltinModuleImport1 when JAVA_HOME is not set (water via daijy)
+
+PIG-5048: HiveUDTF fail if it is the first expression in projection (nkollar via daijy)
+
+PIG-5033: MultiQueryOptimizerTez creates bad plan with union, split and FRJoin (rohini,tmwoordruff via rohini)
+
+PIG-5041: RoundRobinPartitioner is not deterministic when order of input records change (rohini)
+
+PIG-5040: Order by and CROSS partitioning is not deterministic due to usage of Random (rohini)
+
+PIG-4951: Rename PIG_ATS_ENABLED constant (szita via daijy)
+
+PIG-5035: killJob API does not work in Tez (zjffdu via rohini)
+
+PIG-5032: Output record stats in Tez is wrong when there is split followed by union (rohini)
+
+PIG-5019: Pig generates tons of warnings for udf with enabled warnings aggregation (murshyd via rohini)
+
+PIG-4974: A simple map reference fail to cast (knoguchi)
+
+PIG-4967: NPE in PigJobControl.run() when job status is null (water via daijy)
+
+PIG-4935: TEZ_USE_CLUSTER_HADOOP_LIBS is always set to true (rohini)
+
+PIG-4961: CROSS followed by LIMIT inside nested foreach drop data from result (rohini)
+
+PIG-4960: Split followed by order by/skewed join is skewed in Tez (rohini)
+
+PIG-4947: LOAD with HBaseStorage using a mix of pure wildcards and prefixed wildcards results in
+  empty maps for the pure wildcarded column families (daijy)
+
+PIG-4948: Pig on Tez AM use too much memory on a small cluster (daijy)
+
+PIG-4942: Fix mvn-install ant target (petersla via daijy)
+
+PIG-4949: Fix registering jar in S3 which was broken by PIG-4417 in Pig 0.16 (yangyishan0901m via daijy)
+
+PIG-4950: Fix minor issues with running scripts in non-local FileSystems (petersla via daijy)
+
+Release 0.16.0
 
 INCOMPATIBLE CHANGES
 
@@ -132,8 +213,6 @@ PIG-4638: Allow TOMAP to accept dynamically sized input (nielsbasjes via daijy)
 PIG-4639: Add better parser for Apache HTTPD access log (nielsbasjes via daijy)
 
 BUG FIXES
-
-PIG-5112: Cleanup pig-template.xml (daijy)
 
 PIG-4821: Pig chararray field with special UTF-8 chars as part of tuple join key produces wrong results in Tez (rohini)
 
