@@ -191,23 +191,25 @@ public class PigJobControl extends JobControl {
                 "Check if job status is null.", npe);
             }
 
-            switch(checkState(j)) {
-            case SUCCESS:
-              getJobs(successfulJobs).add(j);
-              it.remove();
-              break;
-            case FAILED:
-            case DEPENDENT_FAILED:
-              getJobs(failedJobs).add(j);
-              it.remove();
-              break;
-            case READY:
-              submit(j);
-              break;
-            case RUNNING:
-            case WAITING:
-              //Do Nothing
-              break;
+            if (j!=null) {
+                switch(checkState(j)) {
+                case SUCCESS:
+                  getJobs(successfulJobs).add(j);
+                  it.remove();
+                  break;
+                case FAILED:
+                case DEPENDENT_FAILED:
+                  getJobs(failedJobs).add(j);
+                  it.remove();
+                  break;
+                case READY:
+                  submit(j);
+                  break;
+                case RUNNING:
+                case WAITING:
+                  //Do Nothing
+                  break;
+                }
             }
           }
         }
