@@ -945,9 +945,6 @@
             <env key="PATH" path="${build.path}"/>
             <classpath>
                 <pathelement location="${output.jarfile.core}" />
-                <fileset dir="lib">
-                    <include name="**/*.jar"/>
-                </fileset>
                 <pathelement location="${test.build.classes}" />
                 <pathelement location="." />
                 <pathelement path="${clover.jar}"/>
