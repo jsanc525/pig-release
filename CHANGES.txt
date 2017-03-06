@@ -48,8 +48,6 @@ PIG-4951: Rename PIG_ATS_ENABLED constant (szita via daijy)
 
 PIG-5032: Output record stats in Tez is wrong when there is split followed by union (rohini)
 
-PIG-5019: Pig generates tons of warnings for udf with enabled warnings aggregation (murshyd via rohini)
-
 PIG-4974: A simple map reference fail to cast (knoguchi)
 
 PIG-4967: NPE in PigJobControl.run() when job status is null (water via daijy)
