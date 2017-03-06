@@ -59,7 +59,6 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class TestOrcStoragePushdown {
@@ -337,8 +336,6 @@ public class TestOrcStoragePushdown {
     }
 
     @Test
-    @Ignore
-    // TODO: PPD is disabled for timestamp, see ORC-101 and ORC-135
     public void testPredicatePushdownTimestamp() throws Exception {
         testPredicatePushdown(INPUT, "f10 >= ToDate('20100101', 'yyyyMMdd', 'UTC')", 3000, 400000);
     }
