@@ -48,8 +48,6 @@ PIG-4951: Rename PIG_ATS_ENABLED constant (szita via daijy)
 
 PIG-5032: Output record stats in Tez is wrong when there is split followed by union (rohini)
 
-PIG-4974: A simple map reference fail to cast (knoguchi)
-
 PIG-4967: NPE in PigJobControl.run() when job status is null (water via daijy)
 
 PIG-4935: TEZ_USE_CLUSTER_HADOOP_LIBS is always set to true (rohini)
