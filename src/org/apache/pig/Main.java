@@ -27,6 +27,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringReader;
 import java.net.URL;
@@ -44,8 +45,9 @@ import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
-import jline.console.ConsoleReader;
-import jline.console.history.FileHistory;
+import jline.ConsoleReader;
+import jline.ConsoleReaderInputStream;
+import jline.History;
 
 import org.antlr.runtime.RecognitionException;
 import org.apache.commons.logging.Log;
@@ -75,7 +77,6 @@ import org.apache.pig.parser.DryRunGruntParser;
 import org.apache.pig.scripting.ScriptEngine;
 import org.apache.pig.scripting.ScriptEngine.SupportedScriptLang;
 import org.apache.pig.tools.cmdline.CmdLineParser;
-import org.apache.pig.tools.grunt.ConsoleReaderInputStream;
 import org.apache.pig.tools.grunt.Grunt;
 import org.apache.pig.tools.pigstats.PigProgressNotificationListener;
 import org.apache.pig.tools.pigstats.PigStats;
@@ -550,13 +551,12 @@ public class Main {
                 }
                 // Interactive
                 mode = ExecMode.SHELL;
-                //Reader is created by first loading "pig.load.default.statements" or .pigbootup file if available
-                ConsoleReader reader = new ConsoleReader(Utils.getCompositeStream(System.in, properties), System.out);
-                reader.setExpandEvents(false);
-                reader.setPrompt("grunt> ");
+              //Reader is created by first loading "pig.load.default.statements" or .pigbootup file if available
+                ConsoleReader reader = new ConsoleReader(Utils.getCompositeStream(System.in, properties), new OutputStreamWriter(System.out));
+                reader.setDefaultPrompt("grunt> ");
                 final String HISTORYFILE = ".pig_history";
                 String historyFile = System.getProperty("user.home") + File.separator  + HISTORYFILE;
-                reader.setHistory(new FileHistory(new File(historyFile)));
+                reader.setHistory(new History(new File(historyFile)));
                 ConsoleReaderInputStream inputStream = new ConsoleReaderInputStream(reader);
                 grunt = new Grunt(new BufferedReader(new InputStreamReader(inputStream)), pigContext);
                 grunt.setConsoleReader(reader);
