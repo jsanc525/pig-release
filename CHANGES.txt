@@ -36,8 +36,6 @@ PIG-4918: Pig on Tez cannot switch pig.temp.dir to another fs (daijy)
 
 PIG-5088: HashValuePartitioner has skew when there is only map fields (rohini)
 
-PIG-3417: Job fails when skewed join is done on tuple key (nkollar via rohini)
-
 PIG-5074: Build broken when hadoopversion=20 in branch 0.16 (szita via daijy)
 
 PIG-5064: NPE in TestScriptUDF#testPythonBuiltinModuleImport1 when JAVA_HOME is not set (water via daijy)
