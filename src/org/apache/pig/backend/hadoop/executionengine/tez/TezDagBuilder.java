@@ -410,11 +410,7 @@ public class TezDagBuilder extends TezOpPlanVisitor {
                 tezOp.getVertexGroupInfo().setVertexGroup(vertexGroup);
                 POStore store = tezOp.getVertexGroupInfo().getStore();
                 if (store != null) {
-                    String outputKey = store.getOperatorKey().toString();
-                    if (store instanceof POStoreTez) {
-                        outputKey = ((POStoreTez) store).getOutputKey();
-                    }
-                    vertexGroup.addDataSink(outputKey,
+                    vertexGroup.addDataSink(store.getOperatorKey().toString(),
                             DataSinkDescriptor.create(tezOp.getVertexGroupInfo().getStoreOutputDescriptor(),
                             OutputCommitterDescriptor.create(MROutputCommitter.class.getName()), dag.getCredentials()));
                 }
