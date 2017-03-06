@@ -134,11 +134,6 @@ public abstract class PigStats {
     }
 
     /**
-     * Returns the display message in pig grunt
-     */
-    public abstract String getDisplayString();
-
-    /**
      * Returns the DAG of jobs spawned by the script
      */
     public JobGraph getJobGraph() {
