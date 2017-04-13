@@ -1,11 +1,12 @@
 Changes only in Hortonworks github and not in Apache Pig release 0.16.0 and hence not covered by CHANGES.txt.
 
-
 INCOMPATIBLE CHANGES
 
 NEW FEATURES
 
 IMPROVEMENTS
+
+ PIG-4957: See "Received kill signal" message for a normal run after PIG-4921
 
 BUG FIXES
 
@@ -15,3 +16,10 @@ BUG FIXES
 
  PIG-4947: LOAD with HBaseStorage using a mix of pure wildcards and prefixed wildcards results
    in empty maps for the pure wildcarded column families
+
+ PIG-5060: TestPigRunner.testDisablePigCounters2 failing with tez
+
+ PIG-5119: SkewedJoin_15 is unstable
+
+ PIG-5127: Test fail when running test-core-mrtez
+
