@@ -40,3 +40,4 @@ https://cwiki.apache.org/confluence/display/PIG/HowToContribute
 Patch Upgrade - Wed Nov 15 10:24:33 UTC 2017
 Patch Upgrade - Sat Nov 25 14:55:59 UTC 2017
 Patch Upgrade - Sat Nov 25 19:14:22 UTC 2017
+Patch Upgrade - Mon Nov 27 12:55:20 UTC 2017
