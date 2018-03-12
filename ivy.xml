@@ -31,7 +31,7 @@
     <conf name="default" extends="master,runtime"/>
     <conf name="runtime" extends="compile,test" description="runtime but not the artifact" />
     <!--Private configurations. -->
-    <conf name="compile" extends="hadoop${hadoopversion},hbase${hbaseversion}" visibility="private" description="compile artifacts"/>
+    <conf name="compile" extends="hadoop${hadoopversion},hbase${hbaseversion},hive${hiveversion}" visibility="private" description="compile artifacts"/>
     <conf name="test" extends="compile" visibility="private"/>
     <conf name="javadoc" visibility="private" extends="compile,test"/>
     <conf name="releaseaudit" visibility="private"/>
@@ -42,6 +42,8 @@
     <conf name="hadoop23" visibility="private"/>
     <conf name="hbase94" visibility="private"/>
     <conf name="hbase95" visibility="private"/>
+    <conf name="hive1" visibility="private"/>
+    <conf name="hive2" visibility="private"/>
   </configurations>
   <publications>
     <artifact name="pig" conf="master"/>
@@ -135,6 +137,8 @@
       <artifact name="hadoop-hdfs" ext="jar" />
       <artifact name="hadoop-hdfs" type="tests" ext="jar" m:classifier="tests" />
     </dependency>
+    <dependency org="org.apache.hadoop" name="hadoop-hdfs-client" rev="${hadoop-hdfs.version}"
+      conf="hadoop23->master"/>
     <dependency org="org.apache.hadoop" name="hadoop-mapreduce-client-core" rev="${hadoop-mapreduce.version}"
       conf="hadoop23->master"/>
     <dependency org="org.apache.hadoop" name="hadoop-mapreduce-client-jobclient" rev="${hadoop-mapreduce.version}"
@@ -370,6 +374,11 @@
     </dependency>
 
     <dependency org="org.apache.hbase" name="hbase-procedure" rev="${hbase95.version}" conf="hbase95->master"/>
+    <dependency org="org.apache.hbase" name="hbase-mapreduce" rev="${hbase95.version}" conf="hbase95->master"/>
+    <dependency org="org.apache.hbase" name="hbase-zookeeper" rev="${hbase95.version}" conf="hbase95->master">
+      <artifact name="hbase-zookeeper" type="jar"/>
+      <artifact name="hbase-zookeeper" type="test-jar" ext="jar" m:classifier="tests"/>
+    </dependency>
 
     <dependency org="org.htrace" name="htrace-core" rev="3.0.4" conf="hadoop23->master"/>
     <dependency org="org.apache.htrace" name="htrace-core" rev="${htrace.version}" conf="hadoop23->master"/>
@@ -441,10 +450,16 @@
       conf="hadoop23->master" />
     <dependency org="org.apache.hive.shims" name="hive-shims-0.20S" rev="${hive.version}" changing="true"
       conf="hadoop20->master" />
+    <dependency org="org.apache.hive" name="hive-storage-api" rev="${hive.version}" changing="true"
+      conf="hive2->master" />
+    <dependency org="org.apache.orc" name="orc-core" rev="${orc.version}" changing="true"
+      conf="hive2->master" />
     <dependency org="org.iq80.snappy" name="snappy" rev="${snappy.version}"
       conf="test->master" />
-    <dependency org="com.esotericsoftware.kryo" name="kryo" rev="${kryo.version}"
-      conf="compile->master" />
+    <dependency org="com.esotericsoftware" name="kryo-shaded" rev="${kryo.version}"
+      conf="hive2->default" />
+    <dependency org="com.esotericsoftware.kryo" name="kryo" rev="2.22"
+      conf="hive1->default" />
     <dependency org="org.apache.commons" name="commons-lang3" rev="${commons-lang3.version}"
       conf="compile->master" />
 

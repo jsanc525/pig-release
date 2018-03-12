@@ -19,6 +19,7 @@ package org.apache.pig.test;
 
 import java.util.List;
 
+import org.apache.hive.common.util.HiveVersionInfo;
 import org.apache.pig.ExecType;
 import org.apache.pig.PigServer;
 import org.apache.pig.backend.hadoop.executionengine.physicalLayer.plans.PhysicalPlan;
@@ -49,10 +50,20 @@ public abstract class TestLoaderStorerShipCacheFiles {
         if (Utils.isHadoop23() || Utils.isHadoop2()) {
             hadoopVersion = "23";
         }
-        String[] expectedJars = new String[] {"hive-common", "hive-exec", "hive-serde", 
-                "hive-shims-0." + hadoopVersion, "hive-shims-common", "kryo"};
+        String hiveVersion = HiveVersionInfo.getVersion().substring(0, 1);
+        if (hiveVersion.equals("2")) {
+            String[] expectedJars = new String[] {"hive-common", "hive-exec", "hive-serde",
+                    "hive-shims-0." + hadoopVersion, "hive-shims-common", "hive-orc",
+                    "hive-storage-api", "kryo", "minlog"
+                    };
 
-        checkPlan(pp, expectedJars, 6, pigServer.getPigContext());
+            checkPlan(pp, expectedJars, 9, pigServer.getPigContext());
+        } else {
+            String[] expectedJars = new String[] {"hive-common", "hive-exec", "hive-serde",
+                    "hive-shims-0." + hadoopVersion, "hive-shims-common", "kryo"};
+
+            checkPlan(pp, expectedJars, 6, pigServer.getPigContext());
+        }
     }
 
     @Test
@@ -65,10 +76,20 @@ public abstract class TestLoaderStorerShipCacheFiles {
         if (Utils.isHadoop23() || Utils.isHadoop2()) {
             hadoopVersion = "23";
         }
-        String[] expectedJars = new String[] {"hive-common", "hive-exec", "hive-serde", 
-                "hive-shims-0." + hadoopVersion, "hive-shims-common", "kryo"};
+        String hiveVersion = HiveVersionInfo.getVersion().substring(0, 1);
+        if (hiveVersion.equals("2")) {
+            String[] expectedJars = new String[] {"hive-common", "hive-exec", "hive-serde",
+                    "hive-shims-0." + hadoopVersion, "hive-shims-common", "hive-orc",
+                    "hive-storage-api", "kryo", "minlog"
+                    };
 
-        checkPlan(pp, expectedJars, 6, pigServer.getPigContext());
+            checkPlan(pp, expectedJars, 9, pigServer.getPigContext());
+        } else {
+            String[] expectedJars = new String[] {"hive-common", "hive-exec", "hive-serde",
+                    "hive-shims-0." + hadoopVersion, "hive-shims-common", "kryo"};
+
+            checkPlan(pp, expectedJars, 6, pigServer.getPigContext());
+        }
     }
 
     @Test
