@@ -149,7 +149,7 @@
     <condition property="isWindows">
       <os family="windows"/>
     </condition>
-	
+
     <target name="setTezEnv">
         <propertyreset name="test.timeout" value="1800000" />
         <propertyreset name="hadoopversion" value="23" />
@@ -214,6 +214,13 @@
         </not>
     </condition>
 
+    <condition property="hiveversion" value="2" else="1">
+      <scriptcondition language="javascript">
+       var hv = project.getProperty("hive.version")
+       self.setValue(hv.startsWith("3."))
+     </scriptcondition>
+    </condition>
+
     <!--
       HBase master version
       Denotes how the HBase dependencies are layout. Value "94" denotes older
@@ -234,6 +241,8 @@
 
     <property name="src.shims.dir" value="${basedir}/shims/src/hadoop${hadoopversion}" />
     <property name="src.shims.test.dir" value="${basedir}/shims/test/hadoop${hadoopversion}" />
+
+    <property name="src.hive.shims.dir" value="${basedir}/hive-shims/src/hive${hiveversion}" />
 
     <property name="hadoop.jar" value="hadoop-core-${hadoop-core.version}.jar" />
     <property name="asfrepo" value="https://repository.apache.org"/>
@@ -334,6 +343,7 @@
                 <source path="${test.e2e.dir}/udfs/java"/>
                 <source path="${src.shims.dir}"/>
                 <source path="${src.shims.test.dir}"/>
+                <source path="${src.hive.shims.dir}"/>
                 <source path="tutorial/src"/>
                 <source path="${test.src.dir}" excluding="e2e/pig/udfs/java/|resources/"/>
                 <output path="${build.dir.eclipse-main-classes}" />
@@ -545,7 +555,7 @@
         <echo>*** Building Main Sources ***</echo>
         <echo>*** To compile with all warnings enabled, supply -Dall.warnings=1 on command line ***</echo>
         <echo>*** Else, you will only be warned about deprecations ***</echo>
-        <compileSources sources="${src.dir};${src.gen.dir};${src.lib.dir}/bzip2;${src.shims.dir}"
+        <compileSources sources="${src.dir};${src.gen.dir};${src.lib.dir}/bzip2;${src.shims.dir};${src.hive.shims.dir}"
             excludes="${src.exclude.dir}" dist="${build.classes}" cp="classpath" warnings="${javac.args.warnings}" />
         <copy todir="${build.classes}/META-INF">
             <fileset dir="${src.dir}/META-INF" includes="**"/>
@@ -734,6 +744,7 @@
             <fileset dir="${ivy.lib.dir}" includes="js-*.jar"/>
             <fileset dir="${ivy.lib.dir}" includes="hbase-*.jar" excludes="hbase-*tests.jar,hbase-*hadoop*.jar"/>
             <fileset dir="${ivy.lib.dir}" includes="hive-*.jar" excludes="hive-shims-0.*.jar"/>
+            <fileset dir="${ivy.lib.dir}" includes="minlog-*.jar"/>
             <fileset dir="${ivy.lib.dir}" includes="protobuf-java-*.jar"/>
             <fileset dir="${ivy.lib.dir}" includes="zookeeper-*.jar"/>
             <fileset dir="${ivy.lib.dir}" includes="accumulo-*.jar" excludes="accumulo-minicluster*.jar"/>
@@ -1130,6 +1141,10 @@
             <fileset dir="${basedir}/shims" />
         </copy>
 
+        <copy todir="${tar.dist.dir}/hive-shims" includeEmptyDirs="true">
+            <fileset dir="${basedir}/hive-shims" />
+        </copy>
+
         <copy todir="${tar.dist.dir}/lib-src" includeEmptyDirs="true">
             <fileset dir="${src.lib.dir}" />
         </copy>
@@ -1208,6 +1223,7 @@
                 <include name="lib-src/**"/>
                 <include name="license/**"/>
                 <include name="shims/**"/>
+                <include name="hive-shims/**"/>
                 <include name="src/**"/>
                 <include name="test/**"/>
                 <exclude name="test/**/*.jar"/>

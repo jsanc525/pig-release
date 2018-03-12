@@ -47,6 +47,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.Delete;
+import org.apache.hadoop.hbase.client.Durability;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.Scan;
@@ -1015,7 +1016,7 @@ public class HBaseStorage extends LoadFunc implements StoreFuncInterface, LoadPu
             }
 
             if (!columnInfo.isColumnMap()) {
-                put.add(columnInfo.getColumnFamily(), columnInfo.getColumnName(),
+                put.addImmutable(columnInfo.getColumnFamily(), columnInfo.getColumnName(),
                         ts, objToBytes(t.get(i), (fieldSchemas == null) ?
                         DataType.findType(t.get(i)) : fieldSchemas[i].getType()));
             } else {
@@ -1028,7 +1029,7 @@ public class HBaseStorage extends LoadFunc implements StoreFuncInterface, LoadPu
                         }
                         // TODO deal with the fact that maps can have types now. Currently we detect types at
                         // runtime in the case of storing to a cf, which is suboptimal.
-                        put.add(columnInfo.getColumnFamily(), Bytes.toBytes(colName.toString()), ts,
+                        put.addImmutable(columnInfo.getColumnFamily(), Bytes.toBytes(colName.toString()), ts,
                                 objToBytes(cfMap.get(colName), DataType.findType(cfMap.get(colName))));
                     }
                 }
@@ -1058,7 +1059,7 @@ public class HBaseStorage extends LoadFunc implements StoreFuncInterface, LoadPu
         delete.setTimestamp(timestamp);
 
         if(noWAL_) {
-            delete.setWriteToWAL(false);
+            delete.setDurability(Durability.SKIP_WAL);
         }
 
         return delete;
@@ -1077,7 +1078,7 @@ public class HBaseStorage extends LoadFunc implements StoreFuncInterface, LoadPu
         Put put = new Put(objToBytes(key, type));
 
         if(noWAL_) {
-            put.setWriteToWAL(false);
+            put.setDurability(Durability.SKIP_WAL);
         }
 
         return put;
