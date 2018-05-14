@@ -97,6 +97,8 @@ INCOMPATIBLE CHANGES
 
 IMPROVEMENTS
 
+PIG-5287: bump jython to 2.7.1 (dbist13 via rohini)
+
 PIG-4719: Documentation for PIG-4704: Customizable Error Handling for Storers in Pig (daijy)
 
 PIG-4714: Improve logging across multiple components with callerId (daijy)
