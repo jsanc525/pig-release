@@ -142,13 +142,13 @@ sub globalSetupConditional() {
 
         #detect os and modify path accordingly
         if(Util::isWindows()) {
-            $ENV{'PATH'} = $globalHash->{'scriptPath'} . ";" . $ENV{'PATH'};
+    #        $ENV{'PATH'} = $globalHash->{'scriptPath'} . ";" . $ENV{'PATH'};
         }
         else {
-            $ENV{'PATH'} = $globalHash->{'scriptPath'} . ":" . $ENV{'PATH'};
+    #        $ENV{'PATH'} = $globalHash->{'scriptPath'} . ":" . $ENV{'PATH'};
         }
     } else {
-        $ENV{'PATH'} = $globalHash->{'scriptPath'};
+    #    $ENV{'PATH'} = $globalHash->{'scriptPath'};
     }
 
     my @cmd = ($self->getPigCmd($globalHash, $log), '-e', 'mkdir', $globalHash->{'outpath'});
