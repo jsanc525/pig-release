@@ -82,7 +82,8 @@ public class HiveShims {
     public static Class[] getHiveUDFDependentClasses(Class hadoopVersionShimsClass) {
         return new Class[] {GenericUDF.class,
                 PrimitiveObjectInspector.class, HiveConf.class, Serializer.class, ShimLoader.class, 
-                hadoopVersionShimsClass, HadoopShimsSecure.class, Collector.class, HiveDecimalWritable.class};
+                hadoopVersionShimsClass, HadoopShimsSecure.class, org.apache.hadoop.hive.llap.security.LlapSigner.class,
+                Collector.class, HiveDecimalWritable.class};
     }
 
     public static Object getSearchArgObjValue(Object value) {

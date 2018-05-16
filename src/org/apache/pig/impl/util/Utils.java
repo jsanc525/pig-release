@@ -103,7 +103,7 @@ public class Utils {
 
     public static boolean isHadoop2() {
         String version = org.apache.hadoop.util.VersionInfo.getVersion();
-        if (version.matches("\\b2\\.\\d+\\..+"))
+        if (version.matches("\\b[2-3]\\.\\d+\\..+"))
             return true;
         return false;
     }
