@@ -178,12 +178,8 @@
       rev="${hadoop-mapreduce.version}" conf="hadoop23->master"/>
     <dependency org="org.apache.hadoop" name="hadoop-mapreduce-client-hs" 
       rev="${hadoop-mapreduce.version}" conf="hadoop23->master"/>
-    <dependency org="org.mortbay.jetty" name="jetty" rev="${jetty.version}"
-      conf="compile->master">
-      <artifact name="jetty" ext="jar" />
-    </dependency>
-    <dependency org="org.mortbay.jetty" name="jetty-util" rev="${jetty.version}"
-      conf="compile->master"/>
+    <dependency org="org.apache.hadoop" name="hadoop-yarn-server-timelineservice"
+      rev="${hadoop-mapreduce.version}" conf="hadoop23->master"/>
     <dependency org="commons-logging" name="commons-logging" rev="${commons-logging.version}"
       conf="compile->master;checkstyle->master"/>
     <dependency org="org.slf4j" name="slf4j-log4j12" rev="${slf4j-log4j12.version}"
@@ -207,6 +203,8 @@
       <exclude org="org.codehaus.jackson" module="jackson-core-asl"/>
       <exclude org="org.codehaus.jackson" module="jackson-mapper-asl"/>
       <exclude org="io.netty" module="netty"/>
+      <exclude org="org.mortbay.jetty" module="jetty-util"/>
+      <exclude org="org.mortbay.jetty" module="jetty"/>
     </dependency>
     <dependency org="org.apache.avro" name="trevni-core" rev="${avro.version}"
       conf="compile->default;checkstyle->master">
@@ -268,7 +266,24 @@
     <dependency org="org.antlr" name="ST4" rev="${stringtemplate.version}" conf="compile->default"/>
     <dependency org="org.apache.zookeeper" name="zookeeper" rev="${zookeeper.version}" conf="compile->master"/>
     <dependency org="io.netty" name="netty-all" rev="${netty.version}" conf="test->master"/>
-    <dependency org="io.netty" name="netty" rev="3.6.6.Final" conf="test->master"/>
+    <dependency org="com.fasterxml.woodstox" name="woodstox-core" rev="${woodstox.version}" conf="test->master"/>
+    <dependency org="org.codehaus.woodstox" name="stax2-api" rev="${stax2.version}" conf="test->master"/>
+    <dependency org="commons-beanutils" name="commons-beanutils" rev="${commons-beanutils.version}" conf="test->master"/>
+    <dependency org="org.apache.commons" name="commons-configuration2" rev="${commons-configuration2.version}" conf="test->master"/>
+    <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="${jackson2.version}" conf="test->master"/>
+    <dependency org="com.fasterxml.jackson.core" name="jackson-core" rev="${jackson2.version}" conf="test->master"/>
+    <dependency org="com.fasterxml.jackson.core" name="jackson-annotations" rev="${jackson2.version}" conf="test->master"/>
+    <dependency org="com.google.re2j" name="re2j" rev="${re2j.version}" conf="test->master"/>
+    <dependency org="org.eclipse.jetty" name="jetty-webapp" rev="${jetty.version}" conf="test->master"/>
+    <dependency org="org.eclipse.jetty" name="jetty-servlet" rev="${jetty.version}" conf="test->master"/>
+    <dependency org="org.eclipse.jetty" name="jetty-server" rev="${jetty.version}" conf="test->master"/>
+    <dependency org="org.eclipse.jetty" name="jetty-util" rev="${jetty.version}" conf="test->master"/>
+    <dependency org="org.eclipse.jetty" name="jetty-http" rev="${jetty.version}" conf="test->master"/>
+    <dependency org="org.eclipse.jetty" name="jetty-security" rev="${jetty.version}" conf="test->master"/>
+    <dependency org="org.eclipse.jetty" name="jetty-io" rev="${jetty.version}" conf="test->master"/>
+    <dependency org="org.eclipse.jetty" name="jetty-xml" rev="${jetty.version}" conf="test->master"/>
+    <dependency org="io.netty" name="netty" rev="3.10.5.Final" conf="test->master"/>
+    <dependency org="org.roaringbitmap" name="RoaringBitmap" rev="${RoaringBitmap.version}" conf="test->master"/>
     <dependency org="dk.brics.automaton" name="automaton" rev="1.11-8" conf="compile->default"/>
 
     <dependency org="org.jruby" name="jruby-complete" rev="${jruby.version}" conf="compile->master"/>
@@ -381,7 +396,7 @@
     </dependency>
 
     <dependency org="org.htrace" name="htrace-core" rev="3.0.4" conf="hadoop23->master"/>
-    <dependency org="org.apache.htrace" name="htrace-core" rev="${htrace.version}" conf="hadoop23->master"/>
+    <dependency org="org.apache.htrace" name="htrace-core4" rev="${htrace.version}" conf="hadoop23->master"/>
     <dependency org="org.fusesource.leveldbjni" name="leveldbjni-all" rev="${leveldbjni.version}"
       conf="hadoop23->master"/>
     <dependency org="org.cloudera.htrace" name="htrace-core" rev="2.00" conf="hbase95->master">
@@ -432,6 +447,12 @@
       <exclude org="org.apache.zookeeper" module="zookeeper"/>
       <exclude org="org.slf4j" module="slf4j-api"/>
       <exclude org="org.slf4j" module="slf4j-log4j12"/>
+      <exclude org="org.eclipse.jetty" module="jetty-servlet"/>
+      <exclude org="org.eclipse.jetty" module="jetty-security"/>
+      <exclude org="org.eclipse.jetty" module="jetty-util"/>
+      <exclude org="org.eclipse.jetty" module="jetty-io"/>
+      <exclude org="org.eclipse.jetty" module="jetty-http"/>
+      <exclude org="org.eclipse.jetty" module="jetty-server"/>
     </dependency>
 
     <!-- for piggybank -->
@@ -493,6 +514,8 @@
     <dependency org="org.apache.tez" name="tez-mapreduce" rev="${tez.version}"
        conf="hadoop23->master"/>
     <dependency org="org.apache.tez" name="tez-yarn-timeline-history-with-acls" rev="${tez.version}"
+       conf="hadoop23->master"/>
+    <dependency org="org.apache.tez" name="hadoop-shim" rev="${tez.version}"
        conf="hadoop23->master"/>
     <dependency org="org.apache.commons" name="commons-collections4" rev="${commons-collections4.version}"
       conf="hadoop23->master"/>
