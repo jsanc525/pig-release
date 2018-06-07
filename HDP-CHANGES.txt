@@ -12,3 +12,5 @@ BUG FIXES
  PIG-5175: Upgrade jruby to 1.7.26
 
  PIG-5159: Fix Pig not saving grunt history
+
+ PIG-5287: bump jython to 2.7.1
