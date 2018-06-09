@@ -76,7 +76,7 @@ public class HiveShims {
         return new Class[] {OrcFile.class, HiveConf.class, AbstractSerDe.class,
                 org.apache.hadoop.hive.shims.HadoopShims.class, HadoopShimsSecure.class, DateWritable.class,
                 Input.class, org.apache.orc.OrcFile.class, Hadoop23Shims.class, io.airlift.compress.Decompressor.class,
-                com.esotericsoftware.minlog.Log.class};
+                com.esotericsoftware.minlog.Log.class, org.apache.orc.impl.HadoopShims.class};
     }
 
     public static Class[] getHiveUDFDependentClasses(Class hadoopVersionShimsClass) {
