@@ -20,6 +20,13 @@
          xmlns:ivy="antlib:org.apache.ivy.ant">
     <!-- Load all the default properties, and any the user wants    -->
     <!-- to contribute (without having to type -D or edit this file -->
+
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+        <classpath>
+            <pathelement location="${basedir}/ivy/ant-contrib-1.0b3.jar"/>
+        </classpath>
+    </taskdef>
+
     <property file="${user.home}/build.properties" />
     <property file="${basedir}/build.properties" />
 
@@ -207,6 +214,20 @@
     <condition property="isHadoop23">
         <equals arg1="${hadoopversion}" arg2="23"/>
     </condition>
+
+    <!--
+      HBase master version
+      (Value 95 is translated for backward compatibility in old build scripts)
+    -->
+    <if>
+        <equals arg1="${hbaseversion}" arg2="95"/>
+        <then>
+            <echo>Property setting hbaseversion=95 is deprecated. Overwriting to hbaseversion=1</echo>
+            <var name="hbaseversion" unset="true"/>
+            <property name="hbaseversion" value="1" />
+        </then>
+    </if>
+    <property name="hbaseversion" value="2" />
 
     <condition property="hbase.hadoop.version" value="hadoop1" else="hadoop2">
         <not>
@@ -556,6 +577,7 @@
         <echo>*** Building Main Sources ***</echo>
         <echo>*** To compile with all warnings enabled, supply -Dall.warnings=1 on command line ***</echo>
         <echo>*** Else, you will only be warned about deprecations ***</echo>
+        <echo>*** Hadoop version used: ${hadoopversion} ; HBase version used: ${hbaseversion} ***</echo>
         <compileSources sources="${src.dir};${src.gen.dir};${src.lib.dir}/bzip2;${src.shims.dir};${src.hive.shims.dir}"
             excludes="${src.exclude.dir}" dist="${build.classes}" cp="classpath" warnings="${javac.args.warnings}" />
         <copy todir="${build.classes}/META-INF">
