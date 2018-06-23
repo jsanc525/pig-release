@@ -20,19 +20,21 @@ package org.apache.pig.impl.util.hive;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.hadoop.hive.common.type.Date;
 import org.apache.hadoop.hive.common.type.HiveChar;
 import org.apache.hadoop.hive.common.type.HiveDecimal;
 import org.apache.hadoop.hive.common.type.HiveVarchar;
+import org.apache.hadoop.hive.common.type.Timestamp;
 import org.apache.hadoop.hive.ql.io.sarg.PredicateLeaf;
 import org.apache.hadoop.hive.serde2.io.HiveDecimalWritable;
 import org.apache.hadoop.hive.serde2.io.TimestampWritable;
+import org.apache.hadoop.hive.serde2.io.TimestampWritableV2;
 import org.apache.hadoop.hive.serde2.objectinspector.ConstantObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.ListObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.MapObjectInspector;
@@ -180,12 +182,12 @@ public class HiveUtils {
             result = new DataByteArray(b, 0, b.length);
             break;
         case TIMESTAMP:
-            java.sql.Timestamp origTimeStamp = (java.sql.Timestamp)poi.getPrimitiveJavaObject(obj);
-            result = new DateTime(origTimeStamp.getTime());
+            Timestamp origTimeStamp = (Timestamp) poi.getPrimitiveJavaObject(obj);
+            result = new DateTime(origTimeStamp.toEpochMilli());
             break;
         case DATE:
-            java.sql.Date origDate = (java.sql.Date)poi.getPrimitiveJavaObject(obj);
-            result = new DateTime(origDate.getTime());
+            Date origDate = (Date) poi.getPrimitiveJavaObject(obj);
+            result = new DateTime(origDate.toEpochMilli());
             break;
         case DECIMAL:
             org.apache.hadoop.hive.common.type.HiveDecimal origDecimal =
@@ -679,13 +681,13 @@ public class HiveUtils {
         }
 
         @Override
-        public TimestampWritable getPrimitiveWritableObject(Object o) {
-            return o == null ? null : new TimestampWritable(new Timestamp(((DateTime)o).getMillis()));
+        public TimestampWritableV2 getPrimitiveWritableObject(Object o) {
+            return o == null ? null : new TimestampWritableV2(Timestamp.ofEpochMilli(((DateTime)o).getMillis()));
         }
 
         @Override
         public Timestamp getPrimitiveJavaObject(Object o) {
-            return o == null ? null : new Timestamp(((DateTime)o).getMillis());
+            return o == null ? null : Timestamp.ofEpochMilli(((DateTime)o).getMillis());
         }
     }
 
