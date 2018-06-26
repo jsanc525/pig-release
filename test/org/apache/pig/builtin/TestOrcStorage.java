@@ -46,7 +46,7 @@ import org.apache.hadoop.hive.serde2.io.ByteWritable;
 import org.apache.hadoop.hive.serde2.io.DoubleWritable;
 import org.apache.hadoop.hive.serde2.io.HiveDecimalWritable;
 import org.apache.hadoop.hive.serde2.io.ShortWritable;
-import org.apache.hadoop.hive.serde2.io.TimestampWritable;
+import org.apache.hadoop.hive.serde2.io.TimestampWritableV2;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.StructObjectInspector;
 import org.apache.hadoop.io.BooleanWritable;
@@ -381,9 +381,9 @@ public class TestOrcStorage {
         } else if (expected instanceof BooleanWritable) {
             assertEquals(Boolean.class, actual.getClass());
             assertEquals(((BooleanWritable) expected).get(), actual);
-        } else if (expected instanceof TimestampWritable) {
+        } else if (expected instanceof TimestampWritableV2) {
             assertEquals(DateTime.class, actual.getClass());
-            assertEquals(((TimestampWritable) expected).getTimestamp().getTime(),
+            assertEquals(((TimestampWritableV2) expected).getTimestamp().toEpochMilli(),
                     ((DateTime) actual).getMillis());
         } else if (expected instanceof BytesWritable) {
             assertEquals(DataByteArray.class, actual.getClass());
