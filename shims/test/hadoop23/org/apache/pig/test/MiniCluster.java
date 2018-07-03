@@ -40,7 +40,8 @@ import org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLau
  */
 public class MiniCluster extends MiniGenericCluster {
     private static final File CONF_DIR = new File("build/classes");
-    private static final File CONF_FILE = new File(CONF_DIR, "hadoop-site.xml");
+    private static final File CORE_CONF_FILE = new File(CONF_DIR, "core-site.xml");
+    private static final File YARN_CONF_FILE = new File(CONF_DIR, "yarn-site.xml");
 
     protected MiniMRYarnCluster m_mr = null;
     private Configuration m_dfs_conf = null;
@@ -70,20 +71,23 @@ public class MiniCluster extends MiniGenericCluster {
             // Create the dir that holds hadoop-site.xml file
             // Delete if hadoop-site.xml exists already
             CONF_DIR.mkdirs();
-            if(CONF_FILE.exists()) {
-                CONF_FILE.delete();
+            if(CORE_CONF_FILE.exists()) {
+                CORE_CONF_FILE.delete();
             }
-
+            if(YARN_CONF_FILE.exists()) {
+                YARN_CONF_FILE.delete();
+            }
             // Builds and starts the mini dfs and mapreduce clusters
             Configuration config = new Configuration();
-            config.set("yarn.scheduler.capacity.root.queues", "default");
-            config.set("yarn.scheduler.capacity.root.default.capacity", "100");
             m_dfs = new MiniDFSCluster(config, dataNodes, true, null);
             m_fileSys = m_dfs.getFileSystem();
             m_dfs_conf = m_dfs.getConfiguration(0);
 
             //Create user home directory
             m_fileSys.mkdirs(m_fileSys.getWorkingDirectory());
+
+            m_dfs_conf.set("yarn.scheduler.capacity.root.queues", "default");
+            m_dfs_conf.set("yarn.scheduler.capacity.root.default.capacity", "100");
 
             m_mr = new MiniMRYarnCluster("PigMiniCluster", taskTrackers);
             m_mr.init(m_dfs_conf);
@@ -105,10 +109,15 @@ public class MiniCluster extends MiniGenericCluster {
             m_conf.set("dfs.datanode.address", "0.0.0.0:0");
             m_conf.set("dfs.datanode.http.address", "0.0.0.0:0");
             m_conf.set("pig.jobcontrol.sleep", "100");
-            m_conf.writeXml(new FileOutputStream(CONF_FILE));
-            m_fileSys.copyFromLocalFile(new Path(CONF_FILE.getAbsoluteFile().toString()),
-                    new Path("/pigtest/conf/hadoop-site.xml"));
-            DistributedCache.addFileToClassPath(new Path("/pigtest/conf/hadoop-site.xml"), m_conf);
+            m_dfs_conf.writeXml(new FileOutputStream(CORE_CONF_FILE));
+            m_fileSys.copyFromLocalFile(new Path(CORE_CONF_FILE.getAbsoluteFile().toString()),
+                    new Path("/pigtest/conf/hdfs-site.xml"));
+            DistributedCache.addFileToClassPath(new Path("/pigtest/conf/hdfs-site.xml"), m_conf);
+
+            m_conf.writeXml(new FileOutputStream(YARN_CONF_FILE));
+            m_fileSys.copyFromLocalFile(new Path(YARN_CONF_FILE.getAbsoluteFile().toString()),
+                    new Path("/pigtest/conf/yarn-site.xml"));
+            DistributedCache.addFileToClassPath(new Path("/pigtest/conf/yarn-site.xml"), m_conf);
 
             System.err.println("XXX: Setting fs.default.name to: " + m_dfs_conf.get("fs.default.name"));
             // Set the system properties needed by Pig
@@ -124,8 +133,11 @@ public class MiniCluster extends MiniGenericCluster {
     @Override
     protected void shutdownMiniMrClusters() {
         // Delete hadoop-site.xml on shutDown
-        if(CONF_FILE.exists()) {
-            CONF_FILE.delete();
+        if(CORE_CONF_FILE.exists()) {
+            CORE_CONF_FILE.delete();
+        }
+        if(YARN_CONF_FILE.exists()) {
+            YARN_CONF_FILE.delete();
         }
         if (m_mr != null) { m_mr.stop(); }
         m_mr = null;
