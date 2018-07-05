@@ -207,22 +207,22 @@ public class OrcStorage extends LoadFunc implements StoreFuncInterface, LoadMeta
     public void setStoreLocation(String location, Job job) throws IOException {
         if (!UDFContext.getUDFContext().isFrontend()) {
             if (stripeSize!=null) {
-                job.getConfiguration().setLong(OrcConf.STRIPE_SIZE.name(), stripeSize);
+                job.getConfiguration().setLong(OrcConf.STRIPE_SIZE.getAttribute(), stripeSize);
             }
             if (rowIndexStride!=null) {
-                job.getConfiguration().setInt(OrcConf.ROW_INDEX_STRIDE.name(), rowIndexStride);
+                job.getConfiguration().setInt(OrcConf.ROW_INDEX_STRIDE.getAttribute(), rowIndexStride);
             }
             if (bufferSize!=null) {
-                job.getConfiguration().setInt(OrcConf.BUFFER_SIZE.name(), bufferSize);
+                job.getConfiguration().setInt(OrcConf.BUFFER_SIZE.getAttribute(), bufferSize);
             }
             if (blockPadding!=null) {
-                job.getConfiguration().setBoolean(OrcConf.BLOCK_PADDING.name(), blockPadding);
+                job.getConfiguration().setBoolean(OrcConf.BLOCK_PADDING.getAttribute(), blockPadding);
             }
             if (compress!=null) {
-                job.getConfiguration().set(OrcConf.COMPRESS.name(), compress.toString());
+                job.getConfiguration().set(OrcConf.COMPRESS.getAttribute(), compress.toString());
             }
             if (versionName!=null) {
-                job.getConfiguration().set(OrcConf.WRITE_FORMAT.name(), versionName);
+                job.getConfiguration().set(OrcConf.WRITE_FORMAT.getAttribute(), versionName);
             }
         }
         FileOutputFormat.setOutputPath(job, new Path(location));
