@@ -20,6 +20,7 @@ package org.apache.pig.backend.hadoop.executionengine.tez;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,6 +33,7 @@ import java.util.TreeMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.filecache.DistributedCache;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
@@ -210,6 +212,27 @@ public class TezDagBuilder extends TezOpPlanVisitor {
         }
     }
 
+    private void addExistingCacheFiles(Configuration conf, Map<String, LocalResource> localResources)
+            throws IOException {
+        URI[] cacheFileUris = DistributedCache.getCacheFiles(conf);
+        if (cacheFileUris != null) {
+            for (URI cacheFileUri : cacheFileUris) {
+                Path path = new Path(cacheFileUri);
+                String cacheFileName = cacheFileUri.getFragment() == null ? path.getName() : cacheFileUri.getFragment();
+                FileSystem fileSystem = path.getFileSystem(conf);
+                FileStatus fstat = fileSystem.getFileStatus(path);
+
+                LocalResource tezResource = LocalResource.newInstance(
+                        ConverterUtils.getYarnUrlFromPath(fstat.getPath()),
+                        LocalResourceType.FILE,
+                        LocalResourceVisibility.APPLICATION,
+                        fstat.getLen(),
+                        fstat.getModificationTime());
+                localResources.put(cacheFileName, tezResource);
+            }
+        }
+    }
+
     private void initialize(PigContext pc) throws IOException {
 
         this.globalConf = ConfigurationUtil.toConfiguration(pc.getProperties(), true);
@@ -228,6 +251,10 @@ public class TezDagBuilder extends TezOpPlanVisitor {
         // get DelegationToken for each cached file
         ClientDistributedCacheManager.getDelegationTokens(globalConf,
                 dag.getCredentials());
+        // Collect existing CACHE_FILES into localResources and remove CACHE_FILES from conf
+        // Otherwise MRApps.setupDistributedCache would complain for conflicting cache file
+        addExistingCacheFiles(globalConf, localResources);
+        globalConf.unset(MRJobConfig.CACHE_FILES);
         MRApps.setupDistributedCache(globalConf, this.localResources);
         dag.addTaskLocalFiles(this.localResources);
 
