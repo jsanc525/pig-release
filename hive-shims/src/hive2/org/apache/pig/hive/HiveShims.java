@@ -34,6 +34,7 @@ import org.apache.hadoop.hive.serde2.objectinspector.PrimitiveObjectInspector;
 import org.apache.hadoop.hive.shims.Hadoop23Shims;
 import org.apache.hadoop.hive.shims.HadoopShimsSecure;
 import org.apache.hadoop.hive.shims.ShimLoader;
+import org.apache.hadoop.hive.llap.io.api.LlapProxy;
 import org.apache.hadoop.io.compress.Decompressor;
 import org.apache.orc.OrcFile.Version;
 import org.apache.pig.impl.util.Utils;
@@ -76,7 +77,7 @@ public class HiveShims {
         return new Class[] {OrcFile.class, HiveConf.class, AbstractSerDe.class,
                 org.apache.hadoop.hive.shims.HadoopShims.class, HadoopShimsSecure.class, DateWritable.class,
                 Input.class, org.apache.orc.OrcFile.class, Hadoop23Shims.class, io.airlift.compress.Decompressor.class,
-                com.esotericsoftware.minlog.Log.class, org.apache.orc.impl.HadoopShims.class};
+                com.esotericsoftware.minlog.Log.class, org.apache.orc.impl.HadoopShims.class, LlapProxy.class};
     }
 
     public static Class[] getHiveUDFDependentClasses(Class hadoopVersionShimsClass) {
