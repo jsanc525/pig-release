@@ -39,9 +39,13 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assume;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.Timeout;
 
 public class TestScriptLanguage {
+    @Rule
+    public Timeout timeout = new Timeout(60000);
 
     static MiniGenericCluster cluster = MiniGenericCluster.buildCluster();
 

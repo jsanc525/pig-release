@@ -34,9 +34,13 @@ import org.apache.pig.tools.pigstats.PigStats;
 import org.apache.pig.tools.pigstats.mapreduce.MRJobStats;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.Timeout;
 
 public class TestEmptyInputDir {
+    @Rule
+    public Timeout timeout = new Timeout(60000);
 
     private static MiniGenericCluster cluster = MiniGenericCluster.buildCluster();
     private static final String EMPTY_DIR = "emptydir";
