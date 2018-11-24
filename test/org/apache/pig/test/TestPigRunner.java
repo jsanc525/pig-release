@@ -59,9 +59,13 @@ import org.junit.AfterClass;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.Timeout;
 
 public class TestPigRunner {
+    @Rule
+    public Timeout timeout = new Timeout(60000);
 
     private static MiniGenericCluster cluster;
     private static String execType;
