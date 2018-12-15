@@ -31,12 +31,9 @@ import org.apache.hadoop.hive.serde2.AbstractSerDe;
 import org.apache.hadoop.hive.serde2.io.DateWritable;
 import org.apache.hadoop.hive.serde2.io.HiveDecimalWritable;
 import org.apache.hadoop.hive.serde2.objectinspector.PrimitiveObjectInspector;
-import org.apache.hadoop.hive.shims.Hadoop23Shims;
 import org.apache.hadoop.hive.shims.HadoopShimsSecure;
 import org.apache.hadoop.hive.shims.ShimLoader;
-import org.apache.hadoop.io.compress.Decompressor;
 import org.apache.orc.OrcFile.Version;
-import org.apache.pig.impl.util.Utils;
 import org.joda.time.DateTime;
 
 import com.esotericsoftware.kryo.Serializer;
@@ -72,10 +69,10 @@ public class HiveShims {
         builder.isNull(columnName, columnType);
     }
 
-    public static Class[] getOrcDependentClasses() {
+    public static Class[] getOrcDependentClasses(Class hadoopVersionShimsClass) {
         return new Class[] {OrcFile.class, HiveConf.class, AbstractSerDe.class,
                 org.apache.hadoop.hive.shims.HadoopShims.class, HadoopShimsSecure.class, DateWritable.class,
-                Input.class, org.apache.orc.OrcFile.class, Hadoop23Shims.class, io.airlift.compress.Decompressor.class,
+                hadoopVersionShimsClass, Input.class, org.apache.orc.OrcFile.class,
                 com.esotericsoftware.minlog.Log.class};
     }
 

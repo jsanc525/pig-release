@@ -32,7 +32,6 @@ import org.apache.hadoop.hive.serde2.AbstractSerDe;
 import org.apache.hadoop.hive.serde2.objectinspector.PrimitiveObjectInspector;
 import org.apache.hadoop.hive.shims.HadoopShimsSecure;
 import org.apache.hadoop.hive.shims.ShimLoader;
-import org.apache.pig.impl.util.Utils;
 import org.joda.time.DateTime;
 
 import com.esotericsoftware.kryo.Serializer;
@@ -68,18 +67,7 @@ public class HiveShims {
         builder.isNull(columnName);
     }
 
-    public static Class[] getOrcDependentClasses() {
-        String hadoopVersion = "20S";
-        if (Utils.isHadoop23() || Utils.isHadoop2()) {
-            hadoopVersion = "23";
-        }
-        Class hadoopVersionShimsClass;
-        try {
-            hadoopVersionShimsClass = Class.forName("org.apache.hadoop.hive.shims.Hadoop" +
-                    hadoopVersion + "Shims");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Cannot find Hadoop" + hadoopVersion + "ShimsClass in classpath");
-        }
+    public static Class[] getOrcDependentClasses(Class hadoopVersionShimsClass) {
         return new Class[] {OrcFile.class, HiveConf.class, AbstractSerDe.class,
                 org.apache.hadoop.hive.shims.HadoopShims.class, HadoopShimsSecure.class, hadoopVersionShimsClass,
                 Input.class};

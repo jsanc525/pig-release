@@ -384,7 +384,19 @@ public class OrcStorage extends LoadFunc implements StoreFuncInterface, LoadMeta
 
     @Override
     public List<String> getShipFiles() {
-        Class[] classList = HiveShims.getOrcDependentClasses();
+        List<String> cacheFiles = new ArrayList<String>();
+        String hadoopVersion = "20S";
+        if (Utils.isHadoop23() || Utils.isHadoop2()) {
+            hadoopVersion = "23";
+        }
+        Class hadoopVersionShimsClass;
+        try {
+            hadoopVersionShimsClass = Class.forName("org.apache.hadoop.hive.shims.Hadoop" +
+                    hadoopVersion + "Shims");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("Cannot find Hadoop" + hadoopVersion + "ShimsClass in classpath");
+        }
+        Class[] classList = HiveShims.getOrcDependentClasses(hadoopVersionShimsClass);
         return FuncUtils.getShipFiles(classList);
     }
 

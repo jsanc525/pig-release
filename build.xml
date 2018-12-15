@@ -734,9 +734,7 @@
             <fileset dir="${ivy.lib.dir}" includes="groovy-*.jar"/>
             <fileset dir="${ivy.lib.dir}" includes="js-*.jar"/>
             <fileset dir="${ivy.lib.dir}" includes="hbase-*.jar" excludes="hbase-*tests.jar,hbase-*hadoop*.jar"/>
-            <fileset dir="${ivy.lib.dir}" includes="hive-*.jar"/>
-            <fileset dir="${ivy.lib.dir}" includes="orc-*.jar"/>
-            <fileset dir="${ivy.lib.dir}" includes="aircompressor-*.jar"/>
+            <fileset dir="${ivy.lib.dir}" includes="hive-*.jar" excludes="hive-shims-0.*.jar"/>
             <fileset dir="${ivy.lib.dir}" includes="minlog-*.jar"/>
             <fileset dir="${ivy.lib.dir}" includes="protobuf-java-*.jar"/>
             <fileset dir="${ivy.lib.dir}" includes="zookeeper-*.jar"/>
