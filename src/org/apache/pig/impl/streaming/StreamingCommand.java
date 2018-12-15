@@ -164,9 +164,6 @@ public class StreamingCommand implements Serializable, Cloneable {
      */
     public void addPathToShip(String path) throws IOException {
         // Validate
-        if (shipSpec.contains(path)) {
-            return;
-        }
         File file = new File(path);
         if (!file.exists()) {
             throw new IOException("Invalid ship specification: '" + path + 
