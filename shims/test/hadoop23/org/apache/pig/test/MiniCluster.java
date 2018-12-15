@@ -40,7 +40,7 @@ import org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLau
  */
 public class MiniCluster extends MiniGenericCluster {
     private static final File CONF_DIR = new File("build/classes");
-    private static final File CONF_FILE = new File(CONF_DIR, "core-site.xml");
+    private static final File CONF_FILE = new File(CONF_DIR, "hadoop-site.xml");
 
     protected MiniMRYarnCluster m_mr = null;
     private Configuration m_dfs_conf = null;
@@ -67,8 +67,8 @@ public class MiniCluster extends MiniGenericCluster {
             final int taskTrackers = 4;  // There will be 4 task tracker nodes
 
             System.setProperty("hadoop.log.dir", "build/test/logs");
-            // Create the dir that holds core-site.xml file
-            // Delete if core-site.xml exists already
+            // Create the dir that holds hadoop-site.xml file
+            // Delete if hadoop-site.xml exists already
             CONF_DIR.mkdirs();
             if(CONF_FILE.exists()) {
                 CONF_FILE.delete();
@@ -89,7 +89,7 @@ public class MiniCluster extends MiniGenericCluster {
             m_mr.init(m_dfs_conf);
             m_mr.start();
 
-            // Write the necessary config info to core-site.xml
+            // Write the necessary config info to hadoop-site.xml
             m_mr_conf = new Configuration(m_mr.getConfig());
 
             m_conf = m_mr_conf;
@@ -107,8 +107,8 @@ public class MiniCluster extends MiniGenericCluster {
             m_conf.set("pig.jobcontrol.sleep", "100");
             m_conf.writeXml(new FileOutputStream(CONF_FILE));
             m_fileSys.copyFromLocalFile(new Path(CONF_FILE.getAbsoluteFile().toString()),
-                    new Path("/pigtest/conf/core-site.xml"));
-            DistributedCache.addFileToClassPath(new Path("/pigtest/conf/core-site.xml"), m_conf);
+                    new Path("/pigtest/conf/hadoop-site.xml"));
+            DistributedCache.addFileToClassPath(new Path("/pigtest/conf/hadoop-site.xml"), m_conf);
 
             System.err.println("XXX: Setting fs.default.name to: " + m_dfs_conf.get("fs.default.name"));
             // Set the system properties needed by Pig
@@ -123,7 +123,7 @@ public class MiniCluster extends MiniGenericCluster {
 
     @Override
     protected void shutdownMiniMrClusters() {
-        // Delete core-site.xml on shutDown
+        // Delete hadoop-site.xml on shutDown
         if(CONF_FILE.exists()) {
             CONF_FILE.delete();
         }
