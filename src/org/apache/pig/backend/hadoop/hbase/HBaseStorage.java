@@ -46,8 +46,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.client.Connection;
-import org.apache.hadoop.hbase.client.ConnectionFactory;
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Durability;
 import org.apache.hadoop.hbase.client.Put;
@@ -68,8 +66,6 @@ import org.apache.hadoop.hbase.mapreduce.TableInputFormat;
 import org.apache.hadoop.hbase.mapreduce.TableMapReduceUtil;
 import org.apache.hadoop.hbase.mapreduce.TableOutputFormat;
 import org.apache.hadoop.hbase.mapreduce.TableSplit;
-import org.apache.hadoop.hbase.security.User;
-import org.apache.hadoop.hbase.security.token.TokenUtil;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.io.WritableComparable;
 import org.apache.hadoop.mapred.JobConf;
@@ -878,32 +874,37 @@ public class HBaseStorage extends LoadFunc implements StoreFuncInterface, LoadPu
     private void addHBaseDelegationToken(Configuration hbaseConf, Job job) {
 
         if (!UDFContext.getUDFContext().isFrontend()) {
-            LOG.debug("skipping authentication checks because we're currently in a frontend UDF context");
             return;
         }
 
         if ("kerberos".equalsIgnoreCase(hbaseConf.get(HBASE_SECURITY_CONF_KEY))) {
-            LOG.info("hbase is configured to use Kerberos, attempting to fetch delegation token.");
             // Will not be entering this block for 0.20.2 as it has no security.
             try {
-                User currentUser = User.getCurrent();
-                UserGroupInformation currentUserGroupInformation = currentUser.getUGI();
-                if (currentUserGroupInformation.hasKerberosCredentials()) {
-                    try (Connection connection = ConnectionFactory.createConnection(hbaseConf, currentUser)) {
-                        TokenUtil.obtainTokenForJob(connection, currentUser, job);
-                        LOG.info("Token retrieval succeeded for user " + currentUser.getName());
-                    }
+                // getCurrentUser method is not public in 0.20.2
+                Method m1 = UserGroupInformation.class.getMethod("getCurrentUser");
+                UserGroupInformation currentUser = (UserGroupInformation) m1.invoke(null,(Object[]) null);
+                // hasKerberosCredentials method not available in 0.20.2
+                Method m2 = UserGroupInformation.class.getMethod("hasKerberosCredentials");
+                boolean hasKerberosCredentials = (Boolean) m2.invoke(currentUser, (Object[]) null);
+                if (hasKerberosCredentials) {
+                    // Class and method are available only from 0.92 security release
+                    Class tokenUtilClass = Class
+                            .forName("org.apache.hadoop.hbase.security.token.TokenUtil");
+                    Method m3 = tokenUtilClass.getMethod("obtainTokenForJob", new Class[] {
+                            Configuration.class, UserGroupInformation.class, Job.class });
+                    m3.invoke(null, new Object[] { hbaseConf, currentUser, job });
                 } else {
-                    LOG.info("Not fetching hbase delegation token as no Kerberos TGT is available for user " + currentUser.getName());
+                    LOG.info("Not fetching hbase delegation token as no Kerberos TGT is available");
                 }
+            } catch (ClassNotFoundException cnfe) {
+                throw new RuntimeException("Failure loading TokenUtil class, "
+                        + "is secure RPC available?", cnfe);
             } catch (RuntimeException re) {
                 throw re;
             } catch (Exception e) {
                 throw new UndeclaredThrowableException(e,
                         "Unexpected error calling TokenUtil.obtainTokenForJob()");
             }
-        } else {
-            LOG.info("hbase is not configured to use kerberos, skipping delegation token");
         }
     }
 
@@ -1015,7 +1016,7 @@ public class HBaseStorage extends LoadFunc implements StoreFuncInterface, LoadPu
             }
 
             if (!columnInfo.isColumnMap()) {
-                put.addColumn(columnInfo.getColumnFamily(), columnInfo.getColumnName(),
+                put.addImmutable(columnInfo.getColumnFamily(), columnInfo.getColumnName(),
                         ts, objToBytes(t.get(i), (fieldSchemas == null) ?
                         DataType.findType(t.get(i)) : fieldSchemas[i].getType()));
             } else {
@@ -1028,7 +1029,7 @@ public class HBaseStorage extends LoadFunc implements StoreFuncInterface, LoadPu
                         }
                         // TODO deal with the fact that maps can have types now. Currently we detect types at
                         // runtime in the case of storing to a cf, which is suboptimal.
-                        put.addColumn(columnInfo.getColumnFamily(), Bytes.toBytes(colName.toString()), ts,
+                        put.addImmutable(columnInfo.getColumnFamily(), Bytes.toBytes(colName.toString()), ts,
                                 objToBytes(cfMap.get(colName), DataType.findType(cfMap.get(colName))));
                     }
                 }

@@ -18,7 +18,6 @@ package org.apache.pig.test;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +28,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HBaseTestingUtility;
-import org.apache.hadoop.hbase.HConstants;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.MiniHBaseCluster;
 import org.apache.hadoop.hbase.TableName;
@@ -62,10 +60,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
-import static org.junit.Assert.assertTrue;
 
 public class TestHBaseStorage {
-    private static Connection connection;
+
     private static final Log LOG = LogFactory.getLog(TestHBaseStorage.class);
     private static HBaseTestingUtility util;
     private static Configuration conf;
@@ -92,25 +89,17 @@ public class TestHBaseStorage {
     @BeforeClass
     public static void setUp() throws Exception {
         // This is needed by Pig
-        Configuration hadoopConf = new Configuration();
-        hadoopConf.set(HConstants.TEMPORARY_FS_DIRECTORY_KEY, Paths.get(Util.getTestDirectory(TestLoad.class)).toAbsolutePath().toString());
-
         conf = HBaseConfiguration.create(new Configuration());
-        // Setting this property is required due to a bug in HBase 2.0
-        // will be fixed in 2.0.1, see HBASE-20544. It doesn't have any effect on HBase 1.x
-        conf.set("hbase.localcluster.assign.random.ports", "true");
 
         util = new HBaseTestingUtility(conf);
         util.startMiniZKCluster();
         util.startMiniHBaseCluster(1, 1);
-        connection = ConnectionFactory.createConnection(conf);
     }
 
     @AfterClass
     public static void oneTimeTearDown() throws Exception {
         // In HBase 0.90.1 and above we can use util.shutdownMiniHBaseCluster()
         // here instead.
-        connection.close();
         MiniHBaseCluster hbc = util.getHBaseCluster();
         if (hbc != null) {
             hbc.shutdown();
@@ -129,16 +118,17 @@ public class TestHBaseStorage {
     public void tearDown() throws Exception {
         try {
             deleteAllRows(TESTTABLE_1);
-        } catch (Exception e) {}
+        } catch (IOException e) {}
         try {
             deleteAllRows(TESTTABLE_2);
-        } catch (Exception e) {}
+        } catch (IOException e) {}
         pig.shutdown();
     }
 
     // DVR: I've found that it is faster to delete all rows in small tables
     // than to drop them.
     private void deleteAllRows(String tableName) throws Exception {
+        Connection connection = ConnectionFactory.createConnection(conf);
         Table table = connection.getTable(TableName.valueOf(tableName));
         ResultScanner scanner = table.getScanner(new Scan());
         List<Delete> deletes = Lists.newArrayList();
@@ -234,7 +224,8 @@ public class TestHBaseStorage {
 
         long specifiedTimestamp = table.get(new Get(Bytes.toBytes("00"))).getColumnLatestCell(COLUMNFAMILY, Bytes.toBytes("col_a")).getTimestamp();
 
-        assertTrue("Timestamp is set equals to row 01", queryWithTimestamp(null, null, specifiedTimestamp) > 0);
+        Assert.assertTrue("Timestamp is set equals to row 01", queryWithTimestamp(null, null, specifiedTimestamp) > 0);
+
 
         LOG.info("LoadFromHBase done");
     }
@@ -327,7 +318,7 @@ public class TestHBaseStorage {
     }
 
     /**
-     * Test Load from hbase with map parameters and multiple column prefixes
+     * Test Load from hbase with map parameters and multiple column prefixs
      *
      */
     @Test
@@ -1253,7 +1244,7 @@ public class TestHBaseStorage {
                 + TESTCOLUMN_C + "','-caster HBaseBinaryConverter -includeTombstone true')");
 
         Connection connection = ConnectionFactory.createConnection(conf);
-        Table table = connection.getTable(TableName.valueOf(TESTTABLE_1));
+        Table table = connection.getTable(TableName.valueOf(TESTTABLE_2));
         ResultScanner scanner = table.getScanner(new Scan());
         Iterator<Result> iter = scanner.iterator();
         int count = 0;
@@ -1569,15 +1560,15 @@ public class TestHBaseStorage {
         }
         try {
             if (type == TableType.TWO_CF) {
-                table = util.createTable(TableName.valueOf(tableName),
+                table = util.createTable(TableName.valueOf(Bytes.toBytesBinary(tableName)),
                         new byte[][]{COLUMNFAMILY, COLUMNFAMILY2});
             } else {
-                table = util.createTable(TableName.valueOf(tableName),
+                table = util.createTable(TableName.valueOf(Bytes.toBytesBinary(tableName)),
                         COLUMNFAMILY);
             }
             lastTableType = type;
         } catch (Exception e) {
-            table = connection.getTable(TableName.valueOf(tableName));
+            connection.getTable(TableName.valueOf(Bytes.toBytesBinary(tableName)));
         }
 
         if (initData) {
