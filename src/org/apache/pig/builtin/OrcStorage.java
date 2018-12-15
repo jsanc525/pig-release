@@ -17,10 +17,10 @@
  */
 package org.apache.pig.builtin;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,13 +32,13 @@ import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.PathFilter;
+import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.ql.io.orc.CompressionKind;
 import org.apache.hadoop.hive.ql.io.orc.OrcFile;
 import org.apache.hadoop.hive.ql.io.orc.OrcNewInputFormat;
@@ -46,15 +46,17 @@ import org.apache.hadoop.hive.ql.io.orc.OrcNewOutputFormat;
 import org.apache.hadoop.hive.ql.io.orc.OrcSerde;
 import org.apache.hadoop.hive.ql.io.orc.OrcStruct;
 import org.apache.hadoop.hive.ql.io.orc.Reader;
-import org.apache.hadoop.hive.ql.io.sarg.PredicateLeaf;
+import org.apache.hadoop.hive.ql.io.orc.OrcFile.Version;
 import org.apache.hadoop.hive.ql.io.sarg.SearchArgument;
 import org.apache.hadoop.hive.ql.io.sarg.SearchArgument.Builder;
 import org.apache.hadoop.hive.ql.io.sarg.SearchArgumentFactory;
+import org.apache.hadoop.hive.serde2.AbstractSerDe;
 import org.apache.hadoop.hive.serde2.ColumnProjectionUtils;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
 import org.apache.hadoop.hive.serde2.typeinfo.StructTypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoUtils;
+import org.apache.hadoop.hive.shims.HadoopShimsSecure;
 import org.apache.hadoop.mapreduce.InputFormat;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.OutputFormat;
@@ -62,7 +64,6 @@ import org.apache.hadoop.mapreduce.RecordReader;
 import org.apache.hadoop.mapreduce.RecordWriter;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-import org.apache.orc.OrcConf;
 import org.apache.pig.Expression;
 import org.apache.pig.Expression.BetweenExpression;
 import org.apache.pig.Expression.Column;
@@ -87,7 +88,6 @@ import org.apache.pig.backend.executionengine.ExecException;
 import org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.PigSplit;
 import org.apache.pig.data.DataType;
 import org.apache.pig.data.Tuple;
-import org.apache.pig.hive.HiveShims;
 import org.apache.pig.impl.logicalLayer.FrontendException;
 import org.apache.pig.impl.util.ObjectSerializer;
 import org.apache.pig.impl.util.UDFContext;
@@ -95,8 +95,7 @@ import org.apache.pig.impl.util.Utils;
 import org.apache.pig.impl.util.hive.HiveUtils;
 import org.joda.time.DateTime;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.io.Input;
 import com.google.common.annotations.VisibleForTesting;
 
 /**
@@ -132,7 +131,7 @@ public class OrcStorage extends LoadFunc implements StoreFuncInterface, LoadMeta
     private Integer bufferSize;
     private Boolean blockPadding;
     private CompressionKind compress;
-    private String versionName;
+    private Version version;
 
     private static final Options validOptions;
     private final CommandLineParser parser = new GnuParser();
@@ -181,7 +180,7 @@ public class OrcStorage extends LoadFunc implements StoreFuncInterface, LoadMeta
                 compress = CompressionKind.valueOf(configuredOptions.getOptionValue('c'));
             }
             if (configuredOptions.hasOption('v')) {
-                versionName = HiveShims.normalizeOrcVersionName(configuredOptions.getOptionValue('v'));
+                version = Version.byName(configuredOptions.getOptionValue('v'));
             }
         } catch (ParseException e) {
             log.error("Exception in OrcStorage", e);
@@ -207,22 +206,28 @@ public class OrcStorage extends LoadFunc implements StoreFuncInterface, LoadMeta
     public void setStoreLocation(String location, Job job) throws IOException {
         if (!UDFContext.getUDFContext().isFrontend()) {
             if (stripeSize!=null) {
-                job.getConfiguration().setLong(OrcConf.STRIPE_SIZE.name(), stripeSize);
+                job.getConfiguration().setLong(HiveConf.ConfVars.HIVE_ORC_DEFAULT_STRIPE_SIZE.varname,
+                        stripeSize);
             }
             if (rowIndexStride!=null) {
-                job.getConfiguration().setInt(OrcConf.ROW_INDEX_STRIDE.name(), rowIndexStride);
+                job.getConfiguration().setInt(HiveConf.ConfVars.HIVE_ORC_DEFAULT_ROW_INDEX_STRIDE.varname,
+                        rowIndexStride);
             }
             if (bufferSize!=null) {
-                job.getConfiguration().setInt(OrcConf.BUFFER_SIZE.name(), bufferSize);
+                job.getConfiguration().setInt(HiveConf.ConfVars.HIVE_ORC_DEFAULT_BUFFER_SIZE.varname,
+                        bufferSize);
             }
             if (blockPadding!=null) {
-                job.getConfiguration().setBoolean(OrcConf.BLOCK_PADDING.name(), blockPadding);
+                job.getConfiguration().setBoolean(HiveConf.ConfVars.HIVE_ORC_DEFAULT_BLOCK_PADDING.varname,
+                        blockPadding);
             }
             if (compress!=null) {
-                job.getConfiguration().set(OrcConf.COMPRESS.name(), compress.toString());
+                job.getConfiguration().set(HiveConf.ConfVars.HIVE_ORC_DEFAULT_COMPRESS.varname,
+                        compress.toString());
             }
-            if (versionName!=null) {
-                job.getConfiguration().set(OrcConf.WRITE_FORMAT.name(), versionName);
+            if (version!=null) {
+                job.getConfiguration().set(HiveConf.ConfVars.HIVE_ORC_WRITE_FORMAT.varname,
+                        version.getName());
             }
         }
         FileOutputFormat.setOutputPath(job, new Path(location));
@@ -396,7 +401,9 @@ public class OrcStorage extends LoadFunc implements StoreFuncInterface, LoadMeta
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("Cannot find Hadoop" + hadoopVersion + "ShimsClass in classpath");
         }
-        Class[] classList = HiveShims.getOrcDependentClasses(hadoopVersionShimsClass);
+        Class[] classList = new Class[] {OrcFile.class, HiveConf.class, AbstractSerDe.class,
+                org.apache.hadoop.hive.shims.HadoopShims.class, HadoopShimsSecure.class, hadoopVersionShimsClass,
+                Input.class};
         return FuncUtils.getShipFiles(classList);
     }
 
@@ -580,11 +587,7 @@ public class OrcStorage extends LoadFunc implements StoreFuncInterface, LoadMeta
             log.info("Pushdown predicate SearchArgument is:\n" + sArg);
             Properties p = UDFContext.getUDFContext().getUDFProperties(this.getClass());
             try {
-                Kryo kryo = new Kryo();
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                Output output = new Output(baos);
-                kryo.writeObject(output, sArg);
-                p.setProperty(signature + SearchArgsSuffix, new String(Base64.encodeBase64(output.toBytes())));
+                p.setProperty(signature + SearchArgsSuffix, sArg.toKryo());
             } catch (Exception e) {
                 throw new IOException("Cannot serialize SearchArgument: " + sArg);
             }
@@ -627,43 +630,35 @@ public class OrcStorage extends LoadFunc implements StoreFuncInterface, LoadMeta
                 builder.end();
                 break;
             case OP_EQ:
-                HiveShims.addEqualsOpToBuilder(builder, getColumnName(lhs),
-                        getColumnType(lhs), getExpressionValue(rhs));
+                builder.equals(getColumnName(lhs), getExpressionValue(rhs));
                 break;
             case OP_NE:
                 builder.startNot();
-                HiveShims.addEqualsOpToBuilder(builder, getColumnName(lhs),
-                        getColumnType(lhs), getExpressionValue(rhs));
+                builder.equals(getColumnName(lhs), getExpressionValue(rhs));
                 builder.end();
                 break;
             case OP_LT:
-                HiveShims.addLessThanOpToBuilder(builder, getColumnName(lhs),
-                        getColumnType(lhs), getExpressionValue(rhs));
+                builder.lessThan(getColumnName(lhs), getExpressionValue(rhs));
                 break;
             case OP_LE:
-                HiveShims.addLessThanEqualsOpToBuilder(builder, getColumnName(lhs),
-                        getColumnType(lhs), getExpressionValue(rhs));
+                builder.lessThanEquals(getColumnName(lhs), getExpressionValue(rhs));
                 break;
             case OP_GT:
                 builder.startNot();
-                HiveShims.addLessThanEqualsOpToBuilder(builder, getColumnName(lhs),
-                        getColumnType(lhs), getExpressionValue(rhs));
+                builder.lessThanEquals(getColumnName(lhs), getExpressionValue(rhs));
                 builder.end();
                 break;
             case OP_GE:
                 builder.startNot();
-                HiveShims.addLessThanOpToBuilder(builder, getColumnName(lhs),
-                        getColumnType(lhs), getExpressionValue(rhs));
+                builder.lessThan(getColumnName(lhs), getExpressionValue(rhs));
                 builder.end();
                 break;
             case OP_BETWEEN:
                 BetweenExpression between = (BetweenExpression) rhs;
-                HiveShims.addBetweenOpToBuilder(builder, getColumnName(lhs),
-                        getColumnType(lhs), HiveShims.getSearchArgObjValue(between.getLower()),
-                        HiveShims.getSearchArgObjValue(between.getUpper()));
+                builder.between(getColumnName(lhs), getSearchArgObjValue(between.getLower()),  getSearchArgObjValue(between.getUpper()));
             case OP_IN:
                 InExpression in = (InExpression) rhs;
-                builder.in(getColumnName(lhs), getColumnType(lhs), getSearchArgObjValues(in.getValues()).toArray());
+                builder.in(getColumnName(lhs), getSearchArgObjValues(in.getValues()).toArray());
             default:
                 throw new RuntimeException("Unsupported binary expression type: " + expr.getOpType() + " in " + expr);
             }
@@ -671,8 +666,7 @@ public class OrcStorage extends LoadFunc implements StoreFuncInterface, LoadMeta
             Expression unaryExpr = ((UnaryExpression) expr).getExpression();
             switch (expr.getOpType()) {
             case OP_NULL:
-                HiveShims.addIsNullOpToBuilder(builder, getColumnName(unaryExpr),
-                        getColumnType(unaryExpr));
+                builder.isNull(getColumnName(unaryExpr));
                 break;
             case OP_NOT:
                 builder.startNot();
@@ -697,21 +691,12 @@ public class OrcStorage extends LoadFunc implements StoreFuncInterface, LoadMeta
         }
     }
 
-    private PredicateLeaf.Type getColumnType(Expression expr) {
-        try {
-            return HiveUtils.getDataTypeForSearchArgs(expr.getDataType());
-        } catch (ClassCastException e) {
-            throw new RuntimeException("Expected a Column but found " + expr.getClass().getName() +
-                    " in expression " + expr, e);
-        }
-    }
-
     private Object getExpressionValue(Expression expr) {
         switch(expr.getOpType()) {
         case TERM_COL:
             return ((Column) expr).getName();
         case TERM_CONST:
-            return HiveShims.getSearchArgObjValue(((Const) expr).getValue());
+            return getSearchArgObjValue(((Const) expr).getValue());
         default:
             throw new RuntimeException("Unsupported expression type: " + expr.getOpType() + " in " + expr);
         }
@@ -723,8 +708,21 @@ public class OrcStorage extends LoadFunc implements StoreFuncInterface, LoadMeta
         }
         List<Object> newValues = new ArrayList<Object>(values.size());
         for (Object value : values) {
-            newValues.add(HiveShims.getSearchArgObjValue(value));
+            newValues.add(getSearchArgObjValue(value));
         }
         return values;
     }
+
+    private Object getSearchArgObjValue(Object value) {
+        if (value instanceof BigInteger) {
+            return new BigDecimal((BigInteger)value);
+        } else if (value instanceof BigDecimal) {
+            return value;
+        } else if (value instanceof DateTime) {
+            return new Timestamp(((DateTime)value).getMillis());
+        } else {
+            return value;
+        }
+    }
+
 }
