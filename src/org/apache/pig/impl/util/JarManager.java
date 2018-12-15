@@ -212,7 +212,7 @@ public class JarManager {
                 continue; //Skip
             }
             String jar = findContainingJar(pkgToSend.getPkgClass());
-            if (jar != null && !defaultJars.contains(jar)) {
+            if (!defaultJars.contains(jar)) {
                 defaultJars.add(jar);
             }
         }
