@@ -98,7 +98,6 @@ public class TezMiniCluster extends MiniGenericCluster {
             m_mr_conf = m_mr.getConfig();
             m_mr_conf.set(YarnConfiguration.YARN_APPLICATION_CLASSPATH,
                     System.getProperty("java.class.path"));
-            m_mr_conf.set(TezConfiguration.TEZ_TASK_RESOURCE_MEMORY_MB, "800");
             m_mr_conf.set(MRJobConfig.MAP_JAVA_OPTS, "-Xmx512m");
             m_mr_conf.set(MRJobConfig.REDUCE_JAVA_OPTS, "-Xmx512m");
 
