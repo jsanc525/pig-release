@@ -477,8 +477,6 @@
       conf="hive2->master" />
     <dependency org="org.apache.orc" name="orc-core" rev="${orc.version}" changing="true"
       conf="hive2->master" />
-    <dependency org="org.apache.orc" name="orc-shims" rev="${orc.version}" changing="true"
-      conf="hive2->master" />
     <dependency org="io.airlift" name="aircompressor" rev="${aircompressor.version}"
       conf="hive2->master" />
     <dependency org="org.iq80.snappy" name="snappy" rev="${snappy.version}"
