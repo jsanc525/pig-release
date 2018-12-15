@@ -23,9 +23,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -167,14 +164,8 @@ public class StreamingCommand implements Serializable, Cloneable {
      */
     public void addPathToShip(String path) throws IOException {
         // Validate
-        for (String file : shipSpec) {
-            Path oldFile = Paths.get(file);
-            Path newFile = Paths.get(path);
-            if (Files.isSameFile(oldFile, newFile)) {
-                return;
-            } else if (oldFile.getFileName().equals(newFile.getFileName())) {
-                throw new IOException("Two files share the same name:" + file + " and " + path);
-            }
+        if (shipSpec.contains(path)) {
+            return;
         }
         File file = new File(path);
         if (!file.exists()) {
