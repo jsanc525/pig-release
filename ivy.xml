@@ -601,8 +601,6 @@
       conf="hive2->master" />
     <dependency org="org.apache.hive" name="hive-llap-common" rev="${hive.version}" changing="true"
       conf="hive2->master" />
-    <dependency org="org.apache.hive" name="hive-llap-client" rev="${hive.version}" changing="true"
-        conf="hive2->master" />
     <dependency org="org.apache.orc" name="orc-core" rev="${orc.version}" changing="true"
       conf="hive2->master" />
     <dependency org="org.apache.orc" name="orc-shims" rev="${orc.version}" changing="true"
