@@ -24,6 +24,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -34,7 +35,6 @@ import org.apache.pig.data.Tuple;
 import org.apache.pig.tools.pigstats.PigStatusReporter;
 
 import com.google.common.base.Function;
-import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
@@ -152,32 +152,20 @@ public class MonitoredUDFExecutor implements Serializable {
     }
 
     public Object monitorExec(final Tuple input) throws IOException {
-        CheckedFuture<Object, Exception> f =
-            Futures.makeChecked(
-                    // the Future whose exceptions we want to catch
-                    exec.submit(new Callable<Object>() {
-                        @Override
-                        public Object call() throws Exception {
-                            return closure.apply(input);
-                        }
-                    }),
-                    // How to map those exceptions; we simply rethrow them.
-                    // Theoretically we could do some handling of
-                    // CancellationException, ExecutionException  and InterruptedException here
-                    // and do something special for UDF IOExceptions as opposed to thread exceptions.
-                    new Function<Exception, Exception>() {
-                        @Override
-                        public Exception apply(Exception e) {
-                            return e;
-                        }
-                    });
+        // the Future whose exceptions we want to catch
+        Future<Object> f = exec.submit(new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                return closure.apply(input);
+            }
+        });
 
         Object result = defaultValue;
 
         // The outer try "should never happen" (tm).
         try {
             try {
-                result = f.get(duration, timeUnit);
+                result = Futures.getChecked(f, Exception.class, duration, timeUnit);
             } catch (TimeoutException e) {
                 timeoutHandler.invoke(null, evalFunc, e);
             } catch (Exception e) {
