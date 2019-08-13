@@ -1,3 +1,47 @@
+--------------------
+HDP 3.1.4.0 Changes
+--------------------
+BUG-121241: Update groovy to 2.4.8
+BUG-121117 Upgrade Guava to 28
+PIG-5175: Upgrade jruby to 1.7.26
+PIG-5159: Fix Pig not saving grunt history
+PIG-5156: Duplicate jars in CLASSPATH when running test
+PIG-5127: Test fail when running test-core-mrtez
+PIG-4957: See "Received kill signal" message for a normal run after PIG-4921
+PIG-5119: SkewedJoin_15 is unstable
+PIG-3851: Upgrade jline to 2.11
+PIG-5060: TestPigRunner.testDisablePigCounters2 failing with tez
+PIG-4976: streaming job with store clause stuck if the script fail
+PIG-5046: Skewed join with auto parallelism hangs when right input also has autoparallelism
+PIG-5108: AvroStorage on Tez with exception on nested records
+PIG-4260: SpillableMemoryManager.spill should revert spill on all exception
+PIG-4918: Pig on Tez cannot switch pig.temp.dir to another fs
+PIG-5078: Script fails with error - POStoreTez only accepts MROutput
+PIG-5088: HashValuePartitioner has skew when there is only map fields
+PIG-5043: Slowstart not applied in Tez with PARALLEL clause
+PIG-4930: Skewed Join Breaks On Empty Sampled Input When Key is From Map
+PIG-3417: Job fails when skewed join is done on tuple key
+PIG-5048: HiveUDTF fail if it is the first expression in projection
+PIG-5033: MultiQueryOptimizerTez creates bad plan with union, split and FRJoin
+PIG-5037: Add api getDisplayString to PigStats
+PIG-5041: RoundRobinPartitioner is not deterministic when order of input records change
+PIG-5040: Order by and CROSS partitioning is not deterministic due to usage of Random
+PIG-4951: Rename PIG_ATS_ENABLED constant
+PIG-5035: killJob API does not work in Tez
+PIG-5032: Output record stats in Tez is wrong when there is split followed by union
+PIG-5019: Pig generates tons of warnings for udf with enabled warnings aggregation
+PIG-4974: A simple map reference fail to cast
+PIG-4967: NPE in PigJobControl.run() when job status is null
+PIG-4935: TEZ_USE_CLUSTER_HADOOP_LIBS is always set to true
+PIG-4961: CROSS followed by LIMIT inside nested foreach drop data from result
+PIG-4960: Split followed by order by/skewed join is skewed in Tez
+PIG-4950: Fix minor issues with running scripts in non-local FileSystems
+BUG-72112: Turn on tez by default
+
+--------------------
+Celtic-GA Changes
+--------------------
+
 Changes only in Hortonworks github and not in Apache Pig release 0.16.0 and hence not covered by CHANGES.txt.
 
 
